@@ -1,57 +1,114 @@
 import { Image } from "@/components/ui/image";
+import Constants from "expo-constants";
 import { openURL } from "expo-linking";
 import { ExternalLink } from "lucide-react-native";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
+import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-function DeveloperCard({ name, role, image, url }: { name: string; role: string; image: any; url: string }) {
+type SectionProps = {
+  title?: string;
+  children: ReactNode;
+};
+
+function Section({ title, children }: SectionProps) {
+  const rows = Children.toArray(children).filter(isValidElement) as ReactElement<DeveloperRowProps>[];
+
   return (
-    <TouchableOpacity
+    <View className="mb-7">
+      {title ? (
+        <Text className="text-base text-neutral-500 dark:text-neutral-400 ml-5 mb-2">
+          {title}
+        </Text>
+      ) : null}
+      <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl overflow-hidden">
+        {rows.map((child, i) => cloneElement(child, { first: i === 0 }))}
+      </View>
+    </View>
+  );
+}
+
+type DeveloperRowProps = {
+  name: string;
+  role: string;
+  image: any;
+  url: string;
+  first?: boolean;
+};
+
+function DeveloperRow({ name, role, image, url, first = false }: DeveloperRowProps) {
+  const scheme = useColorScheme();
+  const icon = scheme === "dark" ? "#71717a" : "#a1a1aa";
+
+  return (
+    <Pressable
       onPress={() => openURL(url)}
-      className="w-full mt-3 bg-purple-50 border border-purple-200 h-24 flex flex-row items-center pr-3 rounded-md"
+      className={`flex-row items-center py-3 pr-4 ml-4 active:opacity-60 ${
+        first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
+      }`}
     >
       <Image
         source={image}
-        className="h-full aspect-square rounded-md"
+        contentFit="cover"
+        className="w-12 h-12 rounded-full bg-neutral-200 dark:bg-neutral-800"
       />
-      <View className="flex-1 justify-center ml-3">
+      <View className="flex-1 ml-4">
         <Text className="text-lg text-black dark:text-white">{name}</Text>
-        <Text className="text-sm text-gray-500 dark:text-gray-400">{role}</Text>
+        <Text className="text-sm text-neutral-500 dark:text-neutral-400">{role}</Text>
       </View>
-
-      <ExternalLink size={32} color={"#ddd"} />
-
-    </TouchableOpacity>
+      <ExternalLink size={20} color={icon} />
+    </Pressable>
   );
 }
 
 export default function AboutScreen() {
+  const insets = useSafeAreaInsets();
+  const version = Constants.expoConfig?.version;
+
   return (
-    <View className="flex-1 justify-center bg-white dark:bg-black">
-      <Image
-        source={require("@/assets/images/icon.png")}
-        className="mx-auto w-44 h-44 mb-4"
-      />
-      <Text className="text-3xl mx-auto text-black dark:text-white">posolog</Text>
+    <View className="flex-1 bg-white dark:bg-black">
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+        className="px-4"
+      >
+        <View className="items-center pt-10 pb-8">
+          <Image
+            source={require("@/assets/images/icon.png")}
+            contentFit="cover"
+            className="w-28 h-28 rounded-3xl"
+          />
+          <Text className="text-3xl font-semibold text-black dark:text-white mt-4">
+            posolog
+          </Text>
+          {version ? (
+            <Text className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+              Version {version}
+            </Text>
+          ) : null}
+        </View>
 
-      <Text className="text-lg w-full text-center px-3 mt-12 text-gray-500 dark:text-gray-400">
-        posolog is a simple and easy-to-use app for logging your thoughts and ideas. It is designed to help you capture your thoughts quickly and easily, so you can focus on what matters most.
-      </Text>
+        <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 mb-7">
+          <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">
+            posolog is a simple and easy-to-use app for logging your medication intake. It is
+            designed to help you analyze your plasma curves quickly and easily, so you can gain insight on your health.
+          </Text>
+        </View>
 
-      <View className="mx-3 mt-12">
-        <Text className="text-3xl mx-3">The developers</Text>
-        <DeveloperCard
-          name="pawbies"
-          role="Lead developer"
-          image={require("@/assets/images/developers/pawbies.png")}
-          url="https://github.com/pawbies"
-        />
-        <DeveloperCard
-          name="Alexi"
-          role="Lead faggot"
-          image={require("@/assets/images/developers/alexi.png")}
-          url="https://github.com/Alexander-Metzger"
-        />
-      </View>
+        <Section title="The developers">
+          <DeveloperRow
+            name="pawbies"
+            role="Lead developer"
+            image={require("@/assets/images/developers/pawbies.png")}
+            url="https://github.com/pawbies"
+          />
+          <DeveloperRow
+            name="Alexi"
+            role="Lead faggot"
+            image={require("@/assets/images/developers/alexi.png")}
+            url="https://github.com/Alexander-Metzger"
+          />
+        </Section>
+      </ScrollView>
     </View>
   );
 }

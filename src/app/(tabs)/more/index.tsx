@@ -39,15 +39,16 @@ function Section({ title, children }: SectionProps) {
 
 type RowProps = {
   icon: LucideIcon;
+  iconColor?: string;
   title: string;
   href: Href;
   first?: boolean;
 };
 
-function Row({ icon: Icon, title, href, first = false }: RowProps) {
+function Row({ icon: Icon, title, href, first = false, iconColor = undefined }: RowProps) {
   const router = useRouter();
   const scheme = useColorScheme();
-  const accent = scheme === "dark" ? "#fb7185" : "#e11d48";
+  const accent = scheme === "dark" ? "#9333ea" : "#a78bfa";
   const chevron = scheme === "dark" ? "#71717a" : "#a1a1aa";
 
   return (
@@ -57,7 +58,7 @@ function Row({ icon: Icon, title, href, first = false }: RowProps) {
         first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
       }`}
     >
-      <Icon size={24} color={accent} />
+      <Icon size={24} color={iconColor || accent} />
       <Text className="flex-1 ml-4 text-lg text-black dark:text-white">{title}</Text>
       <ChevronRight size={20} color={chevron} />
     </Pressable>
@@ -78,20 +79,20 @@ export default function MoreScreen() {
         </Text>
 
         <Section title="Tools">
-          <Row icon={Calculator} title="Calculator" href="/more/calculator" />
-          <Row icon={ChartColumn} title="Statistics" href="/more/statistics" />
+          <Row icon={Calculator} title="Calculator" href="/more/calculator" iconColor="#ef4444" />
+          <Row icon={ChartColumn} title="Statistics" href="/more/statistics" iconColor="#f97316" />
         </Section>
 
         <Section title="Data">
-          <Row icon={Download} title="Import" href="/more/import" />
-          <Row icon={Upload} title="Export" href="/more/export" />
+          <Row icon={Download} title="Import" href="/more/import" iconColor="#fde047" />
+          <Row icon={Upload} title="Export" href="/more/export" iconColor="#22c55e" />
         </Section>
 
         <Section title="App">
-          <Row icon={Settings} title="Settings" href="/more/settings" />
-          <Row icon={CircleQuestionMark} title="Wiki" href="/more/wiki" />
-          <Row icon={Heart} title="Donate" href="/more/donate" />
-          <Row icon={Info} title="About" href="/more/about" />
+          <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
+          <Row icon={CircleQuestionMark} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
+          <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
+          <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
         </Section>
       </ScrollView>
     </View>
