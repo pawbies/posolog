@@ -1,9 +1,14 @@
-import { Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   return (
-    <View className="flex-1 justify-center items-center bg-white dark:bg-black">
-      <Text className="text-3xl text-black dark:text-white">Home</Text>
-    </View>
+    <ScrollView
+      className="flex-1 bg-white dark:bg-black relative"
+      contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+    >
+      <Text>Hello, World!</Text>
+    </ScrollView>
   );
 }
