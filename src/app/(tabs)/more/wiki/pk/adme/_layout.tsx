@@ -8,7 +8,6 @@ export default function ADMELayout() {
       <Stack.Screen name="distribution" options={{ title: "Wiki / PK / ADME / Distribution" }} />
       <Stack.Screen name="metabolism" options={{ title: "Wiki / PK / ADME / Metabolism" }} />
       <Stack.Screen name="excretion" options={{ title: "Wiki / PK / ADME / Excretion" }} />
-
     </Stack>
   )
 }

@@ -9,6 +9,10 @@ export default function WikiLayout() {
       <Stack.Screen name="common-terminology" options={{ title: "Wiki / Common terminology" }} />
 
       <Stack.Screen name="pk/adme" options={{ headerShown: false }} />
+      <Stack.Screen name="pk/ms" options={{ headerShown: false }} />
+
+      <Stack.Screen name="pd/mechanism" options={{ headerShown: false }} />
+      <Stack.Screen name="pd/quantitative-response" options={{ headerShown: false }} />
     </Stack>
   )
 }

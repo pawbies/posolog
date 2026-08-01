@@ -104,7 +104,7 @@ export default function WikiScreen() {
 
         <Section title="Basic pharmacology">
           <Row icon={Microscope} title="Core concepts" href="/more/wiki/core-concepts" />
-          <Row icon={TestTubeDiagonal} title="Common terminology" href="/(tabs)/more/wiki/common-terminology" />
+          <Row icon={TestTubeDiagonal} title="Common terminology" href="/more/wiki/common-terminology" />
         </Section>
 
         <Text className="text-xl font-semibold text-black dark:text-white mb-3 ml-1">
@@ -119,12 +119,12 @@ export default function WikiScreen() {
         </Section>
 
         <Section title="Modeling and simulation - M&S">
-          <Row icon={Boxes} title="Compartment modeling" href="/more/calculator" />
-          <Row icon={AreaChart} title="Non-compartment analysis - NCA" href="/more/statistics" />
-          <Row icon={HeartPulse} title="Phsysiologically based PK - PBPK" href="/more/statistics" />
-          <Row icon={ChartScatter} title="Population PK - popPK" href="/more/statistics" />
-          <Row icon={ChartSpline} title="Linear vs. nonlinear kinetics" href="/more/statistics" />
-          <Row icon={Repeat} title="Multiple-dose kinetics" href="/more/statistics" />
+          <Row icon={Boxes} title="Compartment modeling" href="/more/wiki/pk/ms/compartment-modeling" />
+          <Row icon={AreaChart} title="Non-compartment analysis - NCA" href="/more/wiki/pk/ms/non-compartment-analysis" />
+          <Row icon={HeartPulse} title="Physiologically based PK - PBPK" href="/more/wiki/pk/ms/pbpk" />
+          <Row icon={ChartScatter} title="Population PK - popPK" href="/more/wiki/pk/ms/pop-pk" />
+          <Row icon={ChartSpline} title="Linear vs. nonlinear kinetics" href="/more/wiki/pk/ms/linear-nonlinear-kinetics" />
+          <Row icon={Repeat} title="Multiple-dose kinetics" href="/more/wiki/pk/ms/multiple-dose-kinetics" />
         </Section>
 
         <Text className="text-xl font-semibold text-black dark:text-white mb-3 ml-1">
@@ -132,17 +132,17 @@ export default function WikiScreen() {
         </Text>
 
         <Section title="Mechanism">
-          <Row icon={Atom} title="Receptor theory" href="/more/calculator" />
-          <Row icon={ArrowLeftRight} title="Agonism and antagonism" href="/more/statistics" />
-          <Row icon={Magnet} title="Affinity and efficacy" href="/more/statistics" />
+          <Row icon={Atom} title="Receptor theory" href="/more/wiki/pd/mechanism/receptor-theory" />
+          <Row icon={ArrowLeftRight} title="Agonism and antagonism" href="/more/wiki/pd/mechanism/agonism-antagonism" />
+          <Row icon={Magnet} title="Affinity and efficacy" href="/more/wiki/pd/mechanism/affinity-efficacy" />
         </Section>
 
         <Section title="Quantitative response">
-          <Row icon={ChartNoAxesCombined} title="Emax and Hill models" href="/more/calculator" />
-          <Row icon={Scale} title="Potency vs. efficacy" href="/more/statistics" />
-          <Row icon={SlidersHorizontal} title="Therapeutic window" href="/more/statistics" />
-          <Row icon={Clock} title="Effect delay" href="/more/statistics" />
-          <Row icon={TrendingDown} title="Tolerance" href="/more/statistics" />
+          <Row icon={ChartNoAxesCombined} title="Emax and Hill models" href="/more/wiki/pd/quantitative-response/emax-hill-models" />
+          <Row icon={Scale} title="Potency vs. efficacy" href="/more/wiki/pd/quantitative-response/potency-vs-efficacy" />
+          <Row icon={SlidersHorizontal} title="Therapeutic window" href="/more/wiki/pd/quantitative-response/therapeutic-window" />
+          <Row icon={Clock} title="Effect delay" href="/more/wiki/pd/quantitative-response/effect-delay" />
+          <Row icon={TrendingDown} title="Tolerance" href="/more/wiki/pd/quantitative-response/tolerance" />
         </Section>
       </ScrollView>
     </View>

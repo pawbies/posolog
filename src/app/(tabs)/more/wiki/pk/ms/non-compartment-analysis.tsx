@@ -1,9 +1,9 @@
 import WikiHeader from "@/components/wiki-header";
-import { Share2 } from "lucide-react-native";
+import { AreaChart } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function DistributionScreen() {
+export default function NonCompartmentAnalysisScreen() {
   const insets = useSafeAreaInsets();
 
   return (
@@ -12,7 +12,7 @@ export default function DistributionScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
         className="px-4"
       >
-        <WikiHeader icon={Share2} heading="Distribution" path="PK / ADME" />
+        <WikiHeader icon={AreaChart} heading="Non-compartment analysis - NCA" path="PK / M&S" />
       </ScrollView>
     </View>
   );

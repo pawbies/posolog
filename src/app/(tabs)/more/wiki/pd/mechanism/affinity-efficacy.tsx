@@ -1,9 +1,9 @@
 import WikiHeader from "@/components/wiki-header";
-import { Share2 } from "lucide-react-native";
+import { Magnet } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function DistributionScreen() {
+export default function AffinityEfficacyScreen() {
   const insets = useSafeAreaInsets();
 
   return (
@@ -12,7 +12,7 @@ export default function DistributionScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
         className="px-4"
       >
-        <WikiHeader icon={Share2} heading="Distribution" path="PK / ADME" />
+        <WikiHeader icon={Magnet} heading="Affinity and efficacy" path="PD / Mechanism" />
       </ScrollView>
     </View>
   );

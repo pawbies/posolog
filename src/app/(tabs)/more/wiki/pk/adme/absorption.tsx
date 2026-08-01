@@ -1,6 +1,7 @@
-import { Microscope } from "lucide-react-native";
+import WikiHeader from "@/components/wiki-header";
+import { Droplet } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CommonTerminologyScreen() {
@@ -14,19 +15,7 @@ export default function CommonTerminologyScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
         className="px-4"
       >
-        <View className="pt-6 pb-1">
-          <View className="flex-row items-center">
-            <Microscope size={28} color={iconColor} />
-            <Text className="text-3xl font-semibold text-black dark:text-white ml-2">
-              Absorption
-            </Text>
-          </View>
-          <Text className="text-base text-neutral-500 dark:text-neutral-400 mt-1 ml-1">
-            Pharmacokinetics / ADME
-          </Text>
-        </View>
-
-        <View className="h-px bg-neutral-200 dark:bg-neutral-800 my-5" />
+        <WikiHeader icon={Droplet} heading="Absorption" path="PK / ADME" />
       </ScrollView>
     </View>
   );
