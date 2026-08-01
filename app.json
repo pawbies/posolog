@@ -4,7 +4,10 @@
     "description": "Medication tracker and pharmacokinetics calculator",
     "slug": "posolog",
     "version": "1.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "posolog",
@@ -19,7 +22,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.posolog"
     },
     "plugins": [
       "expo-router",
@@ -35,6 +39,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6709ab70-4048-418f-be27-04375dc6ea4a"
+      }
     }
   }
 }
