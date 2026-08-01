@@ -19,7 +19,7 @@ export default function TabsLayout() {
                 />
             </NativeTabs.Trigger>
 
-            <NativeTabs.Trigger name="medications/index">
+            <NativeTabs.Trigger name="medications">
                 <NativeTabs.Trigger.Label>Medications</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "pills", selected: "pills.fill" }}
