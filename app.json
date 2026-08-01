@@ -22,7 +22,7 @@
         "backgroundImage": "./assets/images/android-icon-background.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.posolog"
+      "package": "net.pawbies.posolog"
     },
     "plugins": [
       "expo-router",

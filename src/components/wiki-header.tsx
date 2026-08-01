@@ -10,20 +10,22 @@ type WikiHeaderProps = {
 
 export default function WikiHeader({icon: Icon, heading, path}: WikiHeaderProps) {
     const { colorScheme } = useColorScheme();
-    const iconColor = colorScheme === "dark" ? "#fff" : "#000";
+    const iconColor = colorScheme === "dark" ? "#e879f9" : "#c026d3";
 
     return (
         <>
-            <View className="pt-6 pb-1">
-                <View className="flex-row items-center">
-                <Icon size={28} color={iconColor} />
-                <Text className="text-3xl font-semibold text-black dark:text-white ml-2">
-                    {heading}
-                </Text>
+            <View className="pt-6 pb-2 flex-row items-center">
+                <View className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-violet-950 items-center justify-center">
+                    <Icon size={26} color={iconColor} />
                 </View>
-                <Text className="text-base text-neutral-500 dark:text-neutral-400 mt-1 ml-1">
-                    {path}
-                </Text>
+                <View className="flex-1 ml-3">
+                    <Text className="text-xs font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                        {path}
+                    </Text>
+                    <Text className="text-2xl font-semibold text-black dark:text-white">
+                        {heading}
+                    </Text>
+                </View>
             </View>
 
             <View className="h-px bg-neutral-200 dark:bg-neutral-800 my-5" />
