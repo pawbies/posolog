@@ -11,8 +11,9 @@ import {
   Upload,
   type LucideIcon,
 } from "lucide-react-native";
+import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
-import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -47,9 +48,9 @@ type RowProps = {
 
 function Row({ icon: Icon, title, href, first = false, iconColor = undefined }: RowProps) {
   const router = useRouter();
-  const scheme = useColorScheme();
-  const accent = scheme === "dark" ? "#9333ea" : "#a78bfa";
-  const chevron = scheme === "dark" ? "#71717a" : "#a1a1aa";
+  const { colorScheme } = useColorScheme();
+  const accent = colorScheme === "dark" ? "#9333ea" : "#a78bfa";
+  const chevron = colorScheme === "dark" ? "#71717a" : "#a1a1aa";
 
   return (
     <Pressable

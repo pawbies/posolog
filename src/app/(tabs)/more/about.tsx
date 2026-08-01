@@ -2,8 +2,9 @@ import { Image } from "@/components/ui/image";
 import Constants from "expo-constants";
 import { openURL } from "expo-linking";
 import { ExternalLink } from "lucide-react-native";
+import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
-import { Pressable, ScrollView, Text, View, useColorScheme } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -37,8 +38,8 @@ type DeveloperRowProps = {
 };
 
 function DeveloperRow({ name, role, image, url, first = false }: DeveloperRowProps) {
-  const scheme = useColorScheme();
-  const icon = scheme === "dark" ? "#71717a" : "#a1a1aa";
+  const { colorScheme } = useColorScheme();
+  const icon = colorScheme === "dark" ? "#71717a" : "#a1a1aa";
 
   return (
     <Pressable
