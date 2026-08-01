@@ -10,7 +10,7 @@ export default function MoreLayout() {
       <Stack.Screen name="import" options={{ title: "Import" }} />
       <Stack.Screen name="export" options={{ title: "Export" }} />
       <Stack.Screen name="settings" options={{ title: "Settings" }} />
-      <Stack.Screen name="wiki" options={{ title: "Wiki" }} />
+      <Stack.Screen name="wiki" options={{ headerShown: false }} />
       <Stack.Screen name="donate" options={{ title: "Donate" }} />
       <Stack.Screen name="about" options={{ title: "About" }} />
     </Stack>
