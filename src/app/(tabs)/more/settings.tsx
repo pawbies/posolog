@@ -8,12 +8,14 @@ import {
   Children,
   cloneElement,
   isValidElement,
+  useCallback,
   useEffect,
+  useRef,
   useState,
   type ReactElement,
   type ReactNode,
 } from "react";
-import { ScrollView, Switch, Text, View } from "react-native";
+import { Alert, ScrollView, Switch, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -45,6 +47,7 @@ type ToggleRowProps = {
   description?: string;
   value: boolean;
   onValueChange: (value: boolean) => void;
+  disabled?: boolean;
   first?: boolean;
 };
 
@@ -55,6 +58,7 @@ function ToggleRow({
   description,
   value,
   onValueChange,
+  disabled = false,
   first = false,
 }: ToggleRowProps) {
   const { colorScheme } = useColorScheme();
@@ -64,9 +68,9 @@ function ToggleRow({
     <View
       className={`flex-row items-center py-4 pr-4 pl-4 ${
         first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
-      }`}
+      } ${disabled ? "opacity-50" : ""}`}
     >
-      <Icon size={24} color={iconColor || accent} />
+      <Icon size={24} color={iconColor ?? accent} />
       <View className="flex-1 ml-4">
         <Text className="text-lg text-black dark:text-white">{title}</Text>
         {description ? (
@@ -75,27 +79,72 @@ function ToggleRow({
           </Text>
         ) : null}
       </View>
-      <Switch value={value} onValueChange={onValueChange} />
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        disabled={disabled}
+        accessibilityLabel={title}
+        accessibilityHint={description}
+      />
     </View>
   );
 }
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
-  const [preventScreenCaptureToggle, setPreventScreenCaptureToggle] = useState(false);
+
+  const [preventScreenCapture, setPreventScreenCaptureToggle] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const mounted = useRef(true);
 
   useEffect(() => {
-    getPreventScreenCapture().then(setPreventScreenCaptureToggle);
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
   }, []);
 
-  const handlePreventScreenCaptureChange = (value: boolean) => {
-    const previous = preventScreenCaptureToggle;
-    setPreventScreenCaptureToggle(value);
+  useEffect(() => {
+    getPreventScreenCapture()
+      .then((enabled) => {
+        if (mounted.current) setPreventScreenCaptureToggle(enabled);
+      })
+      .catch((error) => {
+        console.warn("Failed to read screen capture setting", error);
+        Alert.alert(
+          "Couldn't load settings",
+          "Your security settings could not be read. They may not reflect what's currently active."
+        );
+      })
+      .finally(() => {
+        if (mounted.current) setLoaded(true);
+      });
+  }, []);
 
-    setPreventScreenCapture(value).catch(() => {
-      setPreventScreenCaptureToggle(previous);
-    });
-  };
+  const handlePreventScreenCaptureChange = useCallback(
+    async (next: boolean) => {
+      if (busy) return;
+
+      const previous = preventScreenCapture;
+      setPreventScreenCaptureToggle(next);
+      setBusy(true);
+
+      try {
+        await setPreventScreenCapture(next);
+      } catch (error) {
+        console.warn("Failed to update screen capture setting", error);
+        if (mounted.current) setPreventScreenCaptureToggle(previous);
+        Alert.alert(
+          "Couldn't change setting",
+          "Screen capture protection could not be updated. Your previous setting is still active."
+        );
+      } finally {
+        if (mounted.current) setBusy(false);
+      }
+    },
+    [busy, preventScreenCapture]
+  );
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
@@ -118,8 +167,9 @@ export default function SettingsScreen() {
             iconColor="#ef4444"
             title="Prevent Screen Capture"
             description="Blocks screenshots and screen recordings of the app"
-            value={preventScreenCaptureToggle}
+            value={preventScreenCapture}
             onValueChange={handlePreventScreenCaptureChange}
+            disabled={!loaded || busy}
           />
         </Section>
       </ScrollView>
