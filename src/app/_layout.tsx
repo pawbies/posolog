@@ -1,16 +1,35 @@
+import { applyScreenCaptureSetting } from "@/lib/screen-capture-setting";
 import "@/styles/global.css";
-import { applyStoredScreenCaptureSetting } from "@/lib/screen-capture-setting";
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import { DarkTheme, DefaultTheme, SplashScreen, Stack, ThemeProvider } from "expo-router";
+import * as ScreenCapture from "expo-screen-capture";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "nativewind";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    applyStoredScreenCaptureSetting();
+    (async () => {
+      try {
+        await applyScreenCaptureSetting();
+      } catch (error) {
+        console.warn("Failed to apply screen capture setting", error);
+
+        try {
+          await ScreenCapture.preventScreenCaptureAsync();
+        } catch {}
+      } finally {
+        setReady(true);
+        await SplashScreen.hideAsync();
+      }
+    })();
   }, []);
+
+  if (!ready) return null;
 
   return (
     <>

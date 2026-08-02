@@ -10,6 +10,7 @@ export async function getPreventScreenCapture(): Promise<boolean> {
 
 export async function setPreventScreenCapture(enabled: boolean): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEY, enabled ? "true" : "false");
+
   if (enabled) {
     await ScreenCapture.preventScreenCaptureAsync();
   } else {
@@ -17,9 +18,11 @@ export async function setPreventScreenCapture(enabled: boolean): Promise<void> {
   }
 }
 
-export async function applyStoredScreenCaptureSetting(): Promise<void> {
+export async function applyScreenCaptureSetting(): Promise<void> {
   const enabled = await getPreventScreenCapture();
   if (enabled) {
     await ScreenCapture.preventScreenCaptureAsync();
+  } else {
+    await ScreenCapture.allowScreenCaptureAsync();
   }
 }

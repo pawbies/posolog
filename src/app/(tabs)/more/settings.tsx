@@ -82,15 +82,19 @@ function ToggleRow({
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
-  const [preventScreenCaptureState, setPreventScreenCaptureState] = useState(false);
+  const [preventScreenCaptureToggle, setPreventScreenCaptureToggle] = useState(false);
 
   useEffect(() => {
-    getPreventScreenCapture().then(setPreventScreenCaptureState);
+    getPreventScreenCapture().then(setPreventScreenCaptureToggle);
   }, []);
 
   const handlePreventScreenCaptureChange = (value: boolean) => {
-    setPreventScreenCaptureState(value);
-    setPreventScreenCapture(value);
+    const previous = preventScreenCaptureToggle;
+    setPreventScreenCaptureToggle(value);
+
+    setPreventScreenCapture(value).catch(() => {
+      setPreventScreenCaptureToggle(previous);
+    });
   };
 
   return (
@@ -114,7 +118,7 @@ export default function SettingsScreen() {
             iconColor="#ef4444"
             title="Prevent Screen Capture"
             description="Blocks screenshots and screen recordings of the app"
-            value={preventScreenCaptureState}
+            value={preventScreenCaptureToggle}
             onValueChange={handlePreventScreenCaptureChange}
           />
         </Section>
