@@ -39,7 +39,7 @@ export default function TabsLayout() {
                 <NativeTabs.Trigger.Label>More</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "ellipsis", selected: "ellipsis.circle" }}
-                    md="more"
+                    md="more_horiz"
                 />
             </NativeTabs.Trigger>
         </NativeTabs>

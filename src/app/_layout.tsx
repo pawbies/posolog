@@ -5,6 +5,7 @@ import * as ScreenCapture from "expo-screen-capture";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,10 +19,14 @@ export default function RootLayout() {
         await applyScreenCaptureSetting();
       } catch (error) {
         console.warn("Failed to apply screen capture setting", error);
-
         try {
           await ScreenCapture.preventScreenCaptureAsync();
-        } catch {}
+        } catch {
+          Alert.alert(
+            "Screen Capture Setting Error",
+            "Failed to apply screen capture setting.",
+          );
+        }
       } finally {
         setReady(true);
         await SplashScreen.hideAsync();
