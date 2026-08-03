@@ -1,6 +1,6 @@
 import { Image } from "@/components/ui/image";
 import Constants from "expo-constants";
-import { openURL } from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import { ExternalLink, HatGlasses } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
@@ -43,7 +43,7 @@ function DeveloperRow({ name, role, image, url, first = false }: DeveloperRowPro
 
   return (
     <Pressable
-      onPress={() => openURL(url)}
+      onPress={async () => await WebBrowser.openBrowserAsync(url)}
       className={`flex-row items-center py-3 pr-4 ml-4 active:opacity-60 ${
         first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
       }`}
