@@ -1,7 +1,7 @@
 import {
-  getPreventScreenCapture,
-  setPreventScreenCapture,
-} from "@/lib/screen-capture-setting";
+  getPreventScreenCaptureSetting,
+  setPreventScreenCaptureSetting
+} from "@/lib/settings/security/prevent-screen-capture";
 import { EyeOff, Settings, type LucideIcon } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import {
@@ -10,10 +10,9 @@ import {
   isValidElement,
   useCallback,
   useEffect,
-  useRef,
   useState,
   type ReactElement,
-  type ReactNode,
+  type ReactNode
 } from "react";
 import { Alert, ScrollView, Switch, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -93,32 +92,24 @@ function ToggleRow({
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
 
-  const [preventScreenCapture, setPreventScreenCaptureToggle] = useState(false);
+  const [preventScreenCaptureToggleState, setPreventScreenCaptureToggleState] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const mounted = useRef(true);
+
 
   useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    getPreventScreenCapture()
+    getPreventScreenCaptureSetting()
       .then((enabled) => {
-        if (mounted.current) setPreventScreenCaptureToggle(enabled);
+        setPreventScreenCaptureToggleState(enabled);
       })
-      .catch((error) => {
-        console.warn("Failed to read screen capture setting", error);
+      .catch(() => {
         Alert.alert(
           "Couldn't load settings",
           "Your security settings could not be read. They may not reflect what's currently active."
         );
       })
       .finally(() => {
-        if (mounted.current) setLoaded(true);
+        setLoaded(true);
       });
   }, []);
 
@@ -126,24 +117,23 @@ export default function SettingsScreen() {
     async (next: boolean) => {
       if (busy) return;
 
-      const previous = preventScreenCapture;
-      setPreventScreenCaptureToggle(next);
+      const previous = preventScreenCaptureToggleState;
+      setPreventScreenCaptureToggleState(next);
       setBusy(true);
 
       try {
-        await setPreventScreenCapture(next);
-      } catch (error) {
-        console.warn("Failed to update screen capture setting", error);
-        if (mounted.current) setPreventScreenCaptureToggle(previous);
+        await setPreventScreenCaptureSetting(next);
+      } catch {
+        setPreventScreenCaptureToggleState(previous);
         Alert.alert(
           "Couldn't change setting",
           "Screen capture protection could not be updated. Your previous setting is still active."
         );
       } finally {
-        if (mounted.current) setBusy(false);
+        setBusy(false);
       }
     },
-    [busy, preventScreenCapture]
+    [busy, preventScreenCaptureToggleState]
   );
 
   return (
@@ -167,7 +157,7 @@ export default function SettingsScreen() {
             iconColor="#ef4444"
             title="Prevent Screen Capture"
             description="Blocks screenshots and screen recordings of the app"
-            value={preventScreenCapture}
+            value={preventScreenCaptureToggleState}
             onValueChange={handlePreventScreenCaptureChange}
             disabled={!loaded || busy}
           />
