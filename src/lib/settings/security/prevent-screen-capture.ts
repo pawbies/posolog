@@ -11,10 +11,10 @@ export async function getPreventScreenCaptureSetting(): Promise<boolean> {
 export async function setPreventScreenCaptureSetting(enabled: boolean): Promise<void> {
   if (enabled) {
     await ScreenCapture.preventScreenCaptureAsync();
-    await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
+    // await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
   } else {
     await ScreenCapture.allowScreenCaptureAsync();
-    await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
+    // await ScreenCapture.disableAppSwitcherProtectionAsync();
   }
 
   await AsyncStorage.setItem(STORAGE_KEY, enabled ? "true" : "false");
