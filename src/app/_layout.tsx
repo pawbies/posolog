@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,13 +59,13 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         </Stack>
       </ThemeProvider>
       <StatusBar style="auto" />
-    </>
+    </GestureHandlerRootView>
   )
 }
