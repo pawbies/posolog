@@ -1,25 +1,21 @@
+import AddReadingSheet from "@/components/tracking/blood-pressure/add-reading-sheet";
 import Graph from "@/components/tracking/blood-pressure/graph";
 import { db } from "@/db/client";
 import { bloodPressureReadings } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Stack } from "expo-router";
+import { Plus } from "lucide-react-native";
+import { useState } from "react";
+import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BloodPressureScreen() {
   const insets = useSafeAreaInsets();
+  const [showAddReading, setShowAddReading] = useState(false);
   const { data: readings } = useLiveQuery(
     db.select().from(bloodPressureReadings).orderBy(desc(bloodPressureReadings.readingAt))
   );
-
-  const handleAddReading = async () => {
-    await db.insert(bloodPressureReadings).values({
-      systolic: Math.random() * (140 - 90) + 90,
-      diastolic: Math.random() * (90 - 60) + 60,
-      pulse: Math.random() * (100 - 60) + 60,
-      readingAt: new Date(),
-    });
-  };
 
   const handleDeleteReading = async (id: number) => {
     await db.delete(bloodPressureReadings).where(eq(bloodPressureReadings.id, id));
@@ -30,19 +26,25 @@ export default function BloodPressureScreen() {
   }
 
   return (
-    <View style={{ paddingTop: insets.top, paddingBottom: insets.bottom + 24 }} className="px-4 flex-1 bg-white dark:bg-black">
-      <Text className="text-3xl font-semibold text-black dark:text-white mb-6 ml-1">
-        Blood pressure
-      </Text>
+    <View style={{ paddingBottom: insets.bottom + 24 }} className="px-4 pt-4 flex-1 bg-white dark:bg-black">
+      <Stack.Screen
+        options={{
+          title: "Blood pressure",
+          headerRight: ({ tintColor }) => (
+            <Pressable
+              onPress={() => setShowAddReading(true)}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Add reading"
+              className="active:opacity-50"
+            >
+              <Plus size={24} color={tintColor} />
+            </Pressable>
+          ),
+        }}
+      />
 
       <Graph readings={readings || []} />
-
-      <TouchableOpacity
-        className="mt-12 bg-blue-500 text-white py-2 px-4 rounded"
-        onPress={handleAddReading}
-      >
-        <Text className="text-white text-center">Add Reading</Text>
-      </TouchableOpacity>
 
       <TouchableOpacity
         className="mt-3 mb-12 bg-red-500 text-white py-2 px-4 rounded"
@@ -69,6 +71,11 @@ export default function BloodPressureScreen() {
         }
         />
       )}
+
+      <AddReadingSheet
+        isPresented={showAddReading}
+        onDismiss={() => setShowAddReading(false)}
+      />
     </View>
   );
 }
