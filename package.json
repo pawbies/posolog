@@ -45,5 +45,8 @@
     "ios": "expo run:ios",
     "db:generate": "drizzle-kit generate"
   },
-  "private": true
+  "private": true,
+  "trustedDependencies": [
+    "@shopify/react-native-skia"
+  ]
 }
