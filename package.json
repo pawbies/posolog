@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
+    "drizzle-orm": "^0.45.2",
     "expo": "^57.0.0",
     "expo-constants": "~57.0.8",
     "expo-dev-client": "~57.0.10",
@@ -12,6 +13,7 @@
     "expo-router": "~57.0.9",
     "expo-screen-capture": "~57.0.1",
     "expo-splash-screen": "~57.0.5",
+    "expo-sqlite": "~57.0.1",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.2",
     "expo-web-browser": "~57.0.2",
@@ -28,7 +30,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "babel-plugin-inline-import": "^3.0.0",
     "babel-preset-expo": "^57.0.4",
+    "drizzle-kit": "^0.31.10",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.17",
     "typescript": "~6.0.3"
@@ -36,7 +40,8 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "db:generate": "drizzle-kit generate"
   },
   "private": true
 }
