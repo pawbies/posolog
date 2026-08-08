@@ -24,9 +24,9 @@ export async function applyScreenCaptureSetting(): Promise<void> {
   const enabled = await getPreventScreenCaptureSetting();
   if (enabled) {
     await ScreenCapture.preventScreenCaptureAsync();
-    await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
+    // await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
   } else {
     await ScreenCapture.allowScreenCaptureAsync();
-    await ScreenCapture.enableAppSwitcherProtectionAsync(0.75);
+    // await ScreenCapture.disableAppSwitcherProtectionAsync();
   }
 }
