@@ -8,7 +8,7 @@ import {
 } from "@shopify/react-native-skia";
 import { useColorScheme } from "nativewind";
 import { useMemo, useState } from "react";
-import { Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import {
   runOnJS,
   useAnimatedReaction,
@@ -59,7 +59,7 @@ const DAY_MS = 86_400_000;
 /** Past this many readings the markers shed their ring and shrink to a speck. */
 const DENSE_AT = 60;
 
-export default function Graph({ readings }: { readings: Reading[] }) {
+export default function Graph({ readings, loading=false }: { readings: Reading[]; loading?: boolean }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === "dark";
 
@@ -210,7 +210,11 @@ export default function Graph({ readings }: { readings: Reading[] }) {
       ) : null}
 
       <View className="mt-3 h-56">
-        {chartData.length === 0 ? (
+        {loading ? (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color={theme.axisLabel} />
+          </View>
+        ) : chartData.length === 0 ? (
           <View className="flex-1 items-center justify-center">
             <Text className="text-sm text-neutral-500 dark:text-neutral-400">
               No readings yet.

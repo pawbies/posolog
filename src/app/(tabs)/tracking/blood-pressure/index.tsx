@@ -1,5 +1,6 @@
 import AddReadingSheet from "@/components/tracking/blood-pressure/add-reading-sheet";
 import Graph from "@/components/tracking/blood-pressure/graph";
+import Reading from "@/components/tracking/blood-pressure/reading";
 import { db } from "@/db/client";
 import { bloodPressureReadings } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -7,26 +8,39 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useState } from "react";
-import { FlatList, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BloodPressureScreen() {
   const insets = useSafeAreaInsets();
   const [showAddReading, setShowAddReading] = useState(false);
-  const { data: readings } = useLiveQuery(
+  const { data: readings, error, updatedAt } = useLiveQuery(
     db.select().from(bloodPressureReadings).orderBy(desc(bloodPressureReadings.readingAt))
   );
 
-  const handleDeleteReading = async (id: number) => {
-    await db.delete(bloodPressureReadings).where(eq(bloodPressureReadings.id, id));
+  // `updatedAt` is only set once the first result lands, so until then the empty
+  // `readings` default is "not queried yet" rather than "no readings".
+  const loading = !updatedAt && !error;
+
+  const handleDeleteReading = (id: number) => {
+    Alert.alert("Delete reading", "This reading will be removed permanently.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await db.delete(bloodPressureReadings).where(eq(bloodPressureReadings.id, id));
+        },
+      },
+    ]);
   };
 
-  const handleDeleteAllReadings = async () => {
-    await db.delete(bloodPressureReadings).where(eq(bloodPressureReadings.id, bloodPressureReadings.id));
+  if (error) {
+    Alert.alert("Error", "Failed to load blood pressure readings.");
   }
 
   return (
-    <View style={{ paddingBottom: insets.bottom + 24 }} className="px-4 pt-4 flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black">
       <Stack.Screen
         options={{
           title: "Blood pressure",
@@ -44,33 +58,25 @@ export default function BloodPressureScreen() {
         }}
       />
 
-      <Graph readings={readings || []} />
-
-      <TouchableOpacity
-        className="mt-3 mb-12 bg-red-500 text-white py-2 px-4 rounded"
-        onPress={handleDeleteAllReadings}
-      >
-        <Text className="text-white text-center">Delete All</Text>
-      </TouchableOpacity>
-      
-      {readings?.length > 0 && (
-        <FlatList
-          data={readings}
-          renderItem={({item}) => 
-            <>
-            <Text className="mt-4 text-black dark:text-white">
-              {Math.round(item.systolic)}/{Math.round(item.diastolic)} - {Math.round(item.pulse || 0)} ({item.readingAt.toString()})
-            </Text>
-            <TouchableOpacity
-              className="bg-red-500 text-white py-1 px-2 rounded mt-1"
-              onPress={() => handleDeleteReading(item.id)}
-            >
-              <Text className="text-white text-center">Delete</Text>
-            </TouchableOpacity>
-            </>
+      <FlatList
+        data={readings ?? []}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => (
+          <Reading reading={item} onDelete={handleDeleteReading} />
+        )}
+        ListHeaderComponent={
+          <View className="pb-12">
+            <Graph loading={loading} readings={readings ?? []} />
+          </View>
         }
-        />
-      )}
+        ItemSeparatorComponent={() => <View className="h-2" />}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          paddingTop: 16,
+          paddingBottom: insets.bottom + 24,
+        }}
+        showsVerticalScrollIndicator={false}
+      />
 
       <AddReadingSheet
         isPresented={showAddReading}
