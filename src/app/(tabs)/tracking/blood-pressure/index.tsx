@@ -1,4 +1,5 @@
 import AddReadingSheet from "@/components/tracking/blood-pressure/add-reading-sheet";
+import EditReadingSheet from "@/components/tracking/blood-pressure/edit-reading-sheet";
 import Graph from "@/components/tracking/blood-pressure/graph";
 import Reading from "@/components/tracking/blood-pressure/reading";
 import { db } from "@/db/client";
@@ -11,9 +12,12 @@ import { useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+type Reading = typeof bloodPressureReadings.$inferSelect;
+
 export default function BloodPressureScreen() {
   const insets = useSafeAreaInsets();
   const [showAddReading, setShowAddReading] = useState(false);
+  const [editingReading, setEditingReading] = useState<Reading | null>(null);
   const { data: readings, error, updatedAt } = useLiveQuery(
     db.select().from(bloodPressureReadings).orderBy(desc(bloodPressureReadings.readingAt))
   );
@@ -33,6 +37,10 @@ export default function BloodPressureScreen() {
         },
       },
     ]);
+  };
+
+  const handleEdit = (reading: Reading) => {
+    setEditingReading(reading);
   };
 
   if (error) {
@@ -62,7 +70,7 @@ export default function BloodPressureScreen() {
         data={readings ?? []}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <Reading reading={item} onDelete={handleDeleteReading} />
+          <Reading reading={item} onDelete={handleDeleteReading} onEdit={handleEdit} />
         )}
         ListHeaderComponent={
           <View className="pb-12">
@@ -81,6 +89,12 @@ export default function BloodPressureScreen() {
       <AddReadingSheet
         isPresented={showAddReading}
         onDismiss={() => setShowAddReading(false)}
+      />
+
+      <EditReadingSheet
+        isPresented={editingReading !== null}
+        reading={editingReading}
+        onDismiss={() => setEditingReading(null)}
       />
     </View>
   );
