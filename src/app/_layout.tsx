@@ -29,7 +29,6 @@ export default function RootLayout() {
         );
       } finally {
         setSettingsReady(true);
-        await SplashScreen.hideAsync();
       }
     })();
   }, []);
