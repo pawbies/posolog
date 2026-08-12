@@ -8,7 +8,7 @@ import { desc, eq } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack } from "expo-router";
 import { Plus } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -43,9 +43,11 @@ export default function BloodPressureScreen() {
     setEditingReading(reading);
   };
 
-  if (error) {
-    Alert.alert("Error", "Failed to load blood pressure readings.");
-  }
+  useEffect(() => {
+    if (error) {
+      Alert.alert("Error", "Failed to load blood pressure readings.");
+    }
+  }, [error]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
