@@ -63,14 +63,14 @@ export default function TrackingScreen() {
             iconColor="#3b82f6"
             title="Biomarkers"
             subtitle="Tracked indicators"
-            onPress={() => Alert.prompt("Not implemented yet", "The biomarker pages are still in development")}
+            onPress={() => Alert.alert("Not implemented yet", "The biomarker pages are still in development")}
           />
           <MetricCard
             icon={TestTubes}
             iconColor="#22c55e"
             title="Lab work"
             subtitle="Panels and results"
-            onPress={() => Alert.prompt("Not implemented yet", "The lab work pages are still in development")}
+            onPress={() => Alert.alert("Not implemented yet", "The lab work pages are still in development")}
           />
         </View>
       </ScrollView>
