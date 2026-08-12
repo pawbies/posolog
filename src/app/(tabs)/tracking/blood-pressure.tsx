@@ -22,8 +22,6 @@ export default function BloodPressureScreen() {
     db.select().from(bloodPressureReadings).orderBy(desc(bloodPressureReadings.readingAt))
   );
 
-  // `updatedAt` is only set once the first result lands, so until then the empty
-  // `readings` default is "not queried yet" rather than "no readings".
   const loading = !updatedAt && !error;
 
   const handleDeleteReading = (id: number) => {
