@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const bloodPressureReadings = sqliteTable("blood_pressure_readings", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -8,7 +8,13 @@ export const bloodPressureReadings = sqliteTable("blood_pressure_readings", {
   pulse: integer("pulse"),
   readingAt: integer("reading_at", { mode: "timestamp" }).notNull(),
 
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
-    .notNull()
-    .default(sql `(unixepoch() * 1000)`)
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull().default(sql `(unixepoch() * 1000)`)
+});
+
+export const medications = sqliteTable("medications", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  color: text({ enum: ["red", "blue", "green", "yellow"] }).notNull().default("red"),
+
+  createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull().default(sql `(unixepoch() * 1000)`)
 });
