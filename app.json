@@ -39,7 +39,7 @@
         "expo-sqlite",
         {
           "enableFTS": true,
-          "useSQLCipher": true
+          "useSQLCipher": false
         }
       ]
     ],
