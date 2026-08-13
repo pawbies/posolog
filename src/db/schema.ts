@@ -6,7 +6,7 @@ export const bloodPressureReadings = sqliteTable("blood_pressure_readings", {
   systolic: integer("systolic").notNull(),
   diastolic: integer("diastolic").notNull(),
   pulse: integer("pulse"),
-  readingAt: integer("reading_time", { mode: "timestamp" }).notNull(),
+  readingAt: integer("reading_at", { mode: "timestamp" }).notNull(),
 
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
