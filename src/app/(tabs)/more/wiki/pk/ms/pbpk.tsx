@@ -1,4 +1,4 @@
-import WikiHeader from "@/components/wiki-header";
+import WikiHeader from "@/components/wiki/wiki-header";
 import { HeartPulse } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

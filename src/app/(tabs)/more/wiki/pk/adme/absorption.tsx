@@ -1,4 +1,4 @@
-import WikiHeader from "@/components/wiki-header";
+import WikiHeader from "@/components/wiki/wiki-header";
 import { Droplet } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { ScrollView, View } from "react-native";

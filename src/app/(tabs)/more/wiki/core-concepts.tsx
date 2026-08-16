@@ -1,4 +1,4 @@
-import WikiHeader from "@/components/wiki-header";
+import WikiHeader from "@/components/wiki/wiki-header";
 import { Microscope } from "lucide-react-native";
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
 import { ScrollView, Text, View } from "react-native";
