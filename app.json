@@ -46,11 +46,18 @@
         "expo-localization",
         {
           "supportedLocales": {
-            "ios": ["en", "de"],
-            "android": ["en", "de"]
+            "ios": [
+              "en",
+              "de"
+            ],
+            "android": [
+              "en",
+              "de"
+            ]
           }
         }
-      ]
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
