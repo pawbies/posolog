@@ -41,6 +41,15 @@
           "enableFTS": true,
           "useSQLCipher": false
         }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["en", "de"],
+            "android": ["en", "de"]
+          }
+        }
       ]
     ],
     "experiments": {

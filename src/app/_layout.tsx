@@ -1,5 +1,6 @@
 import { db } from "@/db/client";
 import migrations from "@/db/migrations/migrations";
+import "@/lib/i18n";
 import { applyScreenCaptureSetting } from "@/lib/settings/security/prevent-screen-capture";
 import "@/styles/global.css";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
