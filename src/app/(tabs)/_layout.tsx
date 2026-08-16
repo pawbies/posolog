@@ -1,8 +1,22 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
+import { useColorScheme } from "nativewind";
+
+// Greens taken from the app icon: #aade87 is the icon background (also the
+// splash background), #56972b is the same hue darkened for contrast on a
+// light tab bar.
+const GREEN = "#aade87";
+const GREEN_DARK = "#56972b";
 
 export default function TabsLayout() {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === "dark";
+
     return (
-        <NativeTabs>
+        <NativeTabs
+            tintColor={isDark ? GREEN : GREEN_DARK}
+            indicatorColor={isDark ? "#2f4a1e" : GREEN}
+            rippleColor={isDark ? "#aade8740" : "#56972b40"}
+        >
             <NativeTabs.Trigger name="index">
                 <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon 
