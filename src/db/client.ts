@@ -7,9 +7,6 @@ export const expoDb = openDatabaseSync("posolog.db", {
 });
 
 expoDb.execSync("PRAGMA journal_mode = WAL;");
+expoDb.execSync("PRAGMA foreign_keys = ON;");
 
 export const db = drizzle(expoDb, { schema });
-
-export function enableForeignKeys() {
-  expoDb.execSync("PRAGMA foreign_keys = ON;");
-}

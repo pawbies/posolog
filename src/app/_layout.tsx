@@ -1,4 +1,4 @@
-import { db, enableForeignKeys } from "@/db/client";
+import { db } from "@/db/client";
 import migrations from "@/db/migrations/migrations";
 import { applyScreenCaptureSetting } from "@/lib/settings/security/prevent-screen-capture";
 import "@/styles/global.css";
@@ -15,7 +15,6 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();
   const [settingsReady, setSettingsReady] = useState(false);
-  const [fkReady, setFkReady] = useState(false);
   const { success, error: migrationError } = useMigrations(db, migrations);
 
   useEffect(() => {
@@ -33,13 +32,7 @@ export default function RootLayout() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (!success || fkReady) return;
-    enableForeignKeys();
-    setFkReady(true);
-  }, [success, fkReady]);
-
-  const ready = settingsReady && success && fkReady;
+  const ready = settingsReady && success;
 
   useEffect(() => {
     if (ready || migrationError) SplashScreen.hideAsync();
