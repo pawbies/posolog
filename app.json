@@ -57,7 +57,18 @@
           }
         }
       ],
-      "expo-image"
+      "expo-image",
+      [
+        "expo-sharing",
+        {
+          "ios": {
+            "enabled": true
+          },
+          "android": {
+            "enabled": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
