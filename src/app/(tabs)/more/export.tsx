@@ -1,3 +1,4 @@
+import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { Upload } from "lucide-react-native";
 import { useState } from "react";
@@ -17,6 +18,18 @@ export default function ExportScreen() {
       setLoading(false);
       return;
     }
+
+    const file = new File(Paths.cache, "posolog-export.csv");
+    file.create({overwrite: true});
+    file.write("Hello World! Bleh!");
+    
+    await Sharing.shareAsync(file.uri, {
+      mimeType: "text/csv",
+      UTI: "public.comma-seperated-values-text",
+      dialogTitle: "Export data"
+    });
+
+    setLoading(false);
   }
 
   return (

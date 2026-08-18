@@ -68,6 +68,12 @@
             "enabled": true
           }
         }
+      ],
+      [
+        "expo-file-system",
+        {
+          "enableFileSharing": true
+        }
       ]
     ],
     "experiments": {
