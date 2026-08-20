@@ -97,7 +97,7 @@ export default function WikiScreen() {
         <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 mb-7">
           <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">
             We encourage you to read through our wiki pages to learn
-            more about how posolog calculates it's values and to gain deeper
+            more about how posolog calculates its values and to gain deeper
             insight into pharmacokinetics.
           </Text>
         </View>

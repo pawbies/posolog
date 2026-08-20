@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1785864913040,
+      "tag": "0000_cultured_thundra",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786638581052,
+      "tag": "0001_bumpy_madame_hydra",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786643099984,
+      "tag": "0002_unique_obadiah_stane",
+      "breakpoints": true
+    }
+  ]
+}

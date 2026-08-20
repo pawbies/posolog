@@ -1,9 +1,26 @@
-import { Text, View } from "react-native";
+import { Download } from "lucide-react-native";
+import { ScrollView, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 
 export default function ImportScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View className="flex-1 justify-center items-center bg-white dark:bg-black">
-      <Text className="text-3xl text-black dark:text-white">Import</Text>
+    <View className="flex-1 bg-white dark:bg-black">
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+        className="px-4"
+      >
+        <View className="items-center pt-10 pb-8">
+          <View className="w-28 h-28 rounded-3xl bg-yellow-100 dark:bg-yellow-950 items-center justify-center">
+            <Download size={56} color="#fde047" />
+          </View>
+          <Text className="text-3xl font-semibold text-black dark:text-white mt-4 text-center">
+            Export
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }

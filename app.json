@@ -13,11 +13,11 @@
     "scheme": "posolog",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "net.pawbies.posolog"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png"
       },
@@ -34,7 +34,47 @@
           "imageWidth": 76
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": true,
+          "useSQLCipher": false
+        }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "en",
+              "de"
+            ],
+            "android": [
+              "en",
+              "de"
+            ]
+          }
+        }
+      ],
+      "expo-image",
+      [
+        "expo-sharing",
+        {
+          "ios": {
+            "enabled": true
+          },
+          "android": {
+            "enabled": true
+          }
+        }
+      ],
+      [
+        "expo-file-system",
+        {
+          "enableFileSharing": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

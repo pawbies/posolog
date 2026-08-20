@@ -1,21 +1,22 @@
+import ButtonRow, { ButtonRowProps } from "@/components/settings/button-row";
+import ToggleRow, { ToggleRowProps } from "@/components/settings/toggle-row";
 import {
-  getPreventScreenCapture,
-  setPreventScreenCapture,
-} from "@/lib/screen-capture-setting";
-import { EyeOff, Settings, type LucideIcon } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
+  getPreventScreenCaptureSetting,
+  setPreventScreenCaptureSetting
+} from "@/lib/settings/security/prevent-screen-capture";
+import * as Linking from "expo-linking";
+import { EyeOff, Languages, Settings } from "lucide-react-native";
 import {
   Children,
   cloneElement,
   isValidElement,
   useCallback,
   useEffect,
-  useRef,
   useState,
   type ReactElement,
-  type ReactNode,
+  type ReactNode
 } from "react";
-import { Alert, ScrollView, Switch, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -24,7 +25,7 @@ type SectionProps = {
 };
 
 function Section({ title, children }: SectionProps) {
-  const rows = Children.toArray(children).filter(isValidElement) as ReactElement<ToggleRowProps>[];
+  const rows = Children.toArray(children).filter(isValidElement) as ReactElement<ToggleRowProps | ButtonRowProps>[];
 
   return (
     <View className="mb-7">
@@ -40,85 +41,28 @@ function Section({ title, children }: SectionProps) {
   );
 }
 
-type ToggleRowProps = {
-  icon: LucideIcon;
-  iconColor?: string;
-  title: string;
-  description?: string;
-  value: boolean;
-  onValueChange: (value: boolean) => void;
-  disabled?: boolean;
-  first?: boolean;
-};
-
-function ToggleRow({
-  icon: Icon,
-  iconColor,
-  title,
-  description,
-  value,
-  onValueChange,
-  disabled = false,
-  first = false,
-}: ToggleRowProps) {
-  const { colorScheme } = useColorScheme();
-  const accent = colorScheme === "dark" ? "#9333ea" : "#a78bfa";
-
-  return (
-    <View
-      className={`flex-row items-center py-4 pr-4 pl-4 ${
-        first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
-      } ${disabled ? "opacity-50" : ""}`}
-    >
-      <Icon size={24} color={iconColor ?? accent} />
-      <View className="flex-1 ml-4">
-        <Text className="text-lg text-black dark:text-white">{title}</Text>
-        {description ? (
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-            {description}
-          </Text>
-        ) : null}
-      </View>
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        disabled={disabled}
-        accessibilityLabel={title}
-        accessibilityHint={description}
-      />
-    </View>
-  );
-}
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
 
-  const [preventScreenCapture, setPreventScreenCaptureToggle] = useState(false);
+  const [preventScreenCaptureToggleState, setPreventScreenCaptureToggleState] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const mounted = useRef(true);
+
 
   useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    getPreventScreenCapture()
+    getPreventScreenCaptureSetting()
       .then((enabled) => {
-        if (mounted.current) setPreventScreenCaptureToggle(enabled);
+        setPreventScreenCaptureToggleState(enabled);
       })
-      .catch((error) => {
-        console.warn("Failed to read screen capture setting", error);
+      .catch(() => {
         Alert.alert(
           "Couldn't load settings",
           "Your security settings could not be read. They may not reflect what's currently active."
         );
       })
       .finally(() => {
-        if (mounted.current) setLoaded(true);
+        setLoaded(true);
       });
   }, []);
 
@@ -126,24 +70,23 @@ export default function SettingsScreen() {
     async (next: boolean) => {
       if (busy) return;
 
-      const previous = preventScreenCapture;
-      setPreventScreenCaptureToggle(next);
+      const previous = preventScreenCaptureToggleState;
+      setPreventScreenCaptureToggleState(next);
       setBusy(true);
 
       try {
-        await setPreventScreenCapture(next);
-      } catch (error) {
-        console.warn("Failed to update screen capture setting", error);
-        if (mounted.current) setPreventScreenCaptureToggle(previous);
+        await setPreventScreenCaptureSetting(next);
+      } catch {
+        setPreventScreenCaptureToggleState(previous);
         Alert.alert(
           "Couldn't change setting",
           "Screen capture protection could not be updated. Your previous setting is still active."
         );
       } finally {
-        if (mounted.current) setBusy(false);
+        setBusy(false);
       }
     },
-    [busy, preventScreenCapture]
+    [busy, preventScreenCaptureToggleState]
   );
 
   return (
@@ -161,13 +104,24 @@ export default function SettingsScreen() {
           </Text>
         </View>
 
+        <Section title="General">
+          <ButtonRow
+            icon={Languages}
+            iconColor="#57e389"
+            title="Language"
+            description="Change the app's language via the devices settings"
+            buttonText="Open Settings"
+            onPress={Linking.openSettings}
+          />
+        </Section>
+
         <Section title="Security">
           <ToggleRow
             icon={EyeOff}
             iconColor="#ef4444"
             title="Prevent Screen Capture"
             description="Blocks screenshots and screen recordings of the app"
-            value={preventScreenCapture}
+            value={preventScreenCaptureToggleState}
             onValueChange={handlePreventScreenCaptureChange}
             disabled={!loaded || busy}
           />

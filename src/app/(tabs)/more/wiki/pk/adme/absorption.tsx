@@ -1,10 +1,10 @@
-import WikiHeader from "@/components/wiki-header";
+import WikiHeader from "@/components/wiki/wiki-header";
 import { Droplet } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function CommonTerminologyScreen() {
+export default function AbsorptionScreen() {
   const insets = useSafeAreaInsets();
   const { colorScheme } = useColorScheme();
   const iconColor = colorScheme === "dark" ? "#fff" : "#000";
