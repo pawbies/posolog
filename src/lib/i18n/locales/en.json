@@ -1,3 +1,9 @@
 {
-    "hello": "Hello"
+    "tabs": {
+        "home": "Home",
+        "timeline": "Timeline",
+        "medications": "Medications",
+        "tracking": "Tracking",
+        "more": "More"
+    }
 }
