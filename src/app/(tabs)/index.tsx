@@ -11,7 +11,7 @@ export default function HomeScreen() {
       className="flex-1 bg-white dark:bg-black relative"
       contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
     >
-      <Text>{t("hello")}</Text>
+      <Text>Hello</Text>
     </ScrollView>
   );
 }

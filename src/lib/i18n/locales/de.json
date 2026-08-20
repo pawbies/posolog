@@ -1,3 +1,9 @@
 {
-    "hello": "Hallo"
+    "tabs": {
+        "home": "Start",
+        "timeline": "Verlauf",
+        "medications": "Medikamente",
+        "tracking": "Entwicklungen",
+        "more": "Mehr"
+    }
 }

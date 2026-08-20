@@ -1,15 +1,14 @@
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useColorScheme } from "nativewind";
+import { useTranslation } from "react-i18next";
 
-// Greens taken from the app icon: #aade87 is the icon background (also the
-// splash background), #56972b is the same hue darkened for contrast on a
-// light tab bar.
 const GREEN = "#aade87";
 const GREEN_DARK = "#56972b";
 
 export default function TabsLayout() {
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === "dark";
+      const { t } = useTranslation();
 
     return (
         <NativeTabs
@@ -18,7 +17,7 @@ export default function TabsLayout() {
             rippleColor={isDark ? "#aade8740" : "#56972b40"}
         >
             <NativeTabs.Trigger name="index">
-                <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label>{t("tabs.home")}</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon 
                     sf={{ default: "house", selected: "house.fill" }}
                     md="home"
@@ -26,7 +25,7 @@ export default function TabsLayout() {
             </NativeTabs.Trigger>
 
             <NativeTabs.Trigger name="timeline">
-                <NativeTabs.Trigger.Label>Timeline</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label>{t("tabs.timeline")}</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "clock", selected: "clock.fill" }}
                     md="timeline"
@@ -34,7 +33,7 @@ export default function TabsLayout() {
             </NativeTabs.Trigger>
 
             <NativeTabs.Trigger name="medications">
-                <NativeTabs.Trigger.Label>Medications</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label>{t("tabs.medications")}</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "pills", selected: "pills.fill" }}
                     md="medication"
@@ -42,7 +41,7 @@ export default function TabsLayout() {
             </NativeTabs.Trigger>
 
             <NativeTabs.Trigger name="tracking">
-                <NativeTabs.Trigger.Label>Tracking</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label>{t("tabs.tracking")}</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "heart", selected: "heart.fill" }}
                     md="heart_plus"
@@ -50,7 +49,7 @@ export default function TabsLayout() {
             </NativeTabs.Trigger>
 
             <NativeTabs.Trigger name="more">
-                <NativeTabs.Trigger.Label>More</NativeTabs.Trigger.Label>
+                <NativeTabs.Trigger.Label>{t("tabs.more")}</NativeTabs.Trigger.Label>
                 <NativeTabs.Trigger.Icon
                     sf={{ default: "ellipsis", selected: "ellipsis.circle" }}
                     md="more_horiz"
