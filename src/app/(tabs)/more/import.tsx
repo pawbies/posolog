@@ -17,7 +17,7 @@ export default function ImportScreen() {
             <Download size={56} color="#fde047" />
           </View>
           <Text className="text-3xl font-semibold text-black dark:text-white mt-4 text-center">
-            Export
+            Import
           </Text>
         </View>
       </ScrollView>
