@@ -1,13 +1,15 @@
+import { db } from "@/db/client";
+import { bloodPressureReadings, medications } from "@/db/schema";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { Upload } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ExportScreen() {
   const insets = useSafeAreaInsets();
-  const [format, setFormat] = useState<"csv" | "db">("csv");
+  const [format, setFormat] = useState<"json" | "db">("json");
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleExport = async () => {
@@ -19,17 +21,52 @@ export default function ExportScreen() {
       return;
     }
 
-    const file = new File(Paths.cache, "posolog-export.csv");
-    file.create({overwrite: true});
-    file.write("Hello World! Bleh!");
-    
-    await Sharing.shareAsync(file.uri, {
-      mimeType: "text/csv",
-      UTI: "public.comma-seperated-values-text",
-      dialogTitle: "Export data"
-    });
+    const stamp = new Date().toISOString().slice(0, 10);
 
-    setLoading(false);
+    try {
+      if (format == "json") {
+        const allbBloodPressureReadings = db.select().from(bloodPressureReadings).all();
+        const allMedications = db.select().from(medications).all();
+        const data = {
+            bloodPressureReadings: allbBloodPressureReadings,
+            medications: allMedications,
+        }
+
+        const file = new File(
+          Paths.cache,
+          `posolog-export-${stamp}.json`
+        );
+        file.create({overwrite: true});
+        file.write(JSON.stringify(data));
+
+        await Sharing.shareAsync(file.uri, {
+          mimeType: "application/json",
+          UTI: "public.json",
+          dialogTitle: "Export data"
+        });
+
+      } else if (format == "db") {
+        const file = new File(
+          Paths.cache,
+          `posolog-export-${stamp}.db`
+        );
+        if (file.exists) file.delete();
+        
+        const fsPath = decodeURIComponent(file.uri.replace("file://", "")).replace(/'/g, "''");
+        const sqlite = db.$client;
+        await sqlite.execAsync(`VACUUM INTO '${fsPath}'`);
+      
+        await Sharing.shareAsync(file.uri, {
+          mimeType: "application/vnd.sqlite3",
+          UTI: "public.database",
+          dialogTitle: "Export data"
+        });
+      }
+    } catch {
+      Alert.alert("Something went wrong", "Could not export your data.")
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,7 +86,7 @@ export default function ExportScreen() {
 
         <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl p-4 mb-7">
           <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">
-            We encourage you to periodically export your data and safe it somewhere safe,
+            We encourage you to periodically export your data and store it somewhere safe,
             otherwise all your data could be lost if your device gets stolen or you lose it.
           </Text>
         </View>
@@ -59,19 +96,19 @@ export default function ExportScreen() {
         </Text>
         <View className="flex-row rounded-full bg-neutral-100 dark:bg-neutral-900 p-1">
           <Pressable
-            key={"csv"}
-            onPress={() => setFormat("csv")}
+            key={"json"}
+            onPress={() => setFormat("json")}
             accessibilityRole="button"
-            accessibilityState={{ selected: format === "csv" }}
+            accessibilityState={{ selected: format === "json" }}
             className={`flex-1 items-center rounded-full py-2 ${
-              format === "csv" ? "bg-white dark:bg-neutral-700" : ""
+              format === "json" ? "bg-white dark:bg-neutral-700" : ""
             }`}
           >
             <Text className={`text-base
-              ${format === "csv" ? "font-semibold text-black dark:text-white": "text-neutral-500 dark:text-neutral-400"}`
+              ${format === "json" ? "font-semibold text-black dark:text-white": "text-neutral-500 dark:text-neutral-400"}`
             }
             >
-              CSV
+              JSON
             </Text>
           </Pressable>
 
@@ -98,10 +135,16 @@ export default function ExportScreen() {
           accessibilityRole="button"
           accessibilityLabel="Export"
           onPress={handleExport}
-          className="mt-10 flex-row items-center justify-center gap-2 rounded-full bg-green-600 py-4 dark:bg-green-500"
+          disabled={loading}
+          className="mt-10 min-h-16 flex-row items-center justify-center gap-2 rounded-full bg-green-600 py-4 dark:bg-green-500"
         >
-          <Upload size={20} color="#ffffff" />
-          <Text className="text-lg font-semibold text-white">Export</Text>
+          {loading ? <ActivityIndicator size="small" color="#ffffff" /> :
+            <>
+              <Upload size={20} color="#ffffff" />
+              <Text className="text-lg font-semibold text-white">Export</Text>
+            </>
+          }
+          
         </TouchableOpacity>
         
       </ScrollView>
