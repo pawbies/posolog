@@ -63,10 +63,9 @@ export default function AboutScreen() {
             <Pressable
               key={dev.name}
               onPress={async () => await WebBrowser.openBrowserAsync(dev.github)}
-              className="flex-row pl-4"
             >
               <View
-                className={`flex-1 flex-row items-center py-3 pr-4 ${ i === 0 ? "" : "border-t border-border" }`}
+                className={`ml-4 flex-1 flex-row items-center py-3 pr-4 ${ i === 0 ? "" : "border-t border-border" }`}
               >
                 <Image
                   source={dev.image}
