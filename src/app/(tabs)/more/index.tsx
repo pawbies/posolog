@@ -1,3 +1,5 @@
+import Pressable from "@/components/pressable";
+import Text from "@/components/text";
 import { useRouter, type Href } from "expo-router";
 import {
   Calculator,
@@ -13,7 +15,7 @@ import {
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -27,11 +29,11 @@ function Section({ title, children }: SectionProps) {
   return (
     <View className="mb-7">
       {title ? (
-        <Text className="text-base text-neutral-500 dark:text-neutral-400 ml-5 mb-2">
+        <Text muted className="text-base ml-5 mb-2">
           {title}
         </Text>
       ) : null}
-      <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl overflow-hidden">
+      <View className="bg-surface rounded-2xl overflow-hidden">
         {rows.map((child, i) => cloneElement(child, { first: i === 0 }))}
       </View>
     </View>
@@ -55,13 +57,13 @@ function Row({ icon: Icon, title, href, first = false, iconColor = undefined }: 
   return (
     <Pressable
       onPress={() => router.push(href)}
-      className={`flex-row items-center py-4 pr-4 ml-4 active:opacity-60 ${
-        first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
-      }`}
+      className="pl-4"
     >
-      <Icon size={24} color={iconColor || accent} />
-      <Text className="flex-1 ml-4 text-lg text-black dark:text-white">{title}</Text>
-      <ChevronRight size={20} color={chevron} />
+      <View className={`flex-row items-center py-4 pr-4 ${first ? "" : "border-t border-border"}`}>
+        <Icon size={24} color={iconColor || accent} />
+        <Text className="flex-1 ml-4 text-lg">{title}</Text>
+        <ChevronRight size={20} color={chevron} />
+      </View>
     </Pressable>
   );
 }
@@ -70,32 +72,30 @@ export default function MoreScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingTop: insets.top }} className="flex-1 bg-white dark:bg-black">
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
-        className="px-4"
-      >
-        <Text className="text-3xl font-semibold text-black dark:text-white mb-6 ml-1">
-          More
-        </Text>
+    <ScrollView
+      contentContainerStyle={{ paddingTop: insets.top }}
+      className="px-4 flex-1 bg-background"
+    >
+      <Text className="text-3xl font-semibold text-black dark:text-white mb-6 ml-1">
+        More
+      </Text>
 
-        <Section title="Tools">
-          <Row icon={Calculator} title="Calculator" href="/more/calculator" iconColor="#ef4444" />
-          <Row icon={ChartColumn} title="Statistics" href="/more/statistics" iconColor="#f97316" />
-        </Section>
+      <Section title="Tools">
+        <Row icon={Calculator} title="Calculator" href="/more/calculator" iconColor="#ef4444" />
+        <Row icon={ChartColumn} title="Statistics" href="/more/statistics" iconColor="#f97316" />
+      </Section>
 
-        <Section title="Data">
-          <Row icon={Download} title="Import" href="/more/import" iconColor="#fde047" />
-          <Row icon={Upload} title="Export" href="/more/export" iconColor="#22c55e" />
-        </Section>
+      <Section title="Data">
+        <Row icon={Download} title="Import" href="/more/import" iconColor="#fde047" />
+        <Row icon={Upload} title="Export" href="/more/export" iconColor="#22c55e" />
+      </Section>
 
-        <Section title="App">
-          <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
-          <Row icon={CircleQuestionMark} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
-          <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
-          <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
-        </Section>
-      </ScrollView>
-    </View>
+      <Section title="App">
+        <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
+        <Row icon={CircleQuestionMark} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
+        <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
+        <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
+      </Section>
+    </ScrollView>
   );
 }

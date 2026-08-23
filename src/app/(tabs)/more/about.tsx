@@ -1,10 +1,11 @@
 import Pressable from "@/components/pressable";
+import Text from "@/components/text";
 import { Image } from "@/components/ui/image";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import { ExternalLink, HatGlasses } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 const DEVELOPERS = [
   { name: "pawbies", role: "Lead programmer", github: "https://github.com/pawbies", image: require("@/assets/images/developers/pawbies.png") },
@@ -23,18 +24,18 @@ export default function AboutScreen() {
           contentFit="cover"
           className="w-28 h-28 rounded-3xl"
         />
-        <Text className="text-3xl font-semibold text-text mt-4">
+        <Text className="text-3xl font-semibold mt-4">
           posolog
         </Text>
         {version ? (
-          <Text className="text-sm text-text-muted dark:text-neutral-400 mt-1">
+          <Text muted className="text-sm mt-1">
             Version {version}
           </Text>
         ) : null}
       </View>
 
       <View className="bg-surface rounded-2xl p-4 mb-7">
-        <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">
+        <Text muted className="text-base leading-6">
           posolog is a simple and easy-to-use app for logging your medication intake. It is
           designed to help you analyze your plasma curves quickly and easily, so you can gain insight on your health.
         </Text>
@@ -43,11 +44,11 @@ export default function AboutScreen() {
       <View className="bg-surface rounded-2xl p-4 mb-7">
         <View className="flex-row items-center mb-2">
           <HatGlasses size={20} color={colorScheme === "dark" ? "#943bc4" : "#7918ad"} />
-          <Text className="text-base font-medium text-text ml-2">
+          <Text className="text-base font-medium ml-2">
             Privacy
           </Text>
         </View>
-        <Text className="text-base leading-6 text-text-muted">
+        <Text muted className="text-base leading-6">
           posolog is built to be privacy focused by design. All data stays on your device — nothing
           is uploaded to a server. There are no accounts, no sign-in, and no analytics or tracking.
           You control your data and can export or import it whenever you want.
@@ -55,7 +56,7 @@ export default function AboutScreen() {
       </View>
 
       <View className="mb-7">
-          <Text className="text-base text-text-muted ml-5 mb-2">
+          <Text muted className="text-base ml-5 mb-2">
             The developers
           </Text>
         <View className="bg-surface rounded-2xl overflow-hidden">
@@ -73,8 +74,8 @@ export default function AboutScreen() {
                   className="w-12 h-12 rounded-full bg-surface"
                 />
                 <View className="flex-1 ml-4">
-                  <Text className="text-lg text-text">{dev.name}</Text>
-                  <Text className="text-sm text-text-muted">{dev.role}</Text>
+                  <Text className="text-lg">{dev.name}</Text>
+                  <Text muted className="text-sm">{dev.role}</Text>
                 </View>
                 <ExternalLink size={20} color={colorScheme === "dark" ? "#71717a" : "#a1a1aa"} />
               </View>

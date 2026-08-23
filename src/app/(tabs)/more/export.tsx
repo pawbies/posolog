@@ -1,9 +1,10 @@
 import Pressable from "@/components/pressable";
+import Text from "@/components/text";
 import { exportDb, exportJson } from "@/lib/transfers/export";
 import * as Sharing from "expo-sharing";
 import { Upload } from "lucide-react-native";
 import { useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
 
 const FORMATS = [
   { name: "JSON", key: "json" },
@@ -62,19 +63,19 @@ export default function ExportScreen() {
         <View className="w-28 h-28 rounded-3xl bg-green-100 dark:bg-green-950 items-center justify-center">
           <Upload size={56} color="#22c55e" />
         </View>
-        <Text className="text-3xl font-semibold text mt-4 text-center">
+        <Text className="text-3xl font-semibold mt-4 text-center">
           Export
         </Text>
       </View>
 
       <View className="bg-surface rounded-2xl p-4 mb-7">
-        <Text className="text-base leading-6 text-text-muted">
+        <Text muted className="text-base leading-6">
           We encourage you to periodically export your data and store it somewhere safe,
           otherwise all your data could be lost if your device gets stolen or you lose it.
         </Text>
       </View>
 
-      <Text className="text-base text-text-muted ml-5 mb-2">
+      <Text muted className="text-base ml-5 mb-2">
         Format
       </Text>
       <View className="flex-row rounded-full bg-surface p-1">
@@ -84,12 +85,9 @@ export default function ExportScreen() {
             onPress={() => setFormat(f.key)}
             accessibilityRole="button"
             accessibilityState={{ selected: format === f.key }}
-            className={`flex-1 items-center rounded-full py-2 ${ format === f.key ? "bg-background" : "" }`}
+            className={`flex-1 items-center rounded-full py-2 ${ format === f.key ? "bg-secondary" : "" }`}
           >
-            <Text className={`text-base
-              ${format === f.key ? "font-semibold text-text": "text-text-muted"}`
-            }
-            >
+            <Text muted={format === f.key} className="text-base">
               {f.name}
             </Text>
           </Pressable>

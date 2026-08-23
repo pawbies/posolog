@@ -1,34 +1,34 @@
 import Pressable from "@/components/pressable";
+import Text from "@/components/text";
 import { useRouter, type Href } from "expo-router";
 import {
-    AreaChart,
-    ArrowLeftRight,
-    Atom,
-    BookOpenText,
-    Boxes,
-    ChartNoAxesCombined,
-    ChartScatter,
-    ChartSpline,
-    ChevronRight,
-    Clock,
-    Droplet,
-    Droplets,
-    FlaskConical,
-    HeartPulse,
-    Magnet,
-    Microscope,
-    Repeat,
-    Scale,
-    Share2,
-    SlidersHorizontal,
-    TestTubeDiagonal,
-    TrendingDown,
-    type LucideIcon
+  AreaChart,
+  ArrowLeftRight,
+  Atom,
+  BookOpenText,
+  Boxes,
+  ChartNoAxesCombined,
+  ChartScatter,
+  ChartSpline,
+  ChevronRight,
+  Clock,
+  Droplet,
+  Droplets,
+  FlaskConical,
+  HeartPulse,
+  Magnet,
+  Microscope,
+  Repeat,
+  Scale,
+  Share2,
+  SlidersHorizontal,
+  TestTubeDiagonal,
+  TrendingDown,
+  type LucideIcon
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
-import { ScrollView, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
 
 type SectionProps = {
   title: string;
@@ -40,7 +40,7 @@ function Section({ title, children }: SectionProps) {
 
   return (
     <View className="mb-7">
-      <Text className="text-base text-text-muted ml-5 mb-2">
+      <Text muted className="text-base ml-5 mb-2">
         {title}
       </Text>
       <View className="bg-surface rounded-2xl overflow-hidden">
@@ -68,7 +68,7 @@ function Row({ icon: Icon, title, href, first = false }: RowProps) {
           size={24}
           color={colorScheme === "dark" ? "#9333ea" : "#a78bfa"}
         />
-        <Text className="flex-1 ml-4 text-lg text-black dark:text-white">{title}</Text>
+        <Text className="flex-1 ml-4 text-lg">{title}</Text>
         <ChevronRight
           size={20}
           color={colorScheme === "dark" ? "#71717a" : "#a1a1aa"}
@@ -79,21 +79,19 @@ function Row({ icon: Icon, title, href, first = false }: RowProps) {
 }
 
 export default function WikiScreen() {
-  const insets = useSafeAreaInsets();
-
   return (
     <ScrollView className="px-4 flex-1 bg-background">
       <View className="items-center pt-10 pb-8">
         <View className="w-28 h-28 rounded-3xl bg-purple-100 dark:bg-violet-100 items-center justify-center">
           <BookOpenText size={56} color="#c026d3" />
         </View>
-        <Text className="text-3xl font-semibold text-text mt-4 text-center">
+        <Text className="text-3xl font-semibold mt-4 text-center">
           Wiki
         </Text>
       </View>
 
       <View className="bg-surface rounded-2xl p-4 mb-7">
-        <Text className="text-base leading-6 text-text-muted">
+        <Text muted className="text-base leading-6">
           We encourage you to read through our wiki pages to learn
           more about how posolog calculates its values and to gain deeper
           insight into pharmacokinetics.
@@ -105,7 +103,7 @@ export default function WikiScreen() {
         <Row icon={TestTubeDiagonal} title="Common terminology" href="/more/wiki/common-terminology" />
       </Section>
 
-      <Text className="text-xl font-semibold text-black dark:text-white mb-3 ml-1">
+      <Text className="text-xl font-semibold mb-3 ml-1">
         Pharmacokinetics
       </Text>
 
@@ -125,7 +123,7 @@ export default function WikiScreen() {
         <Row icon={Repeat} title="Multiple-dose kinetics" href="/more/wiki/pk/ms/multiple-dose-kinetics" />
       </Section>
 
-      <Text className="text-xl font-semibold text-black dark:text-white mb-3 ml-1">
+      <Text className="text-xl font-semibold mb-3 ml-1">
         Pharmacodynamics
       </Text>
 
