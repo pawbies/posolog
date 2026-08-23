@@ -9,11 +9,11 @@
     --color-border: 225 225 230;
     --color-text: 24 24 27;
     --color-text-muted: 113 113 122;
-    --color-primary: 170, 222, 135;
-    --color-secondary: 122, 162, 224;
-    --color-accent: 230, 179, 77;
-    --color-error: 230, 77, 89;
-    --color-success: 77, 230, 105;
+    --color-primary: 95 166 48;
+    --color-secondary: 122 162 224;
+    --color-accent: 230 179 77;
+    --color-error: 230 77 89;
+    --color-success: 77 230 105;
   }
 
   @media (prefers-color-scheme: dark) {
