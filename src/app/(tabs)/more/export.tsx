@@ -109,9 +109,7 @@ export default function ExportScreen() {
             <Text className="text-lg font-semibold text-white">Export</Text>
           </>
         }
-        
       </Pressable>
-      
     </ScrollView>
   );
 }
