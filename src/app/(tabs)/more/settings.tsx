@@ -1,12 +1,13 @@
 import ButtonRow, { ButtonRowProps } from "@/components/settings/button-row";
 import ToggleRow, { ToggleRowProps } from "@/components/settings/toggle-row";
 import Text from "@/components/text";
+import { useOnboarding } from "@/contexts/onboarding";
 import {
   getPreventScreenCaptureSetting,
   setPreventScreenCaptureSetting
 } from "@/lib/settings/security/prevent-screen-capture";
 import * as Linking from "expo-linking";
-import { EyeOff, Languages, Settings } from "lucide-react-native";
+import { DoorOpen, EyeOff, Languages, Settings } from "lucide-react-native";
 import {
   Children,
   cloneElement,
@@ -18,7 +19,6 @@ import {
   type ReactNode
 } from "react";
 import { Alert, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
   title?: string;
@@ -44,11 +44,10 @@ function Section({ title, children }: SectionProps) {
 
 
 export default function SettingsScreen() {
-  const insets = useSafeAreaInsets();
-
   const [preventScreenCaptureToggleState, setPreventScreenCaptureToggleState] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
+  const { completedOnboarding, setCompletedOnboarding } = useOnboarding();
 
 
   useEffect(() => {
@@ -109,6 +108,14 @@ export default function SettingsScreen() {
           description="Change the app's language via the devices settings"
           buttonText="Open Settings"
           onPress={Linking.openSettings}
+        />
+        <ToggleRow
+          icon={DoorOpen}
+          iconColor="#56a5f5"
+          title="Completed onboarding"
+          value={completedOnboarding}
+          onValueChange={() => { setCompletedOnboarding(false); }}
+          disabled={!loaded || busy}
         />
       </Section>
 

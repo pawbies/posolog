@@ -1,6 +1,7 @@
+import Text from "@/components/text";
 import { LucideIcon } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export type ButtonRowProps = {
   icon: LucideIcon;
@@ -29,14 +30,14 @@ export default function ButtonRow({
   return (
     <View
       className={`flex-row items-center py-4 pr-4 pl-4 ${
-        first ? "" : "border-t border-neutral-200 dark:border-neutral-800"
+        first ? "" : "border-t border-border"
       } ${disabled ? "opacity-50" : ""}`}
     >
       <Icon size={24} color={iconColor ?? accent} />
       <View className="flex-1 ml-4">
-        <Text className="text-lg text-black dark:text-white">{title}</Text>
+        <Text className="text-lg">{title}</Text>
         {description ? (
-          <Text className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+          <Text muted className="text-sm mt-0.5">
             {description}
           </Text>
         ) : null}

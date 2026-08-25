@@ -48,7 +48,7 @@ export default function OnboardingScreen() {
         >
           {loading ?
             <ActivityIndicator size="small" color="#ffffff" /> :
-            <Text className="text-xl font-semibold text-white">Complete onboarding</Text>
+            <Text className="text-xl font-semibold text-white">Continue to the app</Text>
           }
         </Pressable>
 
