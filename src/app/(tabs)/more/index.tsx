@@ -2,16 +2,16 @@ import Pressable from "@/components/pressable";
 import Text from "@/components/text";
 import { useRouter, type Href } from "expo-router";
 import {
+  BookOpenText,
   Calculator,
   ChartColumn,
   ChevronRight,
-  CircleQuestionMark,
   Download,
   Heart,
   Info,
   Settings,
   Upload,
-  type LucideIcon,
+  type LucideIcon
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
@@ -92,7 +92,7 @@ export default function MoreScreen() {
 
       <Section title="App">
         <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
-        <Row icon={CircleQuestionMark} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
+        <Row icon={BookOpenText} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
         <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
         <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
       </Section>

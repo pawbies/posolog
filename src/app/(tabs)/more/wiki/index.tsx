@@ -1,6 +1,6 @@
-import Pressable from "@/components/pressable";
 import Text from "@/components/text";
-import { useRouter, type Href } from "expo-router";
+import { WikiRow as Row } from "@/components/wiki/wiki-row";
+import { WikiSection as Section } from "@/components/wiki/wiki-section";
 import {
   AreaChart,
   ArrowLeftRight,
@@ -10,7 +10,6 @@ import {
   ChartNoAxesCombined,
   ChartScatter,
   ChartSpline,
-  ChevronRight,
   Clock,
   Droplet,
   Droplets,
@@ -23,60 +22,9 @@ import {
   Share2,
   SlidersHorizontal,
   TestTubeDiagonal,
-  TrendingDown,
-  type LucideIcon
+  TrendingDown
 } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
-import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 import { ScrollView, View } from "react-native";
-
-type SectionProps = {
-  title: string;
-  children: ReactNode;
-};
-
-function Section({ title, children }: SectionProps) {
-  const rows = Children.toArray(children).filter(isValidElement) as ReactElement<RowProps>[];
-
-  return (
-    <View className="mb-7">
-      <Text muted className="text-base ml-5 mb-2">
-        {title}
-      </Text>
-      <View className="bg-surface rounded-2xl overflow-hidden">
-        {rows.map((child, i) => cloneElement(child, { first: i === 0 }))}
-      </View>
-    </View>
-  );
-}
-
-type RowProps = {
-  icon: LucideIcon;
-  title: string;
-  href: Href;
-  first?: boolean;
-};
-
-function Row({ icon: Icon, title, href, first = false }: RowProps) {
-  const router = useRouter();
-  const { colorScheme } = useColorScheme();
-
-  return (
-    <Pressable onPress={() => router.push(href)}>
-      <View className={`ml-4 py-4 pr-4 flex-row items-center ${ first ? "" : "border-t border-border" }`}>
-        <Icon
-          size={24}
-          color={colorScheme === "dark" ? "#9333ea" : "#a78bfa"}
-        />
-        <Text className="flex-1 ml-4 text-lg">{title}</Text>
-        <ChevronRight
-          size={20}
-          color={colorScheme === "dark" ? "#71717a" : "#a1a1aa"}
-        />
-      </View>
-    </Pressable>
-  );
-}
 
 export default function WikiScreen() {
   return (
