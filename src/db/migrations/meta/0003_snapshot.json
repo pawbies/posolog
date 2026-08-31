@@ -1,0 +1,1276 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "bc1b5a2f-3626-4b88-82fa-a2754911a9e8",
+  "prevId": "ad015088-488d-4c4d-9117-6afb9e4edcfe",
+  "tables": {
+    "absorption_models": {
+      "name": "absorption_models",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "strengthIngredientId": {
+          "name": "strengthIngredientId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "fPercent": {
+          "name": "fPercent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 100
+        },
+        "isDefault": {
+          "name": "isDefault",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_abs_si": {
+          "name": "idx_abs_si",
+          "columns": [
+            "strengthIngredientId"
+          ],
+          "isUnique": false
+        },
+        "idx_abs_default": {
+          "name": "idx_abs_default",
+          "columns": [
+            "strengthIngredientId"
+          ],
+          "isUnique": true,
+          "where": "\"absorption_models\".\"isDefault\" = 1"
+        }
+      },
+      "foreignKeys": {
+        "absorption_models_strengthIngredientId_strength_ingredients_id_fk": {
+          "name": "absorption_models_strengthIngredientId_strength_ingredients_id_fk",
+          "tableFrom": "absorption_models",
+          "tableTo": "strength_ingredients",
+          "columnsFrom": [
+            "strengthIngredientId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "abs_f": {
+          "name": "abs_f",
+          "value": "\"absorption_models\".\"fPercent\" > 0 AND \"absorption_models\".\"fPercent\" <= 100"
+        }
+      }
+    },
+    "absorption_phases": {
+      "name": "absorption_phases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "absorptionModelId": {
+          "name": "absorptionModelId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fractionPercent": {
+          "name": "fractionPercent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 100
+        },
+        "kA": {
+          "name": "kA",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tLag": {
+          "name": "tLag",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "inputDuration": {
+          "name": "inputDuration",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_phase_pos": {
+          "name": "idx_phase_pos",
+          "columns": [
+            "absorptionModelId",
+            "position"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "absorption_phases_absorptionModelId_absorption_models_id_fk": {
+          "name": "absorption_phases_absorptionModelId_absorption_models_id_fk",
+          "tableFrom": "absorption_phases",
+          "tableTo": "absorption_models",
+          "columnsFrom": [
+            "absorptionModelId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "phase_fraction": {
+          "name": "phase_fraction",
+          "value": "\"absorption_phases\".\"fractionPercent\" > 0 AND \"absorption_phases\".\"fractionPercent\" <= 100"
+        },
+        "phase_lag": {
+          "name": "phase_lag",
+          "value": "\"absorption_phases\".\"tLag\" >= 0"
+        },
+        "phase_params": {
+          "name": "phase_params",
+          "value": "\n    (\"absorption_phases\".\"kind\" = 'first_order' AND \"absorption_phases\".\"kA\" IS NOT NULL AND \"absorption_phases\".\"kA\" > 0 AND \"absorption_phases\".\"inputDuration\" IS NULL)\n OR (\"absorption_phases\".\"kind\" = 'zero_order' AND \"absorption_phases\".\"inputDuration\" IS NOT NULL AND \"absorption_phases\".\"inputDuration\" >= 0 AND \"absorption_phases\".\"kA\" IS NULL)"
+        }
+      }
+    },
+    "blood_pressure_readings": {
+      "name": "blood_pressure_readings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "systolic": {
+          "name": "systolic",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "diastolic": {
+          "name": "diastolic",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pulse": {
+          "name": "pulse",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "readingAt": {
+          "name": "readingAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_bp_at": {
+          "name": "idx_bp_at",
+          "columns": [
+            "readingAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "disposition_models": {
+      "name": "disposition_models",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "ingredientId": {
+          "name": "ingredientId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "compartmentModel": {
+          "name": "compartmentModel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'one'"
+        },
+        "parameterBasis": {
+          "name": "parameterBasis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'systemic'"
+        },
+        "fBasisPercent": {
+          "name": "fBasisPercent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "v1": {
+          "name": "v1",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "v2": {
+          "name": "v2",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "v3": {
+          "name": "v3",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "cl": {
+          "name": "cl",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "q2": {
+          "name": "q2",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "q3": {
+          "name": "q3",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "isDefault": {
+          "name": "isDefault",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_disp_ing": {
+          "name": "idx_disp_ing",
+          "columns": [
+            "ingredientId"
+          ],
+          "isUnique": false
+        },
+        "idx_disp_default": {
+          "name": "idx_disp_default",
+          "columns": [
+            "ingredientId"
+          ],
+          "isUnique": true,
+          "where": "\"disposition_models\".\"isDefault\" = 1"
+        }
+      },
+      "foreignKeys": {
+        "disposition_models_ingredientId_ingredients_id_fk": {
+          "name": "disposition_models_ingredientId_ingredients_id_fk",
+          "tableFrom": "disposition_models",
+          "tableTo": "ingredients",
+          "columnsFrom": [
+            "ingredientId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "disp_shape": {
+          "name": "disp_shape",
+          "value": "\n    (\"disposition_models\".\"compartmentModel\" = 'one'   AND \"disposition_models\".\"v2\" IS NULL AND \"disposition_models\".\"q2\" IS NULL AND \"disposition_models\".\"v3\" IS NULL AND \"disposition_models\".\"q3\" IS NULL)\n OR (\"disposition_models\".\"compartmentModel\" = 'two'   AND \"disposition_models\".\"v2\" IS NOT NULL AND \"disposition_models\".\"q2\" IS NOT NULL AND \"disposition_models\".\"v3\" IS NULL AND \"disposition_models\".\"q3\" IS NULL)\n OR (\"disposition_models\".\"compartmentModel\" = 'three' AND \"disposition_models\".\"v2\" IS NOT NULL AND \"disposition_models\".\"q2\" IS NOT NULL AND \"disposition_models\".\"v3\" IS NOT NULL AND \"disposition_models\".\"q3\" IS NOT NULL)"
+        },
+        "disp_fbasis": {
+          "name": "disp_fbasis",
+          "value": "\"disposition_models\".\"fBasisPercent\" IS NULL OR (\"disposition_models\".\"fBasisPercent\" > 0 AND \"disposition_models\".\"fBasisPercent\" <= 100)"
+        }
+      }
+    },
+    "doses": {
+      "name": "doses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "strengthId": {
+          "name": "strengthId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "regimenStrengthId": {
+          "name": "regimenStrengthId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "packId": {
+          "name": "packId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "takenAt": {
+          "name": "takenAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "scheduledFor": {
+          "name": "scheduledFor",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_doses_taken": {
+          "name": "idx_doses_taken",
+          "columns": [
+            "takenAt"
+          ],
+          "isUnique": false
+        },
+        "idx_doses_sched": {
+          "name": "idx_doses_sched",
+          "columns": [
+            "regimenStrengthId",
+            "scheduledFor"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "doses_strengthId_strengths_id_fk": {
+          "name": "doses_strengthId_strengths_id_fk",
+          "tableFrom": "doses",
+          "tableTo": "strengths",
+          "columnsFrom": [
+            "strengthId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "doses_regimenStrengthId_regimen_strengths_id_fk": {
+          "name": "doses_regimenStrengthId_regimen_strengths_id_fk",
+          "tableFrom": "doses",
+          "tableTo": "regimen_strengths",
+          "columnsFrom": [
+            "regimenStrengthId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "doses_packId_packs_id_fk": {
+          "name": "doses_packId_packs_id_fk",
+          "tableFrom": "doses",
+          "tableTo": "packs",
+          "columnsFrom": [
+            "packId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "dose_taken": {
+          "name": "dose_taken",
+          "value": "\"doses\".\"status\" <> 'taken' OR \"doses\".\"takenAt\" IS NOT NULL"
+        }
+      }
+    },
+    "ingredients": {
+      "name": "ingredients",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "molarMass": {
+          "name": "molarMass",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "parentIngredientId": {
+          "name": "parentIngredientId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "maxPerDay": {
+          "name": "maxPerDay",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "therapeuticRangeMin": {
+          "name": "therapeuticRangeMin",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "therapeuticRangeMax": {
+          "name": "therapeuticRangeMax",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "toxicThreshold": {
+          "name": "toxicThreshold",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_ingredients_name": {
+          "name": "idx_ingredients_name",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "ingredients_parentIngredientId_ingredients_id_fk": {
+          "name": "ingredients_parentIngredientId_ingredients_id_fk",
+          "tableFrom": "ingredients",
+          "tableTo": "ingredients",
+          "columnsFrom": [
+            "parentIngredientId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "ing_range": {
+          "name": "ing_range",
+          "value": "\"ingredients\".\"therapeuticRangeMin\" IS NULL OR \"ingredients\".\"therapeuticRangeMax\" IS NULL\n    OR \"ingredients\".\"therapeuticRangeMin\" <= \"ingredients\".\"therapeuticRangeMax\""
+        }
+      }
+    },
+    "medications": {
+      "name": "medications",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "color": {
+          "name": "color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'#E8833A'"
+        },
+        "form": {
+          "name": "form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "route": {
+          "name": "route",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "pack_adjustments": {
+      "name": "pack_adjustments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "packId": {
+          "name": "packId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adjustmentAt": {
+          "name": "adjustmentAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_adj_pack": {
+          "name": "idx_adj_pack",
+          "columns": [
+            "packId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "pack_adjustments_packId_packs_id_fk": {
+          "name": "pack_adjustments_packId_packs_id_fk",
+          "tableFrom": "pack_adjustments",
+          "tableTo": "packs",
+          "columnsFrom": [
+            "packId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "packs": {
+      "name": "packs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "strengthId": {
+          "name": "strengthId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "acquiredAt": {
+          "name": "acquiredAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "openedAt": {
+          "name": "openedAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_packs_strength": {
+          "name": "idx_packs_strength",
+          "columns": [
+            "strengthId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "packs_strengthId_strengths_id_fk": {
+          "name": "packs_strengthId_strengths_id_fk",
+          "tableFrom": "packs",
+          "tableTo": "strengths",
+          "columnsFrom": [
+            "strengthId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "regimen_strengths": {
+      "name": "regimen_strengths",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "regimenId": {
+          "name": "regimenId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "strengthId": {
+          "name": "strengthId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rrule": {
+          "name": "rrule",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "dtstart": {
+          "name": "dtstart",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "timesOfDay": {
+          "name": "timesOfDay",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "startsOn": {
+          "name": "startsOn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "endsOn": {
+          "name": "endsOn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "isPrn": {
+          "name": "isPrn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_rs_regimen": {
+          "name": "idx_rs_regimen",
+          "columns": [
+            "regimenId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "regimen_strengths_regimenId_regimens_id_fk": {
+          "name": "regimen_strengths_regimenId_regimens_id_fk",
+          "tableFrom": "regimen_strengths",
+          "tableTo": "regimens",
+          "columnsFrom": [
+            "regimenId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "regimen_strengths_strengthId_strengths_id_fk": {
+          "name": "regimen_strengths_strengthId_strengths_id_fk",
+          "tableFrom": "regimen_strengths",
+          "tableTo": "strengths",
+          "columnsFrom": [
+            "strengthId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "regimens": {
+      "name": "regimens",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "timeZone": {
+          "name": "timeZone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'Europe/Vienna'"
+        },
+        "startDate": {
+          "name": "startDate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "endDate": {
+          "name": "endDate",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "strength_ingredients": {
+      "name": "strength_ingredients",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "strengthId": {
+          "name": "strengthId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ingredientId": {
+          "name": "ingredientId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amountBase": {
+          "name": "amountBase",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "displayAmount": {
+          "name": "displayAmount",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "displayUnit": {
+          "name": "displayUnit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "saltFactor": {
+          "name": "saltFactor",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_si_pair": {
+          "name": "idx_si_pair",
+          "columns": [
+            "strengthId",
+            "ingredientId"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "strength_ingredients_strengthId_strengths_id_fk": {
+          "name": "strength_ingredients_strengthId_strengths_id_fk",
+          "tableFrom": "strength_ingredients",
+          "tableTo": "strengths",
+          "columnsFrom": [
+            "strengthId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "strength_ingredients_ingredientId_ingredients_id_fk": {
+          "name": "strength_ingredients_ingredientId_ingredients_id_fk",
+          "tableFrom": "strength_ingredients",
+          "tableTo": "ingredients",
+          "columnsFrom": [
+            "ingredientId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "strengths": {
+      "name": "strengths",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "medicationId": {
+          "name": "medicationId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unitInUse": {
+          "name": "unitInUse",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'tablet'"
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idx_strengths_med": {
+          "name": "idx_strengths_med",
+          "columns": [
+            "medicationId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "strengths_medicationId_medications_id_fk": {
+          "name": "strengths_medicationId_medications_id_fk",
+          "tableFrom": "strengths",
+          "tableTo": "medications",
+          "columnsFrom": [
+            "medicationId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {
+      "\"blood_pressure_readings\".\"reading_at\"": "\"blood_pressure_readings\".\"readingAt\"",
+      "\"blood_pressure_readings\".\"created_at\"": "\"blood_pressure_readings\".\"createdAt\""
+    }
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
