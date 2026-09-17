@@ -1,4 +1,5 @@
 import NumberField from "@/components/number-field";
+import Text from "@/components/text";
 import ZoneChart, { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
 import { bloodPressureReadings } from "@/db/schema";
 import { BottomSheet, Host, RNHostView } from "@expo/ui";
@@ -8,7 +9,6 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Pressable,
-  Text,
   useWindowDimensions,
   View
 } from "react-native";
@@ -127,13 +127,13 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
                 paddingBottom: insets.bottom + 20
               }}
             >
-              <Text className="text-2xl font-semibold text-black dark:text-white mb-4">
+              <Text className="text-2xl font-semibold mb-4">
                 {title}
               </Text>
 
-              <View className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 py-3 mb-5">
+              <View className="rounded-2xl border border-border bg-surface py-3 mb-5">
                 <View className="flex-row items-center justify-between px-4 mb-1">
-                  <Text className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
+                  <Text muted className="text-xs font-semibold">
                     SYSTOLIC / DIASTOLIC
                   </Text>
                   {zone && (
@@ -187,18 +187,18 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
               />
 
               <View className="mb-4">
-                <Text className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 mb-1.5">
+                <Text muted className="text-xs font-semibold mb-1.5">
                   Taken at
                 </Text>
                 <Pressable
                   onPress={() => setShowingDateTimeModal(true)}
                   accessibilityRole="button"
-                  className="flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 py-3 active:opacity-60"
+                  className="flex-row items-center rounded-xl border border-border bg-surface py-3 active:opacity-60"
                 >
                   <View className="pl-4">
                     <CalendarClock size={18} color="#a3a3a3" />
                   </View>
-                  <Text className="flex-1 px-3 text-base text-black dark:text-white">
+                  <Text className="flex-1 px-3 text-base">
                     {formatTakenAt(readingAt)}
                   </Text>
                   <Text className="pr-4 text-sm text-rose-500">
