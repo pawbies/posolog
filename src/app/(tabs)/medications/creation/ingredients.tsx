@@ -8,7 +8,7 @@ export default function IngredientsScreen() {
   const router = useRouter();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-background">
       <View className="px-4 flex-1">
         <Header currentStep={2} />
 

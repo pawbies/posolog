@@ -61,7 +61,7 @@ export default function RootLayout() {
 
   if (migrationError) {
     return (
-      <View className="flex-1 items-center justify-center bg-white dark:bg-black px-6">
+      <View className="flex-1 items-center justify-center bg-background px-6">
         <Text className="text-black dark:text-white text-center">
           Database migration failed: {migrationError.message}
         </Text>

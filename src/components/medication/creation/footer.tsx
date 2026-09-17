@@ -27,7 +27,7 @@ export default function Footer({
 
   return (
     <View
-      className="flex-row items-center px-4 bg-white dark:bg-black"
+      className="flex-row items-center px-4 bg-background"
       style={{ paddingBottom: insets.bottom + 16, paddingTop: 16 }}
     >
       {showBack ? (

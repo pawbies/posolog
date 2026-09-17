@@ -17,7 +17,7 @@ export default function HomeScreen() {
   });
 
   return (
-    <ScrollView className="px-4 flex-1 bg-background"contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16 }}>
+    <ScrollView className="px-4 flex-1 bg-background" contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16 }}>
       <Text className="text-xl font-semibold">{todaysDate}</Text>
 
       <Chart />

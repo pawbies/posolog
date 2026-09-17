@@ -7,7 +7,7 @@ export default function NonCompartmentAnalysisScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-background">
       <ScrollView
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
         className="px-4"

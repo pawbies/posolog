@@ -48,7 +48,7 @@ export default function BloodPressureScreen() {
   }, [error]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
           title: "Blood pressure",
