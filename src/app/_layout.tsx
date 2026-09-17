@@ -12,7 +12,7 @@ import { useColorScheme } from "nativewind";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-// import { KeyboardProvider } from "react-native-keyboard-controller";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -72,7 +72,7 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    // <KeyboardProvider>
+    <KeyboardProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <OnboardingProvider value={onboarding}>
@@ -89,6 +89,6 @@ export default function RootLayout() {
         </ThemeProvider>
         <StatusBar style="auto" />
       </GestureHandlerRootView>
-    // </KeyboardProvider>
+    </KeyboardProvider>
   )
 }

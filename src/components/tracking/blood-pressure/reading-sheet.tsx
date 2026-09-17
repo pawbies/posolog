@@ -7,14 +7,12 @@ import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Keyboard,
-  Platform,
   Pressable,
-  ScrollView,
   Text,
   useWindowDimensions,
   View
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -36,10 +34,6 @@ type Props = {
   onDismiss: () => void;
 };
 
-type PickerStep = "date" | "time" | null;
-
-const ANDROID = Platform.OS === "android";
-
 function formatTakenAt(date: Date) {
   return date.toLocaleString(undefined, {
     day: "numeric",
@@ -59,33 +53,10 @@ function validate(systolic: number | undefined, diastolic: number | undefined, p
   return null;
 }
 
-function useKeyboardHeight() {
-  const { height } = useWindowDimensions();
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  useEffect(() => {
-    const ios = Platform.OS === "ios";
-    const shown = Keyboard.addListener(
-      ios ? "keyboardWillChangeFrame" : "keyboardDidShow",
-      (event) => setKeyboardHeight(Math.max(0, height - event.endCoordinates.screenY)),
-    );
-    const hidden = Keyboard.addListener(ios ? "keyboardWillHide" : "keyboardDidHide", () =>
-      setKeyboardHeight(0),
-    );
-    return () => {
-      shown.remove();
-      hidden.remove();
-    };
-  }, [height]);
-
-  return keyboardHeight;
-}
-
 export default function ReadingSheet({ isPresented, title, submitLabel, initial, onSubmit, onDismiss,}: Props) {
   const insets = useSafeAreaInsets();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const { colorScheme } = useColorScheme();
-  const keyboardHeight = useKeyboardHeight();
 
   const [systolic, setSystolic] = useState<number | undefined>();
   const [diastolic, setDiastolic] = useState<number | undefined>();
@@ -139,21 +110,21 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
   const canSave = systolic !== null && diastolic !== null && !saving;
 
   const sheetWidth = width - 32;
-  const sheetHeight = height - insets.top - 24 - keyboardHeight;
   const chartWidth = Math.min(sheetWidth - 40, 380);
 
   return (
     <Host>
       <BottomSheet isPresented={isPresented} onDismiss={close} snapPoints={["full"]}>
         <RNHostView>
-          <View style={{ width: sheetWidth, height: sheetHeight }}>
-            <ScrollView
+          <View style={{ width: sheetWidth }}>
+            <KeyboardAwareScrollView
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
+              bottomOffset={16}
               contentContainerStyle={{
                 paddingHorizontal: 20,
                 paddingTop: 8,
-                paddingBottom: insets.bottom + 20,
+                paddingBottom: insets.bottom + 20
               }}
             >
               <Text className="text-2xl font-semibold text-black dark:text-white mb-4">
@@ -269,7 +240,7 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
                   : <Text className="text-center font-semibold text-white">{submitLabel}</Text>}
                 </Pressable>
               </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
           </View>
         </RNHostView>
       </BottomSheet>
