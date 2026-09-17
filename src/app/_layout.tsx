@@ -12,6 +12,7 @@ import { useColorScheme } from "nativewind";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+// import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -71,21 +72,23 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <OnboardingProvider value={onboarding}>
-          <Stack>
-            <Stack.Protected guard={completedOnboardingState}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack.Protected>
-            <Stack.Protected guard={!completedOnboardingState}>
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-            </Stack.Protected>
-            <Stack.Screen name="legal" options={{ headerShown: false }} />
-          </Stack>
-        </OnboardingProvider>
-      </ThemeProvider>
-      <StatusBar style="auto" />
-    </GestureHandlerRootView>
+    // <KeyboardProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <OnboardingProvider value={onboarding}>
+            <Stack>
+              <Stack.Protected guard={completedOnboardingState}>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Protected guard={!completedOnboardingState}>
+                <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              </Stack.Protected>
+              <Stack.Screen name="legal" options={{ headerShown: false }} />
+            </Stack>
+          </OnboardingProvider>
+        </ThemeProvider>
+        <StatusBar style="auto" />
+      </GestureHandlerRootView>
+    // </KeyboardProvider>
   )
 }

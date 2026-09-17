@@ -1,10 +1,10 @@
+import NumberField from "@/components/number-field";
 import ZoneChart, { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
 import { bloodPressureReadings } from "@/db/schema";
 import { BottomSheet, Host, RNHostView } from "@expo/ui";
-import { DateTimePicker } from "@expo/ui/community/datetime-picker";
 import { ArrowDown, ArrowUp, CalendarClock, HeartPulse } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
@@ -12,10 +12,10 @@ import {
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   useWindowDimensions,
   View
 } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Reading = typeof bloodPressureReadings.$inferSelect;
@@ -23,7 +23,7 @@ type Reading = typeof bloodPressureReadings.$inferSelect;
 export type ReadingDraft = {
   systolic: number;
   diastolic: number;
-  pulse: number | null;
+  pulse: number | undefined;
   readingAt: Date;
 };
 
@@ -31,24 +31,14 @@ type Props = {
   isPresented: boolean;
   title: string;
   submitLabel: string;
-  initial?: Reading | null;
+  initial?: Reading | undefined;
   onSubmit: (draft: ReadingDraft) => Promise<void>;
   onDismiss: () => void;
-};
-
-type FieldProps = {
-  icon: ReactNode;
-  label: string;
-  placeholder: string;
-  unit: string;
-  value: string;
-  onChangeText: (text: string) => void;
 };
 
 type PickerStep = "date" | "time" | null;
 
 const ANDROID = Platform.OS === "android";
-const EMPTY = { systolic: "", diastolic: "", pulse: "" };
 
 function formatTakenAt(date: Date) {
   return date.toLocaleString(undefined, {
@@ -59,17 +49,13 @@ function formatTakenAt(date: Date) {
   });
 }
 
-function toNumber(value: string) {
-  return value === "" ? null : Number.parseInt(value, 10);
-}
-
-function validate(systolic: number | null, diastolic: number | null, pulse: number | null) {
-  if (systolic === null) return "Systolic is required.";
+function validate(systolic: number | undefined, diastolic: number | undefined, pulse: number | undefined) {
+  if (systolic === undefined) return "Systolic is required.";
   if (systolic < 50 || systolic > 260) return "Systolic must be between 50 and 260.";
-  if (diastolic === null) return "Diastolic is required.";
+  if (diastolic === undefined) return "Diastolic is required.";
   if (diastolic < 30 || diastolic > 200) return "Diastolic must be between 30 and 200.";
   if (diastolic >= systolic) return "Diastolic must be lower than systolic.";
-  if (pulse !== null && (pulse < 25 || pulse > 250)) return "Pulse must be between 25 and 250.";
+  if (pulse !== undefined && (pulse < 25 || pulse > 250)) return "Pulse must be between 25 and 250.";
   return null;
 }
 
@@ -95,86 +81,46 @@ function useKeyboardHeight() {
   return keyboardHeight;
 }
 
-function NumberField({ icon, label, placeholder, unit, value, onChangeText }: FieldProps) {
-  return (
-    <View className="mb-4">
-      <Text className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 mb-1.5">
-        {label}
-      </Text>
-      <View className="flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900">
-        <View className="pl-4">{icon}</View>
-        <TextInput
-          value={value}
-          onChangeText={(text) => onChangeText(text.replace(/[^0-9]/g, ""))}
-          placeholder={placeholder}
-          placeholderTextColor="#a3a3a3"
-          keyboardType="number-pad"
-          maxLength={3}
-          className="flex-1 px-3 py-3 text-base text-black dark:text-white"
-        />
-        <Text className="pr-4 text-sm text-neutral-500 dark:text-neutral-400">{unit}</Text>
-      </View>
-    </View>
-  );
-}
-
-export default function ReadingSheet({
-  isPresented,
-  title,
-  submitLabel,
-  initial,
-  onSubmit,
-  onDismiss,
-}: Props) {
+export default function ReadingSheet({ isPresented, title, submitLabel, initial, onSubmit, onDismiss,}: Props) {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
   const { colorScheme } = useColorScheme();
-  const dark = colorScheme === "dark";
   const keyboardHeight = useKeyboardHeight();
 
-  const [values, setValues] = useState(EMPTY);
+  const [systolic, setSystolic] = useState<number | undefined>();
+  const [diastolic, setDiastolic] = useState<number | undefined>();
+  const [pulse, setPulse] = useState<number | undefined>();
+
   const [readingAt, setReadingAt] = useState(() => new Date());
-  const [step, setStep] = useState<PickerStep>(null);
+  const [showingDateTimeModal, setShowingDateTimeModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!isPresented) return;
-    setValues(
-      initial ?
-        {
-          systolic: String(initial.systolic),
-          diastolic: String(initial.diastolic),
-          pulse: initial.pulse == null ? "" : String(initial.pulse),
-        }
-      : EMPTY,
-    );
+    setDiastolic(initial ? initial.diastolic : undefined);
+    setSystolic(initial ? initial.systolic : undefined);
+    setPulse(initial && initial.pulse ? initial.pulse : undefined);
     setReadingAt(initial?.readingAt ?? new Date());
-    setStep(null);
+    setShowingDateTimeModal(false);
     setError(null);
   }, [isPresented, initial?.id]);
 
-  const systolic = toNumber(values.systolic);
-  const diastolic = toNumber(values.diastolic);
-  const pulse = toNumber(values.pulse);
-  const zone = systolic !== null && diastolic !== null ? classifyZone(systolic, diastolic) : null;
-
-  const setField = (field: keyof typeof EMPTY) => (text: string) => {
-    setValues((prev) => ({ ...prev, [field]: text }));
-    setError(null);
-  };
+  const zone = systolic !== null && diastolic !== null ? classifyZone(systolic ?? 0, diastolic ?? 0) : null;
 
   const close = () => {
-    setValues(EMPTY);
+    setDiastolic(undefined);
+    setSystolic(undefined);
+    setPulse(undefined);
     setReadingAt(new Date());
-    setStep(null);
+    setShowingDateTimeModal(false);
     setError(null);
     onDismiss();
   };
 
   const save = async () => {
     const message = validate(systolic, diastolic, pulse);
-    if (message !== null || systolic === null || diastolic === null) {
+    if (message !== null || systolic === undefined || diastolic === undefined) {
       setError(message);
       return;
     }
@@ -231,36 +177,42 @@ export default function ReadingSheet({
                     height={Math.round(chartWidth * 0.78)}
                     systolic={systolic}
                     diastolic={diastolic}
-                    axisColor={dark ? "#a3a3a3" : "#737373"}
+                    axisColor={colorScheme === "dark" ? "#a3a3a3" : "#737373"}
                   />
                 </View>
               </View>
 
               <NumberField
-                icon={<ArrowUp size={18} color="#f43f5e" />}
+                icon={ArrowUp}
+                iconColor="#f43f5e"
+                iconSize={18}
                 label="Systolic"
                 placeholder="120"
                 unit="mmHg"
-                value={values.systolic}
-                onChangeText={setField("systolic")}
+                value={systolic?.toString()}
+                onChangeText={(text) => setSystolic(text === "" ? undefined : Number(text))}
               />
 
               <NumberField
-                icon={<ArrowDown size={18} color="#3b82f6" />}
+                icon={ArrowDown}
+                iconColor="#3b82f6"
+                iconSize={18}
                 label="Diastolic"
                 placeholder="80"
                 unit="mmHg"
-                value={values.diastolic}
-                onChangeText={setField("diastolic")}
+                value={diastolic?.toString()}
+                onChangeText={(text) => setDiastolic(text === "" ? undefined : Number(text))}
               />
 
               <NumberField
-                icon={<HeartPulse size={18} color="#a855f7" />}
+                icon={HeartPulse}
+                iconColor="#a855f7"
+                iconSize={18}
                 label="Pulse (optional)"
                 placeholder="70"
                 unit="bpm"
-                value={values.pulse}
-                onChangeText={setField("pulse")}
+                value={pulse?.toString()}
+                onChangeText={(text) => setPulse(text === "" ? undefined : Number(text))}
               />
 
               <View className="mb-4">
@@ -268,9 +220,8 @@ export default function ReadingSheet({
                   Taken at
                 </Text>
                 <Pressable
-                  onPress={() => setStep((prev) => (prev ? null : "date"))}
+                  onPress={() => setShowingDateTimeModal(true)}
                   accessibilityRole="button"
-                  accessibilityState={ANDROID ? undefined : { expanded: step !== null }}
                   className="flex-row items-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 py-3 active:opacity-60"
                 >
                   <View className="pl-4">
@@ -280,56 +231,18 @@ export default function ReadingSheet({
                     {formatTakenAt(readingAt)}
                   </Text>
                   <Text className="pr-4 text-sm text-rose-500">
-                    {step && !ANDROID ? "Done" : "Change"}
+                    Change
                   </Text>
                 </Pressable>
 
-                {step !== null && !ANDROID && (
-                  <DateTimePicker
-                    value={readingAt}
-                    mode="datetime"
-                    display="spinner"
-                    presentation="inline"
-                    maximumDate={new Date()}
-                    accentColor="#f43f5e"
-                    onValueChange={(_, date) => setReadingAt(date)}
-                  />
-                )}
-
-                {ANDROID && step === "date" && (
-                  <DateTimePicker
-                    value={readingAt}
-                    mode="date"
-                    maximumDate={new Date()}
-                    accentColor="#f43f5e"
-                    onValueChange={(_, date) => {
-                      setReadingAt((prev) => {
-                        const next = new Date(prev);
-                        next.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-                        return next;
-                      });
-                      setStep("time");
-                    }}
-                    onDismiss={() => setStep(null)}
-                  />
-                )}
-
-                {ANDROID && step === "time" && (
-                  <DateTimePicker
-                    value={readingAt}
-                    mode="time"
-                    accentColor="#f43f5e"
-                    onValueChange={(_, time) => {
-                      setReadingAt((prev) => {
-                        const next = new Date(prev);
-                        next.setHours(time.getHours(), time.getMinutes(), 0, 0);
-                        return next;
-                      });
-                      setStep(null);
-                    }}
-                    onDismiss={() => setStep(null)}
-                  />
-                )}
+                <DateTimePickerModal
+                  isVisible={showingDateTimeModal}
+                  mode="datetime"
+                  date={readingAt}
+                  onConfirm={(d) => { setReadingAt(d); setShowingDateTimeModal(false); }}
+                  accentColor="#f43f5e"
+                  onCancel={() => setShowingDateTimeModal(false)}
+                />
               </View>
 
               {error && (
