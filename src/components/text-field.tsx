@@ -4,32 +4,31 @@ import { ColorValue, TextInputProps, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 type FieldProps = TextInputProps & {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   iconColor?: ColorValue;
   iconSize?: number;
   label: string;
-  unit?: string;
 };
 
-export default function NumberField({ icon: Icon, iconColor, iconSize, label, unit, onChangeText, ...props }: FieldProps) {
+export default function TextField({ icon: Icon, iconColor, iconSize, label, ...props }: FieldProps) {
   return (
     <View className="mb-4">
       <Text muted className="text-xs font-semibold mb-1.5">
         {label}
       </Text>
       <View className="flex-row items-center rounded-xl border border-border bg-surface">
-        <View className="pl-4">
-          <Icon size={iconSize || 18} color={iconColor} />
-        </View>
+        {Icon ? 
+          <View className="pl-4">
+            <Icon size={iconSize || 18} color={iconColor} />
+          </View>
+          : null
+        }
         <TextInput
-          onChangeText={(text) => onChangeText && onChangeText(text.replace(/[^0-9]/g, ""))}
           placeholderTextColor="#a3a3a3"
-          keyboardType="number-pad"
-          maxLength={3}
+          keyboardType="default"
           className="flex-1 px-3 py-3 text-base text-text"
           {...props}
         />
-        <Text muted className="pr-4 text-sm">{unit}</Text>
       </View>
     </View>
   );
