@@ -2,27 +2,27 @@ import Text from "@/components/text";
 import { Check, LucideIcon } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 
-export type RadioOption = {
+export type RadioOption<T extends string = string> = {
   icon: LucideIcon;
   name: string;
-  value: string;
+  value: T;
 };
 
-type RadioFieldProps = {
+type RadioFieldProps<T extends string> = {
   label: string;
-  options: RadioOption[];
-  selected: RadioOption;
-  onChange: (value: RadioOption) => void;
+  options: RadioOption<T>[];
+  selected: T;
+  onChange: (value: T) => void;
   colorActive: string;
 };
 
-export default function RadioField({
+export default function RadioField<T extends string>({
   label,
   options,
   selected,
   onChange,
   colorActive
-}: RadioFieldProps) {
+}: RadioFieldProps<T>) {
   return (
     <View className="mb-4">
       <Text muted className="text-xs font-semibold mb-1.5">
@@ -30,12 +30,12 @@ export default function RadioField({
       </Text>
       <View accessibilityRole="radiogroup" className="rounded-xl overflow-hidden bg-surface">
         {options.map((option, i) => {
-          const active = option.value === selected.value;
+          const active = option.value === selected;
           const Icon = option.icon;
           return (
             <Pressable
               key={option.value}
-              onPress={() => onChange(option)}
+              onPress={() => onChange(option.value)}
               accessibilityRole="radio"
               accessibilityState={{ selected: active }}
               className={`flex-row items-center gap-3 px-3 py-3 ${

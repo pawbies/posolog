@@ -1,11 +1,22 @@
+// src/app/(tabs)/medications/creation/_layout.tsx
+import { MedicationDraftProvider, useMedicationDraft } from "@/contexts/medication-draft";
 import { Stack, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Alert } from "react-native";
 
 export default function MedicationCreationLayout() {
-  const navigation = useNavigation();
+  return (
+    <MedicationDraftProvider>
+      <CreationStack />
+    </MedicationDraftProvider>
+  );
+}
 
-  usePreventRemove(true, ({ data }) => {
+function CreationStack() {
+  const navigation = useNavigation();
+  const { dirty } = useMedicationDraft();
+
+  usePreventRemove(dirty, ({ data }) => {
     Alert.alert("Discard medication?", "Your progress will be lost.", [
       { text: "Keep editing", style: "cancel" },
       {

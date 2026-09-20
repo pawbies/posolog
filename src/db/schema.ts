@@ -19,8 +19,8 @@ export const medications = sqliteTable("medications", {
   id: integer().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   color: text().notNull().default("#E8833A"),
-  form: text({ enum: ["Tablet", "Capsule", "Patch", "Solution", "Inhaler", "Injection"] }).notNull(),
-  route: text({ enum: ["Oral", "Sublingual", "Transdermal", "IV", "IM", "SC", "Inhaled", "Rectal"] }).notNull(),
+  form: text({ enum: ["capsule", "tablet", "injection", "patch", "gel", "creme", "spray", "inhaler", "suppository", "other"] }).notNull(),
+  route: text({ enum: ["oral", "sublingual", "buccal", "rectal", "iv", "im", "scsq", "transdermal", "inhaled", "nasal", "other"] }).notNull(),
   notes: text(),
   createdAt: createdAt(),
 });
