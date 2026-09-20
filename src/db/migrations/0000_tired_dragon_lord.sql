@@ -1,5 +1,3 @@
-ALTER TABLE `blood_pressure_readings` RENAME COLUMN "reading_at" TO "readingAt";--> statement-breakpoint
-ALTER TABLE `blood_pressure_readings` RENAME COLUMN "created_at" TO "createdAt";--> statement-breakpoint
 CREATE TABLE `absorption_models` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`strengthIngredientId` integer NOT NULL,
@@ -33,6 +31,16 @@ CREATE TABLE `absorption_phases` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `idx_phase_pos` ON `absorption_phases` (`absorptionModelId`,`position`);--> statement-breakpoint
+CREATE TABLE `blood_pressure_readings` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`systolic` integer NOT NULL,
+	`diastolic` integer NOT NULL,
+	`pulse` integer,
+	`readingAt` integer NOT NULL,
+	`createdAt` integer DEFAULT (unixepoch() * 1000) NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `idx_bp_at` ON `blood_pressure_readings` (`readingAt`);--> statement-breakpoint
 CREATE TABLE `disposition_models` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`ingredientId` integer NOT NULL,
@@ -95,6 +103,16 @@ CREATE TABLE `ingredients` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `idx_ingredients_name` ON `ingredients` (`name`);--> statement-breakpoint
+CREATE TABLE `medications` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`name` text NOT NULL,
+	`color` text DEFAULT '#E8833A' NOT NULL,
+	`form` text NOT NULL,
+	`route` text NOT NULL,
+	`notes` text,
+	`createdAt` integer DEFAULT (unixepoch() * 1000) NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE `pack_adjustments` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`packId` integer,
@@ -168,20 +186,4 @@ CREATE TABLE `strengths` (
 	FOREIGN KEY (`medicationId`) REFERENCES `medications`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE INDEX `idx_strengths_med` ON `strengths` (`medicationId`);--> statement-breakpoint
-CREATE INDEX `idx_bp_at` ON `blood_pressure_readings` (`readingAt`);--> statement-breakpoint
-PRAGMA foreign_keys=OFF;--> statement-breakpoint
-CREATE TABLE `__new_medications` (
-	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text NOT NULL,
-	`color` text DEFAULT '#E8833A' NOT NULL,
-	`form` text NOT NULL,
-	`route` text NOT NULL,
-	`notes` text,
-	`createdAt` integer DEFAULT (unixepoch() * 1000) NOT NULL
-);
---> statement-breakpoint
-INSERT INTO `__new_medications`("id", "name", "color", "form", "route", "notes", "createdAt") SELECT "id", "name", "color", "form", "route", "notes", "createdAt" FROM `medications`;--> statement-breakpoint
-DROP TABLE `medications`;--> statement-breakpoint
-ALTER TABLE `__new_medications` RENAME TO `medications`;--> statement-breakpoint
-PRAGMA foreign_keys=ON;
+CREATE INDEX `idx_strengths_med` ON `strengths` (`medicationId`);

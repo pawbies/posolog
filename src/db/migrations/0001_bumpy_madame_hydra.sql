@@ -1,1 +1,0 @@
-ALTER TABLE `blood_pressure_readings` RENAME COLUMN "reading_time" TO "reading_at";

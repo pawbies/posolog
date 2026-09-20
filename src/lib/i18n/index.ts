@@ -8,7 +8,7 @@ import en from './locales/en.json';
 export const resources = { en: { translation: en }, de: { translation: de } } as const;
 export const supportedLangs = Object.keys(resources);
 
-const deviceLang = getLocales()[0].languageCode ?? "en";
+const deviceLang = getLocales()[0]?.languageCode ?? "en";
 
 i18n.use(initReactI18next).init({
     resources,

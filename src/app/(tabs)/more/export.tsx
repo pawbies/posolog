@@ -38,7 +38,7 @@ export default function ExportScreen() {
           dialogTitle: "Export data"
         });
 
-        if (file.exists) file.delete
+        if (file.exists) file.delete()
       } else if (format == "db") {
         const file = await exportDb(`posolog-export-${stamp}.db`);
       
@@ -48,7 +48,7 @@ export default function ExportScreen() {
           dialogTitle: "Export data"
         });
 
-        if (file.exists) file.delete
+        if (file.exists) file.delete()
       }
     } catch {
       Alert.alert("Something went wrong", "Could not export your data.")
