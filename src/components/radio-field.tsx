@@ -28,7 +28,7 @@ export default function RadioField({
       <Text muted className="text-xs font-semibold mb-1.5">
         {label}
       </Text>
-      <View className="rounded-xl overflow-hidden bg-surface">
+      <View accessibilityRole="radiogroup" className="rounded-xl overflow-hidden bg-surface">
         {options.map((option, i) => {
           const active = option.value === selected.value;
           const Icon = option.icon;
@@ -46,7 +46,7 @@ export default function RadioField({
               <Text className={`flex-1 text-sm ${active ? "font-semibold" : ""}`}>
                 {option.name}
               </Text>
-              {active && <Check size={16} color="#0ea5e9" />}
+              {active && <Check size={16} color={colorActive} />}
             </Pressable>
           );
         })}

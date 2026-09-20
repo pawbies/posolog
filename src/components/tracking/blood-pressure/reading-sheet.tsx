@@ -29,7 +29,7 @@ type Props = {
   isPresented: boolean;
   title: string;
   submitLabel: string;
-  initial?: Reading | undefined;
+  initial?: Reading | null;
   onSubmit: (draft: ReadingDraft) => Promise<void>;
   onDismiss: () => void;
 };
@@ -77,7 +77,7 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
     setError(null);
   }, [isPresented, initial?.id]);
 
-  const zone = systolic !== null && diastolic !== null ? classifyZone(systolic ?? 0, diastolic ?? 0) : null;
+  const zone = systolic !== undefined && diastolic !== undefined ? classifyZone(systolic ?? 0, diastolic ?? 0) : null;
 
   const close = () => {
     setDiastolic(undefined);
@@ -107,7 +107,7 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
     }
   };
 
-  const canSave = systolic !== null && diastolic !== null && !saving;
+  const canSave = systolic !== undefined && diastolic !== undefined && !saving;
 
   const sheetWidth = width - 32;
   const chartWidth = Math.min(sheetWidth - 40, 380);

@@ -16,7 +16,7 @@ export default function EditReadingSheet({ isPresented, reading, onDismiss }: Pr
     if (!reading) return;
     await db
       .update(bloodPressureReadings)
-      .set(draft)
+      .set({...draft, pulse: draft.pulse ?? null})
       .where(eq(bloodPressureReadings.id, reading.id));
   };
 
