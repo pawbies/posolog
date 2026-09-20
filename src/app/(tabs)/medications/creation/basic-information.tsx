@@ -50,7 +50,7 @@ export default function BasicInformationScreen() {
 
           <RadioField
             label="Route"
-            onChange={(route) => update({ route: route })}
+            onChange={(route) => update({ route })}
             options={ROUTES}
             selected={draft.route}
             colorActive={draft.color}

@@ -76,7 +76,7 @@ export default function MoreScreen() {
       contentContainerStyle={{ paddingTop: insets.top }}
       className="px-4 flex-1 bg-background"
     >
-      <Text className="text-3xl font-semibold text-black dark:text-white mb-6 ml-1">
+      <Text className="text-3xl font-semibold mb-6 ml-1">
         More
       </Text>
 

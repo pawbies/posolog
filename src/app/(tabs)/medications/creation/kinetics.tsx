@@ -1,11 +1,15 @@
 import Footer from "@/components/medication/creation/footer";
 import Header from "@/components/medication/creation/header";
+import { useMedicationDraft } from "@/contexts/medication-draft";
+import { db } from "@/db/client";
+import { medications } from "@/db/schema";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 
 
 export default function KineticsScreen() {
   const router = useRouter();
+  const { draft, reset } = useMedicationDraft();
 
   return (
     <View className="flex-1 bg-background">
@@ -16,7 +20,20 @@ export default function KineticsScreen() {
         </View>
       </View>
 
-      <Footer onBack={() => router.back()} onNext={() => router.push("/medications")} nextLabel="Finish" />
+      <Footer
+        onBack={() => router.back()}
+        onNext={async () => {
+          await db.insert(medications).values({
+            name: draft.name,
+            color: draft.color,
+            form: draft.form,
+            route: draft.route,
+            notes: draft.notes || null,
+          });
+          reset();
+          router.dismissTo("/medications");
+        }}
+        nextLabel="Finish" />
     </View>
   );
 }

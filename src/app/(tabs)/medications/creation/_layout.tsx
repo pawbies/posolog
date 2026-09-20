@@ -1,4 +1,3 @@
-// src/app/(tabs)/medications/creation/_layout.tsx
 import { MedicationDraftProvider, useMedicationDraft } from "@/contexts/medication-draft";
 import { Stack, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
