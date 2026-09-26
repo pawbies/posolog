@@ -15,6 +15,7 @@ export default function TabsLayout() {
   return (
     <NativeTabs
       tintColor={isDark ? GREEN : GREEN_DARK}
+      iconColor={isDark ? GREEN : GREEN_DARK}
       indicatorColor={isDark ? "#2f4a1e" : GREEN}
       rippleColor={isDark ? "#aade8740" : "#56972b40"}
     >

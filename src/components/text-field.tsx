@@ -26,7 +26,7 @@ export default function TextField({ icon: Icon, iconColor, iconSize, label, ...p
         <TextInput
           placeholderTextColor="#a3a3a3"
           keyboardType="default"
-          className="flex-1 px-3 py-3 text-base text-text"
+          className="flex-1 px-3 py-3 text-[14px] text-text"
           {...props}
         />
       </View>

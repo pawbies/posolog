@@ -4,7 +4,7 @@ import Footer from "@/components/home/footer";
 import Regimen from "@/components/home/regimen";
 import Text from "@/components/text";
 import { useLocales } from "expo-localization";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -17,13 +17,18 @@ export default function HomeScreen() {
   });
 
   return (
-    <ScrollView className="px-4 flex-1 bg-background" contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16 }}>
-      <Text className="text-xl font-semibold">{todaysDate}</Text>
+    <View style={{ paddingTop: insets.top }} className="flex-1 bg-background">
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+        className="px-4 flex-1 bg-background"
+      >
+        <Text className="text-xl font-semibold">{todaysDate}</Text>
 
-      <Chart />
-      <Regimen />
-      <CheckIns />
-      <Footer />
-    </ScrollView>
+        <Chart />
+        <Regimen />
+        <CheckIns />
+        <Footer />
+      </ScrollView>
+    </View>
   );
 }

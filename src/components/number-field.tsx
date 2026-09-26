@@ -26,7 +26,7 @@ export default function NumberField({ icon: Icon, iconColor, iconSize, label, un
           placeholderTextColor="#a3a3a3"
           keyboardType="number-pad"
           maxLength={3}
-          className="flex-1 px-3 py-3 text-base text-text"
+          className="flex-1 px-3 py-3 text-[14px] text-text"
           {...props}
         />
         <Text muted className="pr-4 text-sm">{unit}</Text>

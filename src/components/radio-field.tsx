@@ -43,7 +43,7 @@ export default function RadioField<T extends string>({
               } ${active ? "bg-neutral-200/60 dark:bg-neutral-800" : ""}`}
             >
               <Icon size={18} color={active ? colorActive : "#a3a3a3"} />
-              <Text className={`flex-1 text-sm ${active ? "font-semibold" : ""}`}>
+              <Text className={`flex-1 text-[14px] ${active ? "font-semibold" : ""}`}>
                 {option.name}
               </Text>
               {active && <Check size={16} color={colorActive} />}

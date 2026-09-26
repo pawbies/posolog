@@ -56,6 +56,10 @@
           }
         }
       ],
+      [
+      "expo-build-properties",
+        { "ios": { "enableSceneSupport": true } }
+      ],
       "expo-image",
       "expo-sharing"
     ],
