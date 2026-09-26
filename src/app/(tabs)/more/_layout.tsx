@@ -1,10 +1,9 @@
-import "@/styles/global.css";
 import { Stack } from "expo-router";
 
 export default function MoreLayout() {
   return (
     <Stack screenOptions={{ animation: "default" }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false, title: "More" }} />
       <Stack.Screen name="calculator" options={{ title: "Calculator" }} />
       <Stack.Screen name="statistics" options={{ title: "Statistics" }} />
       <Stack.Screen name="import" options={{ title: "Import" }} />

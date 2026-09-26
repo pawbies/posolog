@@ -13,7 +13,7 @@
     "scheme": "posolog",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
+      "icon": "./assets/posolog.icon",
       "bundleIdentifier": "net.pawbies.posolog"
     },
     "android": {

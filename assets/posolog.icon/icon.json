@@ -1,26 +1,30 @@
 {
+  "features" : [
+    "refractivity"
+  ],
   "fill" : {
-    "automatic-gradient" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
+    "solid" : "display-p3:0.23016,1.00000,0.59779,1.00000"
   },
   "groups" : [
     {
       "layers" : [
         {
-          "image-name" : "expo-symbol 2.svg",
-          "name" : "expo-symbol 2",
+          "image-name" : "android-icon-foreground.png",
+          "name" : "android-icon-foreground",
           "position" : {
             "scale" : 1,
             "translation-in-points" : [
-              1.1008400065293245e-05,
-              -16.046875
+              34,
+              32
             ]
           }
-        },
-        {
-          "image-name" : "grid.png",
-          "name" : "grid"
         }
       ],
+      "refractivity" : {
+        "depth" : 0,
+        "enabled" : true,
+        "strength" : 0.5623046875
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
