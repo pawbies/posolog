@@ -1,4 +1,5 @@
 import Pressable from "@/components/pressable";
+import Screen from "@/components/screen";
 import Text from "@/components/text";
 import { useRouter, type Href } from "expo-router";
 import {
@@ -15,7 +16,7 @@ import {
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type SectionProps = {
@@ -72,31 +73,27 @@ export default function MoreScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingTop: insets.top }} className="flex-1 bg-background">
-      <ScrollView
-        className="px-4 flex-1"
-      >
-        <Text className="text-3xl font-semibold mb-6 ml-1">
-          More
-        </Text>
+    <Screen>
+      <Text className="text-3xl font-semibold mb-6 ml-1">
+        More
+      </Text>
 
-        <Section title="Tools">
-          <Row icon={Calculator} title="Calculator" href="/more/calculator" iconColor="#ef4444" />
-          <Row icon={ChartColumn} title="Statistics" href="/more/statistics" iconColor="#f97316" />
-        </Section>
+      <Section title="Tools">
+        <Row icon={Calculator} title="Calculator" href="/more/calculator" iconColor="#ef4444" />
+        <Row icon={ChartColumn} title="Statistics" href="/more/statistics" iconColor="#f97316" />
+      </Section>
 
-        <Section title="Data">
-          <Row icon={Download} title="Import" href="/more/import" iconColor="#fde047" />
-          <Row icon={Upload} title="Export" href="/more/export" iconColor="#22c55e" />
-        </Section>
+      <Section title="Data">
+        <Row icon={Download} title="Import" href="/more/import" iconColor="#fde047" />
+        <Row icon={Upload} title="Export" href="/more/export" iconColor="#22c55e" />
+      </Section>
 
-        <Section title="App">
-          <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
-          <Row icon={BookOpenText} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
-          <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
-          <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
-        </Section>
-      </ScrollView>
-    </View>
+      <Section title="App">
+        <Row icon={Settings} title="Settings" href="/more/settings" iconColor="#3b82f6" />
+        <Row icon={BookOpenText} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
+        <Row icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
+        <Row icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
+      </Section>
+    </Screen>
   );
 }

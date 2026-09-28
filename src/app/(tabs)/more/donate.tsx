@@ -1,10 +1,11 @@
+import Screen from "@/components/screen";
 import Text from "@/components/text";
 import { Heart } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 export default function DonateScreen() {
   return (
-    <ScrollView className="px-4 flex-1 bg-background">
+    <Screen skipTopInset>
       <View className="items-center pt-10 pb-8">
         <View className="w-28 h-28 rounded-3xl bg-red-100 dark:bg-red-950 items-center justify-center">
           <Heart size={56} color="#ef4444" />
@@ -29,6 +30,6 @@ export default function DonateScreen() {
         Until then, thank you for using posolog. Sharing it with someone who might find it
         useful helps just as much.
       </Text>
-    </ScrollView>
+    </Screen>
   );
 }

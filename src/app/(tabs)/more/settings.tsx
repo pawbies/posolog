@@ -1,3 +1,4 @@
+import Screen from "@/components/screen";
 import ButtonRow, { ButtonRowProps } from "@/components/settings/button-row";
 import ToggleRow, { ToggleRowProps } from "@/components/settings/toggle-row";
 import Text from "@/components/text";
@@ -18,7 +19,7 @@ import {
   type ReactElement,
   type ReactNode
 } from "react";
-import { Alert, ScrollView, View } from "react-native";
+import { Alert, View } from "react-native";
 
 type SectionProps = {
   title?: string;
@@ -90,7 +91,7 @@ export default function SettingsScreen() {
   );
 
   return (
-    <ScrollView className="px-4 flex-1 bg-background">
+    <Screen skipTopInset>
       <View className="items-center pt-10 pb-8">
         <View className="w-28 h-28 rounded-3xl bg-blue-100 dark:bg-blue-950 items-center justify-center">
           <Settings size={56} color="#3b82f6" />
@@ -130,6 +131,6 @@ export default function SettingsScreen() {
           disabled={!loaded || busy}
         />
       </Section>
-    </ScrollView>
+    </Screen>
   );
 }

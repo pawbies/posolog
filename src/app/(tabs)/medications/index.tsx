@@ -1,5 +1,6 @@
 import Fab from "@/components/fab";
 import Medication from "@/components/medication/medication";
+import Screen from "@/components/screen";
 import SearchField from "@/components/search-bar";
 import Text from "@/components/text";
 import { db } from "@/db/client";
@@ -35,7 +36,7 @@ export default function MedicationsScreen() {
   }, [haystack, medications, query]);
   
   return (
-    <View className="flex-1 px-4 bg-background" style={{ paddingTop: insets.top }}>
+    <Screen scrollView={false}>
       <Text className="text-3xl font-semibold mb-6 ml-1">
         Medications
       </Text>
@@ -61,6 +62,6 @@ export default function MedicationsScreen() {
         showsVerticalScrollIndicator={false}
       />
       <Fab onPress={() => router.push("/medications/creation/basic-information") } icon={Plus} label="Add medication" />
-    </View>
+    </Screen>
   );
 }

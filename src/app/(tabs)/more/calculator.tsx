@@ -1,9 +1,10 @@
-import { Text, View } from "react-native";
+import Screen from "@/components/screen";
+import Text from "@/components/text";
 
 export default function CalculatorScreen() {
   return (
-    <View className="flex-1 justify-center items-center bg-background">
-      <Text className="text-3xl text-black dark:text-white">Calculator</Text>
-    </View>
+    <Screen>
+      <Text className="text-3xl">Calculator</Text>
+    </Screen>
   );
 }

@@ -1,10 +1,11 @@
 import Pressable from "@/components/pressable";
+import Screen from "@/components/screen";
 import Text from "@/components/text";
 import { exportDb, exportJson } from "@/lib/transfers/export";
 import * as Sharing from "expo-sharing";
 import { Upload } from "lucide-react-native";
 import { useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, View } from "react-native";
 
 const FORMATS = [
   { name: "JSON", key: "json" },
@@ -58,7 +59,7 @@ export default function ExportScreen() {
   }
 
   return (
-    <ScrollView className="px-4 flex-1 bg-background" >
+    <Screen skipTopInset>
       <View className="items-center pt-10 pb-8">
         <View className="w-28 h-28 rounded-3xl bg-green-100 dark:bg-green-950 items-center justify-center">
           <Upload size={56} color="#22c55e" />
@@ -108,6 +109,6 @@ export default function ExportScreen() {
           </>
         }
       </Pressable>
-    </ScrollView>
+    </Screen>
   );
 }

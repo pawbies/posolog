@@ -1,11 +1,12 @@
 import Pressable from "@/components/pressable";
+import Screen from "@/components/screen";
 import Text from "@/components/text";
 import { Image } from "@/components/ui/image";
 import Constants from "expo-constants";
 import * as WebBrowser from "expo-web-browser";
 import { ExternalLink, HatGlasses } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 const DEVELOPERS = [
   { name: "pawbies", role: "Lead programmer", github: "https://github.com/pawbies", image: require("@/assets/images/developers/pawbies.png") },
@@ -17,7 +18,7 @@ export default function AboutScreen() {
   const { colorScheme } = useColorScheme();
 
   return (
-    <ScrollView className="px-4 flex-1 bg-background">
+    <Screen skipTopInset>
       <View className="items-center pt-10 pb-8">
         <Image
           source={require("@/assets/images/icon.png")}
@@ -83,6 +84,6 @@ export default function AboutScreen() {
           ))}
         </View>
       </View>
-    </ScrollView>
+    </Screen>
   );
 }

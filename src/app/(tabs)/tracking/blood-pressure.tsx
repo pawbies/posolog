@@ -1,3 +1,4 @@
+import Screen from "@/components/screen";
 import AddReadingSheet from "@/components/tracking/blood-pressure/add-reading-sheet";
 import EditReadingSheet from "@/components/tracking/blood-pressure/edit-reading-sheet";
 import Graph from "@/components/tracking/blood-pressure/graph";
@@ -48,7 +49,7 @@ export default function BloodPressureScreen() {
   }, [error]);
 
   return (
-    <View className="flex-1 bg-background">
+    <Screen scrollView={false} skipBottomInset skipTopInset>
       <Stack.Screen
         options={{
           title: "Blood pressure",
@@ -79,7 +80,6 @@ export default function BloodPressureScreen() {
         }
         ItemSeparatorComponent={() => <View className="h-2" />}
         contentContainerStyle={{
-          paddingHorizontal: 16,
           paddingTop: 16,
           paddingBottom: insets.bottom + 24,
         }}
@@ -96,6 +96,6 @@ export default function BloodPressureScreen() {
         reading={editingReading}
         onDismiss={() => setEditingReading(null)}
       />
-    </View>
+    </Screen>
   );
 }
