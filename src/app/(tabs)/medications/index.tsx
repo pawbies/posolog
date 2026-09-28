@@ -10,7 +10,7 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Alert, FlatList, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function MedicationsScreen() {
@@ -46,7 +46,7 @@ export default function MedicationsScreen() {
         data={filtered}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <Medication medication={item} onPress={() => Alert.alert("Not implemented yet", "This will get added soon")} />
+          <Medication medication={item} onPress={() => router.push({ pathname: "/(tabs)/medications/[id]", params: { id: item.id } }) } />
         )}
         ListHeaderComponent={
           <SearchField
