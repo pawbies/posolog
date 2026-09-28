@@ -67,6 +67,7 @@ export default function BasicInformationScreen() {
 
         <Footer
           showBack={false}
+          nextDisabled={!draft.name.trim()}
           onNext={() => router.push("/medications/creation/ingredients")}
         />
       </ScrollView>
