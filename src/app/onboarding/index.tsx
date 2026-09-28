@@ -5,7 +5,7 @@ import { Link } from "@/components/ui/link";
 import { useOnboarding } from "@/contexts/onboarding";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function OnboardingScreen() {
@@ -16,9 +16,14 @@ export default function OnboardingScreen() {
   
   const handle = async () => {
     setLoading(true);
-    await setCompletedOnboarding(true);
-    setLoading(false);
-    router.replace("/");
+    try {
+      await setCompletedOnboarding(true);
+      router.replace("/");
+    } catch {
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
