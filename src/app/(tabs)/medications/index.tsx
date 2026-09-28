@@ -5,7 +5,7 @@ import SearchField from "@/components/search-bar";
 import Text from "@/components/text";
 import { db } from "@/db/client";
 import { medications as medicationTable } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
@@ -18,7 +18,7 @@ export default function MedicationsScreen() {
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState("");
   const { data: medications } = useLiveQuery(
-    db.select().from(medicationTable).orderBy(desc(medicationTable.name))
+    db.select().from(medicationTable).orderBy(asc(medicationTable.name))
   );
 
   const haystack = useMemo(
