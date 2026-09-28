@@ -4,12 +4,37 @@ import { useMedicationDraft } from "@/contexts/medication-draft";
 import { db } from "@/db/client";
 import { medications } from "@/db/schema";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { useRef, useState } from "react";
+import { Alert, View } from "react-native";
 
 
 export default function KineticsScreen() {
   const router = useRouter();
   const { draft, reset } = useMedicationDraft();
+  const savingRef = useRef(false);
+  const [saving, setSaving] = useState(false);
+
+  const save = async() => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+
+    try {
+      await db.insert(medications).values({
+        name: draft.name.trim(),
+        color: draft.color,
+        form: draft.form,
+        route: draft.route,
+        notes: draft.notes || null,
+      });
+      reset();
+      router.dismissTo("/medications");
+    } catch {
+      Alert.alert("Error", "Could not save the medication.");
+      savingRef.current = false;
+      setSaving(false);
+    }
+  }
 
   return (
     <View className="flex-1 bg-background">
@@ -22,17 +47,8 @@ export default function KineticsScreen() {
 
       <Footer
         onBack={() => router.back()}
-        onNext={async () => {
-          await db.insert(medications).values({
-            name: draft.name,
-            color: draft.color,
-            form: draft.form,
-            route: draft.route,
-            notes: draft.notes || null,
-          });
-          reset();
-          router.dismissTo("/medications");
-        }}
+        onNext={save}
+        nextDisabled={saving}
         nextLabel="Finish" />
     </View>
   );
