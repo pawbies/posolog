@@ -1,9 +1,14 @@
 {
-    "tabs": {
-        "home": "Home",
-        "timeline": "Timeline",
-        "medications": "Medications",
-        "tracking": "Tracking",
-        "more": "More"
-    }
+  "tabs": {
+    "home": "Home",
+    "timeline": "Timeline",
+    "medications": "Medications",
+    "tracking": "Tracking",
+    "more": "More"
+  },
+
+  "onboarding": {
+    "continue": "Continue to the app",
+    "consent": "By completing the onboarding you agree and consent to our <tos>Terms of Service</tos> and <pp>Privacy Policy</pp>."
+  }
 }

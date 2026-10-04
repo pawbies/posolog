@@ -1,9 +1,14 @@
 {
-    "tabs": {
-        "home": "Start",
-        "timeline": "Verlauf",
-        "medications": "Medikamente",
-        "tracking": "Entwicklungen",
-        "more": "Mehr"
-    }
+  "tabs": {
+    "home": "Start",
+    "timeline": "Verlauf",
+    "medications": "Medikamente",
+    "tracking": "Entwicklungen",
+    "more": "Mehr"
+  },
+
+  "onboarding": {
+    "continue": "Weiter zur App",
+    "consent": "Mit dem klicken dieses Knopfes akzeptieren sie unsere <tos>Nutzungsbedingungen</tos> und <pp>Datenschutzrichtlinien</pp>."
+  }
 }

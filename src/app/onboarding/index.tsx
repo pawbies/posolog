@@ -5,6 +5,7 @@ import { Link } from "@/components/ui/link";
 import { useOnboarding } from "@/contexts/onboarding";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -13,6 +14,7 @@ export default function OnboardingScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {setCompletedOnboarding} = useOnboarding();
+  const { t } = useTranslation();
   
   const handle = async () => {
     setLoading(true);
@@ -53,21 +55,18 @@ export default function OnboardingScreen() {
         >
           {loading ?
             <ActivityIndicator size="small" color="#ffffff" /> :
-            <Text className="text-xl font-semibold text-white">Continue to the app</Text>
+            <Text className="text-xl font-semibold text-white">{t("onboarding.continue")}</Text>
           }
         </Pressable>
 
         <Text className="text-center text-sm">
-          By completing the onboarding you agree and consent to
-          our{" "}
-          <Link href={"/legal/terms-of-service"} className="text-blue-600 font-semibold">
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href={"/legal/privacy-policy"} className="text-blue-600 font-semibold">
-            Privacy Policy
-          </Link>
-          .
+          <Trans
+            i18nKey="onboarding.consent"
+            components={{
+              tos: <Link href="/legal/terms-of-service" className="text-blue-600 font-semibold" />,
+              pp: <Link href="/legal/privacy-policy" className="text-blue-600 font-semibold" />,
+            }}
+          />
         </Text>
       </View>
     </ScrollView>
