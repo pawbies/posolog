@@ -4,7 +4,7 @@ import { Pressable as RNPressable, PressableProps as RNPressableProps } from "re
 export default function Pressable({className, ...props}: RNPressableProps) {
   return (
     <RNPressable
-      className={cn("active:opacity-60", className)}
+      className={cn("active:opacity-60 bg-gray-3000", className)}
       android_ripple={{ color: "rgba(0,0,0,0.1)", borderless: false }}
       {...props}
     />

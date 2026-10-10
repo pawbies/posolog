@@ -5,13 +5,14 @@ import { ActivityIndicator, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type FooterProps = {
+  disabled: boolean;
   continueText: string;
   onContinue: () => void;
   bottomElement?: ReactNode | undefined;
   loading: boolean;
 };
 
-export default function Footer({ continueText, onContinue, bottomElement, loading }: FooterProps) {
+export default function Footer({ disabled = false, continueText, onContinue, bottomElement, loading }: FooterProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -22,8 +23,8 @@ export default function Footer({ continueText, onContinue, bottomElement, loadin
         <Pressable
           accessibilityRole="button"
           onPress={onContinue}
-          disabled={loading}
-          className="min-h-16 min-w-full flex-row items-center justify-center rounded-full bg-primary"
+          disabled={loading || disabled}
+          className="min-h-16 min-w-full flex-row items-center justify-center rounded-full bg-primary disabled:bg-primary/50"
         >
           {loading ?
             <ActivityIndicator size="small" color="#ffffff" /> :
