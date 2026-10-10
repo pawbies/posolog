@@ -22,7 +22,7 @@ export default function EditMedicationScreen() {
     setUpdating(true);
     try {
       await updateMedication(medication.id, draft);
-      router.dismissTo({ pathname: "/(tabs)/medications/[id]", params: { id: medication.id } });
+      router.dismissTo({ pathname: "/medications/[id]", params: { id: medication.id } });
     } catch {
       Alert.alert("Error", "Something went wrong.");
     } finally {

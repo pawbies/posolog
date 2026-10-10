@@ -1,5 +1,5 @@
-import Footer from "@/components/medication/creation/footer";
-import Header from "@/components/medication/creation/header";
+import Footer from "@/components/medication/new/footer";
+import Header from "@/components/medication/new/header";
 import { useMedicationDraft } from "@/contexts/medication-draft";
 import { createMedication } from "@/db/queries/medications";
 import { useRouter } from "expo-router";

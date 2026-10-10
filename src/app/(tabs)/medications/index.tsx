@@ -33,7 +33,7 @@ export default function MedicationsScreen() {
         renderItem={({ item }) => (
           <MedicationCard
             medication={item}
-            onPress={() => router.push({ pathname: "/(tabs)/medications/[id]", params: { id: item.id } })}
+            onPress={() => router.push({ pathname: "/medications/[id]", params: { id: item.id } })}
           />
         )}
         ListHeaderComponent={
@@ -47,7 +47,7 @@ export default function MedicationsScreen() {
         contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
         showsVerticalScrollIndicator={false}
       />
-      <Fab onPress={() => router.push("/medications/creation/basic-information")} icon={Plus} label="Add medication" />
+      <Fab onPress={() => router.push("/medications/new")} icon={Plus} label="Add medication" />
     </Screen>
   );
 }

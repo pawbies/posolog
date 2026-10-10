@@ -95,7 +95,7 @@ export default function MedicationScreen() {
       ) : null}
 
       <Pressable
-        onPress={() => router.push({ pathname: "/(tabs)/medications/[id]/edit", params: { id: medication.id } })}
+        onPress={() => router.push({ pathname: "/medications/[id]/edit", params: { id: medication.id } })}
         disabled={deleting}
         accessibilityRole="button"
         accessibilityLabel={`Edit ${medication.name}`}

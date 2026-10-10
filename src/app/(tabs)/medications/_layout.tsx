@@ -4,7 +4,7 @@ export default function MedicationsLayout() {
   return (
     <Stack screenOptions={{ animation: "default" }}>
       <Stack.Screen name="index" options={{ title: "Medications", headerShown: false }} />
-      <Stack.Screen name="creation" options={{ title: "New medication" }} />
+      <Stack.Screen name="new" options={{ title: "New medication" }} />
       <Stack.Screen name="[id]" options={{ headerShown: false }} />
     </Stack>
   )

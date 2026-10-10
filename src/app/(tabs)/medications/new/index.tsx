@@ -1,5 +1,5 @@
-import Footer from "@/components/medication/creation/footer";
-import Header from "@/components/medication/creation/header";
+import Footer from "@/components/medication/new/footer";
+import Header from "@/components/medication/new/header";
 import MedicationFields from "@/components/medication/medication-fields";
 import { useMedicationDraft } from "@/contexts/medication-draft";
 import { useRouter } from "expo-router";
@@ -26,7 +26,7 @@ export default function BasicInformationScreen() {
         <Footer
           showBack={false}
           nextDisabled={!draft.name.trim()}
-          onNext={() => router.push("/medications/creation/ingredients")}
+          onNext={() => router.push("/medications/new/ingredients")}
         />
       </ScrollView>
     </View>

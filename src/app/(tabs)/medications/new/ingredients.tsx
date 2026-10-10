@@ -1,5 +1,5 @@
-import Footer from "@/components/medication/creation/footer";
-import Header from "@/components/medication/creation/header";
+import Footer from "@/components/medication/new/footer";
+import Header from "@/components/medication/new/header";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 
@@ -16,7 +16,7 @@ export default function IngredientsScreen() {
         </View>
       </View>
 
-      <Footer onBack={() => router.back()} onNext={() => router.push("/medications/creation/kinetics")} />
+      <Footer onBack={() => router.back()} onNext={() => router.push("/medications/new/kinetics")} />
     </View>
   );
 }

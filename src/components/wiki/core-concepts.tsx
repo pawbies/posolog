@@ -1,5 +1,3 @@
-import WikiPage from "@/components/wiki/wiki-page";
-import { Microscope } from "lucide-react-native";
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
 import { Text, View } from "react-native";
 
@@ -64,9 +62,9 @@ function Definition({ term, children }: DefinitionProps) {
   );
 }
 
-export default function CoreConceptsScreen() {
+export default function CoreConcepts() {
   return (
-    <WikiPage icon={Microscope} heading="Core concepts" path="Basic pharmacology">
+    <>
       <ArticleSection title="Pharmacokinetics vs. pharmacodynamics">
         Pharmacology is generally split into two complementary views of a drug's
         journey through the body. Pharmacokinetics (PK) describes what the body
@@ -118,6 +116,6 @@ export default function CoreConceptsScreen() {
           plateau between a predictable peak and trough.
         </Definition>
       </DefinitionList>
-    </WikiPage>
+    </>
   );
 }

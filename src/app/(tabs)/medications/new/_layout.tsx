@@ -3,7 +3,7 @@ import { Stack, useNavigation } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Alert } from "react-native";
 
-export default function MedicationCreationLayout() {
+export default function NewMedicationLayout() {
   return (
     <MedicationDraftProvider>
       <CreationStack />
@@ -28,7 +28,7 @@ function CreationStack() {
 
   return (
     <Stack screenOptions={{ animation: "slide_from_right", headerShown: false }}>
-      <Stack.Screen name="basic-information" />
+      <Stack.Screen name="index" />
       <Stack.Screen name="ingredients" />
       <Stack.Screen name="kinetics" />
     </Stack>

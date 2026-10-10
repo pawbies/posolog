@@ -41,7 +41,7 @@ export default function MedicationLayout() {
             ),
             headerRight: () => (
               <Pressable
-                onPress={() => router.push({ pathname: "/(tabs)/medications/[id]/info", params: { id: medication.id } })}
+                onPress={() => router.push({ pathname: "/medications/[id]/info", params: { id: medication.id } })}
                 hitSlop={12}
                 accessibilityRole="button"
                 accessibilityLabel="Medication info"
