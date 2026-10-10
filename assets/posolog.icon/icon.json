@@ -4,7 +4,7 @@
   ],
   "fill" : {
     "linear-gradient" : [
-      "srgb:0.00000,0.56032,0.00000,1.00000",
+      "display-p3:0.49391,0.74505,0.44594,1.00000",
       "srgb:0.83217,0.98548,0.47333,1.00000"
     ],
     "orientation" : {
@@ -24,14 +24,14 @@
         {
           "blend-mode" : "normal",
           "fill" : "automatic",
-          "image-name" : "android-icon-foreground.png",
-          "name" : "bird-and-pills",
+          "image-name" : "tucan.png",
+          "name" : "tucan",
           "opacity" : 1,
           "position" : {
-            "scale" : 1,
+            "scale" : 0.4,
             "translation-in-points" : [
-              34,
-              32
+              74,
+              29
             ]
           }
         }
