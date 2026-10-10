@@ -1,4 +1,4 @@
-import Text from "@/components/text";
+import Text from "@/components/ui/text";
 import { View } from "react-native";
 import ColorPicker, { ColorPickerProps, HueSlider, Panel1, Preview } from "reanimated-color-picker";
 

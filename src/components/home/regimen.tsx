@@ -1,5 +1,5 @@
-import Pressable from "@/components/pressable";
-import Text from "@/components/text";
+import Pressable from "@/components/ui/pressable";
+import Text from "@/components/ui/text";
 import { Clock, Plus, Tablets } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Alert, View } from "react-native";

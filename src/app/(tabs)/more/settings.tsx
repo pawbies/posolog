@@ -1,105 +1,36 @@
-import Screen from "@/components/screen";
-import ButtonRow, { ButtonRowProps } from "@/components/settings/button-row";
-import ToggleRow, { ToggleRowProps } from "@/components/settings/toggle-row";
-import Text from "@/components/text";
-import { useOnboarding } from "@/contexts/onboarding";
-import {
-  getPreventScreenCaptureSetting,
-  setPreventScreenCaptureSetting
-} from "@/lib/settings/security/prevent-screen-capture";
+import ButtonRow from "@/components/list/button-row";
+import Section from "@/components/list/section";
+import ToggleRow from "@/components/list/toggle-row";
+import PageHero from "@/components/ui/page-hero";
+import Screen from "@/components/ui/screen";
+import { useSettings } from "@/contexts/settings";
 import * as Linking from "expo-linking";
 import { DoorOpen, EyeOff, Languages, Settings } from "lucide-react-native";
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  useCallback,
-  useEffect,
-  useState,
-  type ReactElement,
-  type ReactNode
-} from "react";
-import { Alert, View } from "react-native";
-
-type SectionProps = {
-  title?: string;
-  children: ReactNode;
-};
-
-function Section({ title, children }: SectionProps) {
-  const rows = Children.toArray(children).filter(isValidElement) as ReactElement<ToggleRowProps | ButtonRowProps>[];
-
-  return (
-    <View className="mb-7">
-      {title ? (
-        <Text muted className="text-base ml-5 mb-2">
-          {title}
-        </Text>
-      ) : null}
-      <View className="bg-surface rounded-2xl overflow-hidden">
-        {rows.map((child, i) => cloneElement(child, { first: i === 0 }))}
-      </View>
-    </View>
-  );
-}
-
+import { useState } from "react";
+import { Alert } from "react-native";
 
 export default function SettingsScreen() {
-  const [preventScreenCaptureToggleState, setPreventScreenCaptureToggleState] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const { completedOnboarding, preventScreenCapture, setSetting } = useSettings();
   const [busy, setBusy] = useState(false);
-  const { completedOnboarding, setCompletedOnboarding } = useOnboarding();
 
-
-  useEffect(() => {
-    getPreventScreenCaptureSetting()
-      .then((enabled) => {
-        setPreventScreenCaptureToggleState(enabled);
-      })
-      .catch(() => {
-        Alert.alert(
-          "Couldn't load settings",
-          "Your security settings could not be read. They may not reflect what's currently active."
-        );
-      })
-      .finally(() => {
-        setLoaded(true);
-      });
-  }, []);
-
-  const handlePreventScreenCaptureChange = useCallback(
-    async (next: boolean) => {
-      if (busy) return;
-
-      const previous = preventScreenCaptureToggleState;
-      setPreventScreenCaptureToggleState(next);
-      setBusy(true);
-
-      try {
-        await setPreventScreenCaptureSetting(next);
-      } catch {
-        setPreventScreenCaptureToggleState(previous);
-        Alert.alert(
-          "Couldn't change setting",
-          "Screen capture protection could not be updated. Your previous setting is still active."
-        );
-      } finally {
-        setBusy(false);
-      }
-    },
-    [busy, preventScreenCaptureToggleState]
-  );
+  const changePreventScreenCapture = async (next: boolean) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await setSetting("preventScreenCapture", next);
+    } catch {
+      Alert.alert(
+        "Couldn't change setting",
+        "Screen capture protection could not be updated. Your previous setting is still active."
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <Screen skipTopInset>
-      <View className="items-center pt-10 pb-8">
-        <View className="w-28 h-28 rounded-3xl bg-blue-100 dark:bg-blue-950 items-center justify-center">
-          <Settings size={56} color="#3b82f6" />
-        </View>
-        <Text className="text-3xl font-semibold mt-4 text-center">
-          Settings
-        </Text>
-      </View>
+      <PageHero icon={Settings} iconColor="#3b82f6" tileClassName="bg-blue-100 dark:bg-blue-950" title="Settings" />
 
       <Section title="General">
         <ButtonRow
@@ -115,8 +46,8 @@ export default function SettingsScreen() {
           iconColor="#56a5f5"
           title="Completed onboarding"
           value={completedOnboarding}
-          onValueChange={() => { setCompletedOnboarding(false); }}
-          disabled={!loaded || busy}
+          onValueChange={() => setSetting("completedOnboarding", false)}
+          disabled={busy}
         />
       </Section>
 
@@ -126,9 +57,9 @@ export default function SettingsScreen() {
           iconColor="#ef4444"
           title="Prevent Screen Capture"
           description="Blocks screenshots and screen recordings of the app"
-          value={preventScreenCaptureToggleState}
-          onValueChange={handlePreventScreenCaptureChange}
-          disabled={!loaded || busy}
+          value={preventScreenCapture}
+          onValueChange={changePreventScreenCapture}
+          disabled={busy}
         />
       </Section>
     </Screen>

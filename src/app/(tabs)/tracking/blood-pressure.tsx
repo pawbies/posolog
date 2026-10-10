@@ -1,11 +1,9 @@
-import Screen from "@/components/screen";
-import AddReadingSheet from "@/components/tracking/blood-pressure/add-reading-sheet";
-import EditReadingSheet from "@/components/tracking/blood-pressure/edit-reading-sheet";
 import Graph from "@/components/tracking/blood-pressure/graph";
 import Reading from "@/components/tracking/blood-pressure/reading";
-import { db } from "@/db/client";
-import { bloodPressureReadings } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import ReadingSheet from "@/components/tracking/blood-pressure/reading-sheet";
+import Screen from "@/components/ui/screen";
+import { allReadings, createReading, deleteReading, updateReading } from "@/db/queries/blood-pressure";
+import type { BloodPressureReading } from "@/db/schema";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack } from "expo-router";
 import { Plus } from "lucide-react-native";
@@ -13,40 +11,24 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Reading = typeof bloodPressureReadings.$inferSelect;
-
 export default function BloodPressureScreen() {
   const insets = useSafeAreaInsets();
   const [showAddReading, setShowAddReading] = useState(false);
-  const [editingReading, setEditingReading] = useState<Reading | null>(null);
-  const { data: readings, error, updatedAt } = useLiveQuery(
-    db.select().from(bloodPressureReadings).orderBy(desc(bloodPressureReadings.readingAt))
-  );
+  const [editingReading, setEditingReading] = useState<BloodPressureReading | null>(null);
+  const { data: readings, error, updatedAt } = useLiveQuery(allReadings());
 
   const loading = !updatedAt && !error;
 
-  const handleDeleteReading = (id: number) => {
+  useEffect(() => {
+    if (error) Alert.alert("Error", "Failed to load blood pressure readings.");
+  }, [error]);
+
+  const confirmDelete = (id: number) => {
     Alert.alert("Delete reading", "This reading will be removed permanently.", [
       { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          await db.delete(bloodPressureReadings).where(eq(bloodPressureReadings.id, id));
-        },
-      },
+      { text: "Delete", style: "destructive", onPress: () => deleteReading(id) },
     ]);
   };
-
-  const handleEdit = (reading: Reading) => {
-    setEditingReading(reading);
-  };
-
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Error", "Failed to load blood pressure readings.");
-    }
-  }, [error]);
 
   return (
     <Screen scrollView={false} skipBottomInset skipTopInset>
@@ -68,14 +50,14 @@ export default function BloodPressureScreen() {
       />
 
       <FlatList
-        data={readings ?? []}
+        data={readings}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <Reading reading={item} onDelete={handleDeleteReading} onEdit={handleEdit} />
+          <Reading reading={item} onDelete={confirmDelete} onEdit={setEditingReading} />
         )}
         ListHeaderComponent={
           <View className="pb-12">
-            <Graph loading={loading} readings={readings ?? []} />
+            <Graph loading={loading} readings={readings} />
           </View>
         }
         ItemSeparatorComponent={() => <View className="h-2" />}
@@ -86,14 +68,20 @@ export default function BloodPressureScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      <AddReadingSheet
+      <ReadingSheet
         isPresented={showAddReading}
+        title="New reading"
+        submitLabel="Save"
+        onSubmit={async (draft) => { await createReading(draft); }}
         onDismiss={() => setShowAddReading(false)}
       />
 
-      <EditReadingSheet
+      <ReadingSheet
         isPresented={editingReading !== null}
-        reading={editingReading}
+        title="Edit reading"
+        submitLabel="Save changes"
+        initial={editingReading}
+        onSubmit={async (draft) => { if (editingReading) await updateReading(editingReading.id, draft); }}
         onDismiss={() => setEditingReading(null)}
       />
     </Screen>

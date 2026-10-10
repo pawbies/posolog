@@ -1,5 +1,5 @@
-import Pressable from "@/components/pressable";
-import Text from "@/components/text";
+import Pressable from "@/components/ui/pressable";
+import Text from "@/components/ui/text";
 import * as WebBrowser from "expo-web-browser";
 import {
   Ban,
@@ -12,7 +12,7 @@ import {
   TriangleAlert,
   type LucideIcon,
 } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
+import { usePalette } from "@/hooks/use-palette";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -42,8 +42,7 @@ function Section({ icon: Icon, iconColor, title, children }: SectionProps) {
 
 export default function TermsOfServiceScreen() {
   const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const chevronMuted = colorScheme === "dark" ? "#71717a" : "#a1a1aa";
+  const { chevron } = usePalette();
 
   return (
     <ScrollView
@@ -117,7 +116,7 @@ export default function TermsOfServiceScreen() {
           onPress={async () => await WebBrowser.openBrowserAsync(CONTACT_URL)}
           className="bg-surface rounded-2xl p-4 flex-row items-center"
         >
-          <ExternalLink size={20} color={chevronMuted} />
+          <ExternalLink size={20} color={chevron} />
           <View className="flex-1 ml-3">
             <Text className="text-base">Questions about these terms?</Text>
             <Text muted className="text-sm mt-0.5">Open an issue on GitHub</Text>

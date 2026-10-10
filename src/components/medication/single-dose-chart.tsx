@@ -1,4 +1,4 @@
-import Text from "@/components/text";
+import Text from "@/components/ui/text";
 import { mix } from "@/lib/color";
 import { Circle, DashPathEffect, Line as SkiaLine, matchFont, Rect, vec } from "@shopify/react-native-skia";
 import { useColorScheme } from "nativewind";

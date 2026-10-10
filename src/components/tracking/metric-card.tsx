@@ -1,5 +1,5 @@
-import Pressable from "@/components/pressable";
-import Text from "@/components/text";
+import Pressable from "@/components/ui/pressable";
+import Text from "@/components/ui/text";
 import { LucideIcon } from "lucide-react-native";
 import { View } from "react-native";
 

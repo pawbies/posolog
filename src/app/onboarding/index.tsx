@@ -1,9 +1,9 @@
 import Footer from "@/components/onboarding/footer";
-import Screen from "@/components/screen";
-import Text from "@/components/text";
 import { Image } from "@/components/ui/image";
 import { Link } from "@/components/ui/link";
-import { useOnboarding } from "@/contexts/onboarding";
+import Screen from "@/components/ui/screen";
+import Text from "@/components/ui/text";
+import { useSettings } from "@/contexts/settings";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -12,20 +12,20 @@ import { Alert, View } from "react-native";
 export default function OnboardingScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const {setCompletedOnboarding} = useOnboarding();
+  const { setSetting } = useSettings();
   const { t } = useTranslation();
-  
-  const handle = async () => {
+
+  const finish = async () => {
     setLoading(true);
     try {
-      await setCompletedOnboarding(true);
+      await setSetting("completedOnboarding", true);
       router.replace("/");
     } catch {
       Alert.alert("Error", "Something went wrong.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Screen>
@@ -41,7 +41,7 @@ export default function OnboardingScreen() {
 
       <Footer
         continueText={t("onboarding.continue")}
-        onContinue={handle}
+        onContinue={finish}
         bottomElement={
           <Text className="text-center text-sm">
             <Trans
@@ -50,7 +50,7 @@ export default function OnboardingScreen() {
                 tos: <Link href="/legal/terms-of-service" className="text-blue-600 font-semibold" />,
                 pp: <Link href="/legal/privacy-policy" className="text-blue-600 font-semibold" />,
               }}
-              />
+            />
           </Text>
         }
         loading={loading}

@@ -1,5 +1,5 @@
-import Text from "@/components/text";
-import { Image } from "expo-image";
+import Text from "@/components/ui/text";
+import { Image } from "@/components/ui/image";
 import { Heart } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { View } from "react-native";

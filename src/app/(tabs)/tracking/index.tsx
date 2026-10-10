@@ -1,5 +1,6 @@
-import Screen from "@/components/screen";
-import Text from "@/components/text";
+import Screen from "@/components/ui/screen";
+import ScreenTitle from "@/components/ui/screen-title";
+import Text from "@/components/ui/text";
 import MetricCard from "@/components/tracking/metric-card";
 import { useRouter } from "expo-router";
 import { Dna, HeartPulse, TestTubes } from "lucide-react-native";
@@ -10,9 +11,7 @@ export default function TrackingScreen() {
 
   return (
     <Screen>
-      <Text className="text-3xl font-semibold mb-6 ml-1">
-        Tracking
-      </Text>
+      <ScreenTitle>Tracking</ScreenTitle>
 
       <Text muted className="text-base ml-1 mb-3">
         Health metrics

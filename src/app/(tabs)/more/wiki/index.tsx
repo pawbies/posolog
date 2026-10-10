@@ -1,6 +1,9 @@
-import Text from "@/components/text";
-import { WikiRow as Row } from "@/components/wiki/wiki-row";
-import { WikiSection as Section } from "@/components/wiki/wiki-section";
+import Row from "@/components/list/link-row";
+import Section from "@/components/list/section";
+import InfoCard from "@/components/ui/info-card";
+import PageHero from "@/components/ui/page-hero";
+import Screen from "@/components/ui/screen";
+import Text from "@/components/ui/text";
 import {
   AreaChart,
   ArrowLeftRight,
@@ -24,27 +27,22 @@ import {
   TestTubeDiagonal,
   TrendingDown
 } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
 
 export default function WikiScreen() {
   return (
-    <ScrollView className="px-4 flex-1 bg-background">
-      <View className="items-center pt-10 pb-8">
-        <View className="w-28 h-28 rounded-3xl bg-purple-100 dark:bg-violet-100 items-center justify-center">
-          <BookOpenText size={56} color="#c026d3" />
-        </View>
-        <Text className="text-3xl font-semibold mt-4 text-center">
-          Wiki
-        </Text>
-      </View>
+    <Screen skipTopInset>
+      <PageHero
+        icon={BookOpenText}
+        iconColor="#c026d3"
+        tileClassName="bg-purple-100 dark:bg-violet-100"
+        title="Wiki"
+      />
 
-      <View className="bg-surface rounded-2xl p-4 mb-7">
-        <Text muted className="text-base leading-6">
-          We encourage you to read through our wiki pages to learn
-          more about how posolog calculates its values and to gain deeper
-          insight into pharmacokinetics.
-        </Text>
-      </View>
+      <InfoCard>
+        We encourage you to read through our wiki pages to learn
+        more about how posolog calculates its values and to gain deeper
+        insight into pharmacokinetics.
+      </InfoCard>
 
       <Section title="Basic pharmacology">
         <Row icon={Microscope} title="Core concepts" href="/more/wiki/core-concepts" />
@@ -88,6 +86,6 @@ export default function WikiScreen() {
         <Row icon={Clock} title="Effect delay" href="/more/wiki/pd/quantitative-response/effect-delay" />
         <Row icon={TrendingDown} title="Tolerance" href="/more/wiki/pd/quantitative-response/tolerance" />
       </Section>
-    </ScrollView>
+    </Screen>
   );
 }

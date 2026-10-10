@@ -1,32 +1,26 @@
-import Pressable from "@/components/pressable";
+import Pressable from "@/components/ui/pressable";
 import { MedicationProvider } from "@/contexts/medication";
-import { db } from "@/db/client";
-import { medications } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { medicationById } from "@/db/queries/medications";
+import { usePalette } from "@/hooks/use-palette";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ChevronLeft, Info } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
 import { useEffect } from "react";
 
 export default function MedicationLayout() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { colorScheme } = useColorScheme();
+  const { headerTint } = usePalette();
 
-  const { data, updatedAt } = useLiveQuery(
-    db.select().from(medications).where(eq(medications.id, Number(id))).limit(1),
-    [id]
-  );
+  const { data, updatedAt } = useLiveQuery(medicationById(Number(id)), [id]);
   const medication = data?.[0];
 
+  // The medication was deleted (or never existed): leave its screens.
   useEffect(() => {
     if (updatedAt && !medication) router.dismissTo("/medications");
   }, [medication, updatedAt]);
 
   if (!medication) return null;
-
-  const tint = colorScheme === "dark" ? "#fafafa" : "#171717";
 
   return (
     <MedicationProvider value={medication}>
@@ -42,7 +36,7 @@ export default function MedicationLayout() {
                 accessibilityRole="button"
                 accessibilityLabel="Back to medications"
               >
-                <ChevronLeft size={26} color={tint} />
+                <ChevronLeft size={26} color={headerTint} />
               </Pressable>
             ),
             headerRight: () => (
@@ -52,7 +46,7 @@ export default function MedicationLayout() {
                 accessibilityRole="button"
                 accessibilityLabel="Medication info"
               >
-                <Info size={24} color={tint} />
+                <Info size={24} color={headerTint} />
               </Pressable>
             ),
           }}

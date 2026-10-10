@@ -1,5 +1,5 @@
-import Pressable from "@/components/pressable";
-import Text from "@/components/text";
+import Pressable from "@/components/ui/pressable";
+import Text from "@/components/ui/text";
 import { Circle, DashPathEffect, Line as SkiaLine, matchFont, vec } from "@shopify/react-native-skia";
 import { useColorScheme } from "nativewind";
 import { useMemo, useState } from "react";

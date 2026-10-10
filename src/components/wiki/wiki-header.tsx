@@ -1,4 +1,4 @@
-import Text from "@/components/text";
+import Text from "@/components/ui/text";
 import { LucideIcon } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { View } from "react-native";

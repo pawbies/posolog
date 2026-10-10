@@ -1,19 +1,6 @@
-import WikiHeader from "@/components/wiki/wiki-header";
+import WikiPage from "@/components/wiki/wiki-page";
 import { ChartSpline } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function LinearNonlinearKineticsScreen() {
-  const insets = useSafeAreaInsets();
-
-  return (
-    <View className="flex-1 bg-background">
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
-        className="px-4"
-      >
-        <WikiHeader icon={ChartSpline} heading="Linear vs. nonlinear kinetics" path="PK / M&S" />
-      </ScrollView>
-    </View>
-  );
+  return <WikiPage icon={ChartSpline} heading="Linear vs. nonlinear kinetics" path="PK / M&S" />;
 }

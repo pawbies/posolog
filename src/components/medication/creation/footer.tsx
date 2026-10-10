@@ -1,10 +1,7 @@
+import { usePalette } from "@/hooks/use-palette";
 import { ArrowLeft, ArrowRight } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
 import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const GREEN = "#aade87";
-const GREEN_DARK = "#56972b";
 
 type Props = {
   onBack?: () => void;
@@ -22,8 +19,7 @@ export default function Footer({
   nextLabel = "Next",
 }: Props) {
   const insets = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const { brand, onBrand, isDark } = usePalette();
 
   return (
     <View
@@ -54,7 +50,7 @@ export default function Footer({
         accessibilityLabel={nextLabel}
         hitSlop={8}
         style={{
-          backgroundColor: isDark ? GREEN : GREEN_DARK,
+          backgroundColor: brand,
           opacity: nextDisabled ? 0.4 : 1,
           marginLeft: "auto",
         }}
@@ -62,11 +58,11 @@ export default function Footer({
       >
         <Text
           className="text-base font-semibold"
-          style={{ color: isDark ? "#1a2e10" : "#ffffff" }}
+          style={{ color: onBrand }}
         >
           {nextLabel}
         </Text>
-        <ArrowRight size={18} color={isDark ? "#1a2e10" : "#ffffff"} />
+        <ArrowRight size={18} color={onBrand} />
       </Pressable>
     </View>
   );

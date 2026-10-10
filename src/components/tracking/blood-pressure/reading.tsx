@@ -1,17 +1,15 @@
 import { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
-import { bloodPressureReadings } from "@/db/schema";
+import type { BloodPressureReading } from "@/db/schema";
 import { ChevronDown, HeartPulse, Pencil, Trash2 } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-type Reading = typeof bloodPressureReadings.$inferSelect;
-
 type Props = {
-  reading: Reading;
-  onPress?: (reading: Reading) => void;
+  reading: BloodPressureReading;
+  onPress?: (reading: BloodPressureReading) => void;
   onDelete?: (id: number) => void;
-  onEdit?: (reading: Reading) => void;
+  onEdit?: (reading: BloodPressureReading) => void;
 };
 
 const DAY_MS = 86_400_000;

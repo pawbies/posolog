@@ -1,4 +1,4 @@
-import { bloodPressureReadings } from "@/db/schema";
+import type { BloodPressureReading } from "@/db/schema";
 import {
   Circle,
   DashPathEffect,
@@ -25,7 +25,6 @@ import {
   type ChartBounds,
 } from "victory-native";
 
-type Reading = typeof bloodPressureReadings.$inferSelect;
 
 type SeriesKey = "systolic" | "diastolic" | "pulse";
 
@@ -59,7 +58,7 @@ const DAY_MS = 86_400_000;
 /** Past this many readings the markers shed their ring and shrink to a speck. */
 const DENSE_AT = 60;
 
-export default function Graph({ readings, loading=false }: { readings: Reading[]; loading?: boolean }) {
+export default function Graph({ readings, loading=false }: { readings: BloodPressureReading[]; loading?: boolean }) {
   const { colorScheme } = useColorScheme();
   const dark = colorScheme === "dark";
 

@@ -1,7 +1,6 @@
+import { GREEN_DARK } from "@/constants/colors";
 import { Fragment } from "react";
 import { Text, View } from "react-native";
-
-const GREEN_DARK = "#56972b";
 
 const STEPS = [
   { number: 1, label: "Basic information" },
@@ -10,8 +9,8 @@ const STEPS = [
 ];
 
 type Props = {
-    currentStep: number;
-}
+  currentStep: number;
+};
 
 export default function Header({ currentStep }: Props) {
   return (

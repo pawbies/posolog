@@ -1,9 +1,10 @@
-import Text from "@/components/text";
-import { LucideIcon } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
+import Text from "@/components/ui/text";
+import { usePalette } from "@/hooks/use-palette";
+import { cn } from "@/lib/cn";
+import { type LucideIcon } from "lucide-react-native";
 import { TouchableOpacity, View } from "react-native";
 
-export type ButtonRowProps = {
+type ButtonRowProps = {
   icon: LucideIcon;
   iconColor?: string;
   title: string;
@@ -11,7 +12,6 @@ export type ButtonRowProps = {
   buttonText: string;
   onPress: () => void;
   disabled?: boolean;
-  first?: boolean;
 };
 
 export default function ButtonRow({
@@ -22,17 +22,11 @@ export default function ButtonRow({
   buttonText,
   onPress,
   disabled = false,
-  first = false,
 }: ButtonRowProps) {
-  const { colorScheme } = useColorScheme();
-  const accent = colorScheme === "dark" ? "#9333ea" : "#a78bfa";
+  const { accent } = usePalette();
 
   return (
-    <View
-      className={`flex-row items-center py-4 pr-4 pl-4 ${
-        first ? "" : "border-t border-border"
-      } ${disabled ? "opacity-50" : ""}`}
-    >
+    <View className={cn("flex-row items-center py-4 px-4", disabled && "opacity-50")}>
       <Icon size={24} color={iconColor ?? accent} />
       <View className="flex-1 ml-4">
         <Text className="text-lg">{title}</Text>

@@ -1,16 +1,16 @@
-import Pressable from "@/components/pressable";
-import Text from "@/components/text";
-import { FORM_META, ROUTE_META } from "@/contexts/medication-draft";
-import { medications } from "@/db/schema";
+import Pressable from "@/components/ui/pressable";
+import Text from "@/components/ui/text";
+import type { Medication } from "@/db/schema";
+import { FORM_META, ROUTE_META } from "@/lib/medication";
 import { ChevronRight } from "lucide-react-native";
 import { View } from "react-native";
 
-type MedicationProps = {
-  medication: typeof medications.$inferSelect;
-  onPress?: (medication: typeof medications.$inferSelect) => void;
+type MedicationCardProps = {
+  medication: Medication;
+  onPress?: (medication: Medication) => void;
 };
 
-export default function Medication({ medication, onPress }: MedicationProps) {
+export default function MedicationCard({ medication, onPress }: MedicationCardProps) {
   const form = FORM_META[medication.form];
   const route = ROUTE_META[medication.route];
   const Icon = form.icon;

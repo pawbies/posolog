@@ -1,7 +1,8 @@
-import NumberField from "@/components/number-field";
-import Text from "@/components/text";
+import NumberField from "@/components/form/number-field";
+import Text from "@/components/ui/text";
 import ZoneChart, { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
-import { bloodPressureReadings } from "@/db/schema";
+import type { ReadingDraft } from "@/db/queries/blood-pressure";
+import type { BloodPressureReading } from "@/db/schema";
 import { BottomSheet, Host, RNHostView } from "@expo/ui";
 import { ArrowDown, ArrowUp, CalendarClock, HeartPulse } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
@@ -16,20 +17,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Reading = typeof bloodPressureReadings.$inferSelect;
-
-export type ReadingDraft = {
-  systolic: number;
-  diastolic: number;
-  pulse: number | undefined;
-  readingAt: Date;
-};
-
 type Props = {
   isPresented: boolean;
   title: string;
   submitLabel: string;
-  initial?: Reading | null;
+  initial?: BloodPressureReading | null;
   onSubmit: (draft: ReadingDraft) => Promise<void>;
   onDismiss: () => void;
 };
@@ -53,7 +45,7 @@ function validate(systolic: number | undefined, diastolic: number | undefined, p
   return null;
 }
 
-export default function ReadingSheet({ isPresented, title, submitLabel, initial, onSubmit, onDismiss,}: Props) {
+export default function ReadingSheet({ isPresented, title, submitLabel, initial, onSubmit, onDismiss }: Props) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { colorScheme } = useColorScheme();

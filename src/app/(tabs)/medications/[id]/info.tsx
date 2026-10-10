@@ -1,8 +1,7 @@
 import SingleDoseChart, { type SingleDosePoint } from "@/components/medication/single-dose-chart";
-import Screen from "@/components/screen";
-import Text from "@/components/text";
+import Screen from "@/components/ui/screen";
+import Text from "@/components/ui/text";
 import { useMedication } from "@/contexts/medication";
-import { FORM_META, ROUTE_META } from "@/contexts/medication-draft";
 import {
   absorptionModels,
   absorptionPhases,
@@ -11,6 +10,7 @@ import {
   strengthIngredients,
   strengths,
 } from "@/db/schema";
+import { FORM_META, ROUTE_META } from "@/lib/medication";
 import {
   Activity,
   Atom,
