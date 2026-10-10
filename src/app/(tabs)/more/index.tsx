@@ -7,6 +7,8 @@ import {
   Calculator,
   ChartColumn,
   Download,
+  Handshake,
+  HatGlasses,
   Heart,
   Info,
   Settings,
@@ -33,6 +35,11 @@ export default function MoreScreen() {
         <LinkRow icon={BookOpenText} title="Wiki" href="/more/wiki" iconColor="#c026d3" />
         <LinkRow icon={Heart} title="Donate" href="/more/donate" iconColor="#ef4444" />
         <LinkRow icon={Info} title="About" href="/more/about" iconColor="#22c55e" />
+      </Section>
+
+      <Section title="Legal">
+        <LinkRow icon={HatGlasses} title="Privacy Policy" href="/legal/privacy-policy" iconColor="#3b82f6" />
+        <LinkRow icon={Handshake} title="Terms of Service" href="/legal/terms-of-service" iconColor="#c026d3" />
       </Section>
     </Screen>
   );
