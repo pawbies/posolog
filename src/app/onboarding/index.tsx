@@ -1,4 +1,5 @@
-import Pressable from "@/components/pressable";
+import Footer from "@/components/onboarding/footer";
+import Screen from "@/components/screen";
 import Text from "@/components/text";
 import { Image } from "@/components/ui/image";
 import { Link } from "@/components/ui/link";
@@ -6,11 +7,9 @@ import { useOnboarding } from "@/contexts/onboarding";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Alert, View } from "react-native";
 
 export default function OnboardingScreen() {
-  const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {setCompletedOnboarding} = useOnboarding();
@@ -29,10 +28,7 @@ export default function OnboardingScreen() {
   }
 
   return (
-    <ScrollView
-      className="px-4 flex-1 bg-background"
-      contentContainerStyle={{ flex: 1, paddingTop: insets.top, paddingBottom: insets.bottom }}
-    >
+    <Screen>
       <View className="flex-row mx-auto items-center gap-2 mt-2">
         <Image
           source={require("@/assets/images/android-icon-foreground.png")}
@@ -43,32 +39,22 @@ export default function OnboardingScreen() {
         </Text>
       </View>
 
-      <View
-        className="absolute left-1/2 -translate-x-1/2 flex flex-col gap-1"
-        style={{ bottom: insets.bottom }}
-      >
-        <Pressable
-          accessibilityRole="button"
-          onPress={handle}
-          disabled={loading}
-          className="min-h-16 min-w-full flex-row items-center justify-center rounded-full bg-primary"
-        >
-          {loading ?
-            <ActivityIndicator size="small" color="#ffffff" /> :
-            <Text className="text-xl font-semibold text-white">{t("onboarding.continue")}</Text>
-          }
-        </Pressable>
-
-        <Text className="text-center text-sm">
-          <Trans
-            i18nKey="onboarding.consent"
-            components={{
-              tos: <Link href="/legal/terms-of-service" className="text-blue-600 font-semibold" />,
-              pp: <Link href="/legal/privacy-policy" className="text-blue-600 font-semibold" />,
-            }}
-          />
-        </Text>
-      </View>
-    </ScrollView>
+      <Footer
+        continueText={t("onboarding.continue")}
+        onContinue={handle}
+        bottomElement={
+          <Text className="text-center text-sm">
+            <Trans
+              i18nKey="onboarding.consent"
+              components={{
+                tos: <Link href="/legal/terms-of-service" className="text-blue-600 font-semibold" />,
+                pp: <Link href="/legal/privacy-policy" className="text-blue-600 font-semibold" />,
+              }}
+              />
+          </Text>
+        }
+        loading={loading}
+      />
+    </Screen>
   );
 }

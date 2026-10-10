@@ -8,7 +8,8 @@
   },
 
   "onboarding": {
-    "continue": "Continue to the app",
+    "continue": "Continue",
+    "continue_to_app": "Continue to the app",
     "consent": "By completing the onboarding you agree and consent to our <tos>Terms of Service</tos> and <pp>Privacy Policy</pp>."
   }
 }

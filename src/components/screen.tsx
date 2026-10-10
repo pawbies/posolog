@@ -18,7 +18,8 @@ export default function Screen({ scrollView = true, skipTopInset = false, skipBo
         <ScrollView
           contentContainerStyle={{
             paddingTop: skipTopInset ? 0 : insets.top,
-            paddingBottom: skipBottomInset ? 0 : insets.bottom + 32
+            paddingBottom: skipBottomInset ? 0 : insets.bottom + 32,
+            flex: 1
           }}
           className="px-4 flex-1"
         >
