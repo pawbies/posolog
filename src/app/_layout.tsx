@@ -58,7 +58,7 @@ function RootStack() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={completedOnboarding}>
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(tabs)" options={{ animation: "fade" }} />
       </Stack.Protected>
       <Stack.Protected guard={!completedOnboarding}>
         <Stack.Screen name="onboarding" />
