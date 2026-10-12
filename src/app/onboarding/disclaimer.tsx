@@ -1,5 +1,5 @@
 import Footer from "@/components/onboarding/footer";
-import { Image } from "@/components/ui/image";
+import Header from "@/components/onboarding/header";
 import { Link } from "@/components/ui/link";
 import PageHero from "@/components/ui/page-hero";
 import Pressable from "@/components/ui/pressable";
@@ -54,15 +54,7 @@ export default function DisclaimerScreen() {
 
   return (
     <Screen>
-      <View className="flex-row mx-auto items-center gap-2 mt-2">
-        <Image
-          source={require("@/assets/images/android-icon-foreground.png")}
-          className="aspect-square w-12 h-12"
-        />
-        <Text className="font-bold text-4xl text-center">
-          Posolog
-        </Text>
-      </View>
+      <Header />
 
       <PageHero
         icon={TriangleAlert}
