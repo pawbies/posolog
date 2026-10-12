@@ -20,6 +20,14 @@
   },
   "groups" : [
     {
+      "blend-mode-specializations" : [
+        {
+          "appearance" : "dark",
+          "value" : "normal"
+        }
+      ],
+      "blur-material" : null,
+      "hidden" : false,
       "layers" : [
         {
           "blend-mode" : "normal",
@@ -36,15 +44,17 @@
           }
         }
       ],
+      "lighting" : "individual",
       "refractivity" : {
         "depth" : 0,
         "enabled" : true,
-        "strength" : 0.5623046875
+        "strength" : 0.303125
       },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
       },
+      "specular" : true,
       "translucency" : {
         "enabled" : true,
         "value" : 0.5
