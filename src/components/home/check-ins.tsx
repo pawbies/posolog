@@ -17,7 +17,7 @@ export default function CheckIns() {
           accessibilityRole="button"
           accessibilityLabel="Start morning check in"
           hitSlop={8}
-          className="p-3 rounded-lg border w-[47%] h-32"
+          className="p-3 rounded-2xl border w-[47%] h-32"
           style={{ backgroundColor: `${yellow}1a`, borderColor: `${yellow}40` }}
         >
           <Sun size={24} color={yellow} />
@@ -30,7 +30,7 @@ export default function CheckIns() {
           accessibilityRole="button"
           accessibilityLabel="Start evening check in"
           hitSlop={8}
-          className="p-3 rounded-lg border w-[47%] h-32"
+          className="p-3 rounded-2xl border w-[47%] h-32"
           style={{ backgroundColor: `${blue}1a`, borderColor: `${blue}40` }}
         >
           <Moon size={24} color={blue} />

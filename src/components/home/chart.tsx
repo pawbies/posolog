@@ -119,7 +119,7 @@ export default function Chart() {
     `${value >= 100 ? Math.round(value) : value.toFixed(value >= 10 ? 1 : 2)} ${unit}`;
 
   return (
-    <View className="mt-3 bg-surface w-full rounded-md p-3">
+    <View className="mt-3 bg-surface w-full rounded-3xl p-4">
       <View className="flex-row items-baseline justify-between">
         <Text className="text-sm font-medium">Plasma levels</Text>
         <Text muted className="text-xs">

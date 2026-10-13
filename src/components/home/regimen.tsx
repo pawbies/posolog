@@ -20,7 +20,7 @@ export default function Regimen() {
   return (
     <>
       <Text className="mt-6 mb-2 text-lg font-medium">Regimen</Text>
-      <View className="bg-surface w-full rounded-md overflow-hidden">
+      <View className="bg-surface w-full rounded-3xl overflow-hidden">
         {STRENGTHS.length > 0 ? STRENGTHS.map((strength, index) => (
           <View key={index} className={`flex-row items-center px-4 py-3.5 ${index === 0 ? "" : "border-t border-border"}`}>
             <View className="w-1 self-stretch rounded-full mr-3.5" style={{ backgroundColor: strength.color }} />
