@@ -39,7 +39,7 @@ const toOptions = <T extends string>(meta: Record<T, Meta>) =>
 export const FORMS = toOptions(FORM_META);
 export const ROUTES = toOptions(ROUTE_META);
 
-/** The editable fields of a medication, shared by the creation flow and the edit screen. */
+
 export type MedicationDraft = {
   name: string;
   color: string;
