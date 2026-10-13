@@ -3,6 +3,7 @@ import { LucideFont } from "@/lib/lucide-font";
 import { VectorIcon } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useTranslation } from "react-i18next";
+import { Platform } from "react-native";
 
 const TABS = [
   { name: "index", label: "tabs.home", icon: "house" },
@@ -25,8 +26,14 @@ export default function TabsLayout() {
     >
       {TABS.map((tab) => (
         <NativeTabs.Trigger key={tab.name} name={tab.name}>
-          <NativeTabs.Trigger.Label>{t(tab.label)}</NativeTabs.Trigger.Label>
-          <NativeTabs.Trigger.Icon src={<VectorIcon family={LucideFont} name={tab.icon} />} />
+          <NativeTabs.Trigger.Label
+            hidden={Platform.OS === "ios"}
+          >
+            {t(tab.label)}
+          </NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon
+            src={<VectorIcon family={LucideFont} name={tab.icon} />}
+            />
         </NativeTabs.Trigger>
       ))}
     </NativeTabs>
