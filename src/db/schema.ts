@@ -180,6 +180,7 @@ export const packAdjustments = sqliteTable("pack_adjustments", {
   createdAt: createdAt(),
 }, (t) => [index("idx_adj_pack").on(t.packId)]);
 
+export type Ingredient = typeof ingredients.$inferSelect;
 export type Medication = typeof medications.$inferSelect;
 export type MedicationForm = Medication["form"];
 export type MedicationRoute = Medication["route"];
