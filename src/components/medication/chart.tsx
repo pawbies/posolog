@@ -1,13 +1,11 @@
+import CartesianChart, { ActiveDot, Crosshair, GuideLine, Line, Scatter } from "@/components/chart/cartesian-chart";
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
-import { Circle, DashPathEffect, Line as SkiaLine, matchFont, vec } from "@shopify/react-native-skia";
 import { useColorScheme } from "nativewind";
 import { useMemo, useState } from "react";
 import { mix } from "@/lib/color";
 import { Activity } from "lucide-react-native";
-import { Platform, View } from "react-native";
-import { runOnJS, useAnimatedReaction, useDerivedValue, type SharedValue } from "react-native-reanimated";
-import { CartesianChart, Line, Scatter, useChartPressState, type ChartBounds } from "victory-native";
+import { View } from "react-native";
 
 // Sample data: a prodrug and its active metabolite, both from one dose 3h ago.
 const INGREDIENTS = [
@@ -59,15 +57,6 @@ export default function Chart({ color }: ChartProps) {
     [color, fg],
   );
 
-  const font = useMemo(
-    () => matchFont({
-      fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }),
-      fontSize: 11,
-      fontWeight: "500",
-    }),
-    [],
-  );
-
   const [hidden, setHidden] = useState<Set<Key>>(() => new Set());
   const visible = (key: Key) => !hidden.has(key);
   const toggle = (key: Key) =>
@@ -106,18 +95,7 @@ export default function Chart({ color }: ChartProps) {
     [data, hidden],
   );
 
-  const { state, isActive } = useChartPressState({
-    x: 0,
-    y: Object.fromEntries(KEYS.map((k) => [k, 0])) as Record<Key, number>,
-  });
-
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  useAnimatedReaction(
-    () => (state.isActive.value ? state.matchedIndex.value : -1),
-    (index, previous) => {
-      if (index !== previous) runOnJS(setActiveIndex)(index >= 0 ? index : null);
-    },
-  );
 
   const nowIndex = Math.round(-X_MIN / STEP);
   const readout = data[activeIndex ?? nowIndex];
@@ -151,28 +129,21 @@ export default function Chart({ color }: ChartProps) {
           domain={{ x: [X_MIN, X_MAX], y: [0, 100] }}
           domainPadding={{ top: 10 }}
           padding={{ top: 4, right: 8 }}
-          frame={{ lineWidth: 0 }}
-          chartPressState={state}
           xAxis={{
-            font,
             tickValues: [-12, -6, 0, 6, 12],
-            labelColor: axisLabel,
-            lineColor: grid,
-            lineWidth: 1,
-            formatXLabel: (x) => (x === 0 ? "now" : `${x > 0 ? "+" : ""}${x}h`),
+            format: (x) => (x === 0 ? "now" : `${x > 0 ? "+" : ""}${x}h`),
           }}
-          yAxis={[{
-            font,
+          yAxis={{
             tickValues: [0, 25, 50, 75, 100],
-            labelColor: axisLabel,
-            lineColor: grid,
-            lineWidth: 1,
-            formatYLabel: (v) => `${Math.round(v ?? 0)}%`,
-          }]}
+            format: (v) => `${Math.round(v)}%`,
+          }}
+          gridColor={grid}
+          labelColor={axisLabel}
+          onActiveIndexChange={setActiveIndex}
         >
-          {({ points, chartBounds, xScale }) => (
+          {({ points, chartBounds, xScale, press }) => (
             <>
-              <NowLine x={xScale(0)} bounds={chartBounds} color={muted} />
+              <GuideLine x={xScale(0)} bounds={chartBounds} color={muted} dash={[2, 4]} opacity={0.5} />
 
               {INGREDIENTS.filter((i) => visible(i.key)).map((i) => (
                 <Line
@@ -180,13 +151,8 @@ export default function Chart({ color }: ChartProps) {
                   points={points[i.key]}
                   color={colors[i.key]}
                   strokeWidth={2}
-                  strokeJoin="round"
-                  strokeCap="round"
-                  curveType="monotoneX"
-                  animate={{ type: "timing", duration: 300 }}
-                >
-                  {i.dashed ? <DashPathEffect intervals={[6, 4]} /> : null}
-                </Line>
+                  dash={i.dashed ? [6, 4] : undefined}
+                />
               ))}
 
               {INGREDIENTS.filter((i) => visible(i.key) && peakIndex[i.key] != null).map((i) => (
@@ -195,7 +161,6 @@ export default function Chart({ color }: ChartProps) {
                   points={[points[i.key][peakIndex[i.key]!]]}
                   radius={5.5}
                   color={surface}
-                  style="fill"
                 />
               ))}
               {INGREDIENTS.filter((i) => visible(i.key) && peakIndex[i.key] != null).map((i) => (
@@ -204,24 +169,19 @@ export default function Chart({ color }: ChartProps) {
                   points={[points[i.key][peakIndex[i.key]!]]}
                   radius={3.5}
                   color={colors[i.key]}
-                  style="fill"
                 />
               ))}
 
-              {isActive && (
-                <>
-                  <Crosshair x={state.x.position} bounds={chartBounds} color={muted} />
-                  {INGREDIENTS.filter((i) => visible(i.key)).map((i) => (
-                    <ActiveDot
-                      key={i.key}
-                      x={state.x.position}
-                      y={state.y[i.key].position}
-                      color={colors[i.key]}
-                      ring={surface}
-                    />
-                  ))}
-                </>
-              )}
+              <Crosshair press={press} bounds={chartBounds} color={muted} />
+              {INGREDIENTS.filter((i) => visible(i.key)).map((i) => (
+                <ActiveDot
+                  key={i.key}
+                  press={press}
+                  points={points[i.key]}
+                  color={colors[i.key]}
+                  ring={surface}
+                />
+              ))}
             </>
           )}
         </CartesianChart>
@@ -274,44 +234,5 @@ export default function Chart({ color }: ChartProps) {
         })}
       </View>
     </View>
-  );
-}
-
-function NowLine({ x, bounds, color }: { x: number; bounds: ChartBounds; color: string }) {
-  return (
-    <SkiaLine
-      p1={vec(x, bounds.top)}
-      p2={vec(x, bounds.bottom)}
-      color={color}
-      strokeWidth={1}
-      opacity={0.5}
-    >
-      <DashPathEffect intervals={[2, 4]} />
-    </SkiaLine>
-  );
-}
-
-function Crosshair({ x, bounds, color }: { x: SharedValue<number>; bounds: ChartBounds; color: string }) {
-  const top = useDerivedValue(() => vec(x.value, bounds.top));
-  const bottom = useDerivedValue(() => vec(x.value, bounds.bottom));
-
-  return (
-    <SkiaLine p1={top} p2={bottom} color={color} strokeWidth={1}>
-      <DashPathEffect intervals={[4, 3]} />
-    </SkiaLine>
-  );
-}
-
-function ActiveDot({ x, y, color, ring }: {
-  x: SharedValue<number>;
-  y: SharedValue<number>;
-  color: string;
-  ring: string;
-}) {
-  return (
-    <>
-      <Circle cx={x} cy={y} r={6} color={ring} />
-      <Circle cx={x} cy={y} r={4} color={color} />
-    </>
   );
 }

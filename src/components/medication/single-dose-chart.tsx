@@ -1,11 +1,10 @@
+import CartesianChart, { ActiveDot, Crosshair, Line } from "@/components/chart/cartesian-chart";
 import Text from "@/components/ui/text";
 import { mix } from "@/lib/color";
-import { Circle, DashPathEffect, Line as SkiaLine, matchFont, Rect, vec } from "@shopify/react-native-skia";
 import { useColorScheme } from "nativewind";
 import { useMemo, useState } from "react";
-import { Platform, View } from "react-native";
-import { runOnJS, useAnimatedReaction, useDerivedValue, type SharedValue } from "react-native-reanimated";
-import { CartesianChart, Line, useChartPressState, type ChartBounds } from "victory-native";
+import { View } from "react-native";
+import { Rect } from "react-native-svg";
 
 export type SingleDosePoint = { t: number; prodrug: number; active: number };
 
@@ -13,7 +12,6 @@ type Props = {
   data: SingleDosePoint[];
   color: string;
   labels: { prodrug: string; active: string };
-  /** Therapeutic range of the active compound, ng/mL. */
   band?: { min: number; max: number };
 };
 
@@ -28,11 +26,6 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
   const surface = dark ? "#1a1a1e" : "#f5f5f7";
   const colors = { prodrug: mix(color, fg, 0.4), active: color };
 
-  const font = useMemo(
-    () => matchFont({ fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }), fontSize: 11, fontWeight: "500" }),
-    [],
-  );
-
   const peaks = useMemo(() => {
     const peakOf = (key: (typeof KEYS)[number]) =>
       data.reduce((best, p) => (p[key] > best[key] ? p : best), data[0]);
@@ -44,14 +37,7 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
     return Math.ceil((top * 1.1) / 10) * 10;
   }, [peaks, band]);
 
-  const { state, isActive } = useChartPressState({ x: 0, y: { prodrug: 0, active: 0 } });
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  useAnimatedReaction(
-    () => (state.isActive.value ? state.matchedIndex.value : -1),
-    (index, previous) => {
-      if (index !== previous) runOnJS(setActiveIndex)(index >= 0 ? index : null);
-    },
-  );
   const readout = activeIndex != null ? data[activeIndex] : null;
 
   const fmtT = (t: number) => (t < 1 ? `${Math.round(t * 60)} min` : `${t.toFixed(t % 1 ? 1 : 0)} h`);
@@ -80,29 +66,16 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
         <CartesianChart
           data={data}
           xKey="t"
-          yKeys={[...KEYS]}
+          yKeys={KEYS}
           domain={{ x: [0, data[data.length - 1].t], y: [0, yMax] }}
           padding={{ top: 4, right: 8 }}
-          frame={{ lineWidth: 0 }}
-          chartPressState={state}
-          xAxis={{
-            font,
-            tickValues: [0, 6, 12, 18, 24],
-            labelColor: axisLabel,
-            lineColor: grid,
-            lineWidth: 1,
-            formatXLabel: (t) => `${t}h`,
-          }}
-          yAxis={[{
-            font,
-            tickCount: 5,
-            labelColor: axisLabel,
-            lineColor: grid,
-            lineWidth: 1,
-            formatYLabel: (v) => `${Math.round(v ?? 0)}`,
-          }]}
+          xAxis={{ tickValues: [0, 6, 12, 18, 24], format: (t) => `${t}h` }}
+          yAxis={{ tickCount: 5, format: (v) => `${Math.round(v)}` }}
+          gridColor={grid}
+          labelColor={axisLabel}
+          onActiveIndexChange={setActiveIndex}
         >
-          {({ points, chartBounds, yScale }) => (
+          {({ points, chartBounds, yScale, press }) => (
             <>
               {band ? (
                 <Rect
@@ -110,23 +83,18 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
                   y={yScale(band.max)}
                   width={chartBounds.right - chartBounds.left}
                   height={yScale(band.min) - yScale(band.max)}
-                  color={`${color}14`}
+                  fill={color}
+                  fillOpacity={0.08}
                 />
               ) : null}
 
-              <Line points={points.prodrug} color={colors.prodrug} strokeWidth={2} curveType="monotoneX" strokeCap="round">
-                <DashPathEffect intervals={[6, 4]} />
-              </Line>
-              <Line points={points.active} color={colors.active} strokeWidth={2.5} curveType="monotoneX" strokeCap="round" />
+              <Line points={points.prodrug} color={colors.prodrug} strokeWidth={2} dash={[6, 4]} />
+              <Line points={points.active} color={colors.active} strokeWidth={2.5} />
 
-              {isActive && (
-                <>
-                  <Crosshair x={state.x.position} bounds={chartBounds} color={muted} />
-                  {KEYS.map((key) => (
-                    <ActiveDot key={key} x={state.x.position} y={state.y[key].position} color={colors[key]} ring={surface} />
-                  ))}
-                </>
-              )}
+              <Crosshair press={press} bounds={chartBounds} color={muted} />
+              {KEYS.map((key) => (
+                <ActiveDot key={key} press={press} points={points[key]} color={colors[key]} ring={surface} />
+              ))}
             </>
           )}
         </CartesianChart>
@@ -151,24 +119,5 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
         ) : null}
       </View>
     </View>
-  );
-}
-
-function Crosshair({ x, bounds, color }: { x: SharedValue<number>; bounds: ChartBounds; color: string }) {
-  const top = useDerivedValue(() => vec(x.value, bounds.top));
-  const bottom = useDerivedValue(() => vec(x.value, bounds.bottom));
-  return (
-    <SkiaLine p1={top} p2={bottom} color={color} strokeWidth={1}>
-      <DashPathEffect intervals={[4, 3]} />
-    </SkiaLine>
-  );
-}
-
-function ActiveDot({ x, y, color, ring }: { x: SharedValue<number>; y: SharedValue<number>; color: string; ring: string }) {
-  return (
-    <>
-      <Circle cx={x} cy={y} r={6} color={ring} />
-      <Circle cx={x} cy={y} r={4} color={color} />
-    </>
   );
 }

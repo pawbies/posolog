@@ -1,29 +1,15 @@
-import type { BloodPressureReading } from "@/db/schema";
-import {
-  Circle,
-  DashPathEffect,
-  Line as SkiaLine,
-  matchFont,
-  vec,
-} from "@shopify/react-native-skia";
-import { useColorScheme } from "nativewind";
-import { useMemo, useState } from "react";
-import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
-import {
-  runOnJS,
-  useAnimatedReaction,
-  useDerivedValue,
-  type SharedValue,
-} from "react-native-reanimated";
-import {
+import CartesianChart, {
+  ActiveDot,
   Area,
   AreaRange,
-  CartesianChart,
+  Crosshair,
   Line,
   Scatter,
-  useChartPressState,
-  type ChartBounds,
-} from "victory-native";
+} from "@/components/chart/cartesian-chart";
+import type { BloodPressureReading } from "@/db/schema";
+import { useColorScheme } from "nativewind";
+import { useMemo, useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 
 type SeriesKey = "systolic" | "diastolic" | "pulse";
@@ -75,16 +61,6 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
     [dark],
   );
 
-  const font = useMemo(
-    () =>
-      matchFont({
-        fontFamily: Platform.select({ ios: "Helvetica", default: "sans-serif" }),
-        fontSize: 11,
-        fontWeight: "500",
-      }),
-    [],
-  );
-
   const [hidden, setHidden] = useState<Set<SeriesKey>>(() => new Set());
 
   const visible = (key: SeriesKey) => !hidden.has(key);
@@ -111,8 +87,8 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
     [readings],
   );
 
-  // Hidden series are nulled out rather than dropped, so `yKeys` — and with it
-  // the press state — stays stable across toggles.
+  // Hidden series are nulled out rather than dropped, so every series keeps one
+  // point per reading and the press index lines up across toggles.
   const chartData = useMemo<Point[]>(
     () =>
       data.map((d) => ({
@@ -152,18 +128,7 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
         : { month: "short", day: "numeric" },
     );
 
-  const { state, isActive } = useChartPressState({
-    x: 0,
-    y: { systolic: 0, diastolic: 0, pulse: 0 },
-  });
-
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  useAnimatedReaction(
-    () => (state.isActive.value ? state.matchedIndex.value : -1),
-    (index, previous) => {
-      if (index !== previous) runOnJS(setActiveIndex)(index >= 0 ? index : null);
-    },
-  );
 
   const readout =
     (activeIndex != null ? data[activeIndex] : undefined) ?? data[data.length - 1];
@@ -227,37 +192,21 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
             domain={{ x: xDomain, y: yDomain }}
             domainPadding={{ left: 8, right: 8, top: 8, bottom: 8 }}
             padding={{ right: 4, top: 4 }}
-            frame={{ lineWidth: 0 }}
-            chartPressState={state}
-            xAxis={{
-              font,
-              tickCount: 4,
-              labelColor: theme.axisLabel,
-              lineColor: theme.grid,
-              lineWidth: 1,
-              formatXLabel: formatTick,
-            }}
-            yAxis={[
-              {
-                font,
-                tickCount: 5,
-                labelColor: theme.axisLabel,
-                lineColor: theme.grid,
-                lineWidth: 1,
-                formatYLabel: (v) => (v == null ? "" : `${Math.round(v)}`),
-              },
-            ]}
+            xAxis={{ tickCount: 4, format: formatTick }}
+            yAxis={{ tickCount: 5, format: (v) => `${Math.round(v)}` }}
+            gridColor={theme.grid}
+            labelColor={theme.axisLabel}
+            onActiveIndexChange={setActiveIndex}
           >
-            {({ points, chartBounds }) => (
+            {({ points, chartBounds, press }) => (
               <>
                 {visible("systolic") && visible("diastolic") ? (
                   <AreaRange
-                    upperPoints={points.systolic}
-                    lowerPoints={points.diastolic}
+                    upper={points.systolic}
+                    lower={points.diastolic}
                     color={color.systolic}
                     opacity={0.1}
-                    curveType="monotoneX"
-                    animate={{ type: "timing", duration: 300 }}
+                    animate
                   />
                 ) : (
                   SERIES.filter((s) => s.key !== "pulse" && visible(s.key)).map((s) => (
@@ -267,8 +216,7 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
                       y0={chartBounds.bottom}
                       color={color[s.key]}
                       opacity={0.1}
-                      curveType="monotoneX"
-                      animate={{ type: "timing", duration: 300 }}
+                      animate
                     />
                   ))
                 )}
@@ -279,18 +227,12 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
                     points={points[s.key]}
                     color={color[s.key]}
                     strokeWidth={2}
-                    strokeJoin="round"
-                    strokeCap="round"
-                    curveType="monotoneX"
+                    dash={s.dashed ? [6, 4] : undefined}
                     connectMissingData
-                    animate={{ type: "timing", duration: 300 }}
-                  >
-                    {s.dashed ? <DashPathEffect intervals={[6, 4]} /> : null}
-                  </Line>
+                    animate
+                  />
                 ))}
 
-                {/* A marker per reading. The surface ring keeps them legible
-                    where the traces cross each other. */}
                 {!dense &&
                   SERIES.filter((s) => visible(s.key)).map((s) => (
                     <Scatter
@@ -298,7 +240,6 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
                       points={points[s.key]}
                       radius={ringRadius}
                       color={theme.surface}
-                      style="fill"
                     />
                   ))}
                 {SERIES.filter((s) => visible(s.key)).map((s) => (
@@ -307,24 +248,20 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
                     points={points[s.key]}
                     radius={dotRadius}
                     color={color[s.key]}
-                    style="fill"
                   />
                 ))}
 
-                {isActive && (
-                  <>
-                    <Crosshair x={state.x.position} bounds={chartBounds} color={theme.muted} />
-                    {SERIES.filter((s) => visible(s.key)).map((s) => (
-                      <ActiveDot
-                        key={s.key}
-                        x={state.x.position}
-                        y={state.y[s.key].position}
-                        color={color[s.key]}
-                        ring={theme.surface}
-                      />
-                    ))}
-                  </>
-                )}
+                <Crosshair press={press} bounds={chartBounds} color={theme.muted} />
+                {SERIES.filter((s) => visible(s.key)).map((s) => (
+                  <ActiveDot
+                    key={s.key}
+                    press={press}
+                    points={points[s.key]}
+                    color={color[s.key]}
+                    ring={theme.surface}
+                    radius={5}
+                  />
+                ))}
               </>
             )}
           </CartesianChart>
@@ -375,43 +312,5 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
         })}
       </View>
     </View>
-  );
-}
-
-function Crosshair({
-  x,
-  bounds,
-  color,
-}: {
-  x: SharedValue<number>;
-  bounds: ChartBounds;
-  color: string;
-}) {
-  const top = useDerivedValue(() => vec(x.value, bounds.top));
-  const bottom = useDerivedValue(() => vec(x.value, bounds.bottom));
-
-  return (
-    <SkiaLine p1={top} p2={bottom} color={color} strokeWidth={1}>
-      <DashPathEffect intervals={[4, 3]} />
-    </SkiaLine>
-  );
-}
-
-function ActiveDot({
-  x,
-  y,
-  color,
-  ring,
-}: {
-  x: SharedValue<number>;
-  y: SharedValue<number>;
-  color: string;
-  ring: string;
-}) {
-  return (
-    <>
-      <Circle cx={x} cy={y} r={7} color={ring} />
-      <Circle cx={x} cy={y} r={5} color={color} />
-    </>
   );
 }
