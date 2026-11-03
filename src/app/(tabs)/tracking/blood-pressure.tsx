@@ -2,6 +2,7 @@ import Graph from "@/components/tracking/blood-pressure/graph";
 import Reading from "@/components/tracking/blood-pressure/reading";
 import ReadingSheet from "@/components/tracking/blood-pressure/reading-sheet";
 import Screen from "@/components/ui/screen";
+import { useContentTopInset } from "@/hooks/use-content-top-inset";
 import { allReadings, createReading, deleteReading, updateReading } from "@/db/queries/blood-pressure";
 import type { BloodPressureReading } from "@/db/schema";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
@@ -13,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BloodPressureScreen() {
   const insets = useSafeAreaInsets();
+  const topInset = useContentTopInset();
   const [showAddReading, setShowAddReading] = useState(false);
   const [editingReading, setEditingReading] = useState<BloodPressureReading | null>(null);
   const { data: readings, error, updatedAt } = useLiveQuery(allReadings());
@@ -62,7 +64,7 @@ export default function BloodPressureScreen() {
         }
         ItemSeparatorComponent={() => <View className="h-2" />}
         contentContainerStyle={{
-          paddingTop: 16,
+          paddingTop: topInset + 16,
           paddingBottom: insets.bottom + 24,
         }}
         showsVerticalScrollIndicator={false}

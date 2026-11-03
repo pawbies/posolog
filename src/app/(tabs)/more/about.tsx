@@ -20,7 +20,7 @@ export default function AboutScreen() {
   const { isDark, chevron } = usePalette();
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <View className="items-center pt-10 pb-8">
         <Image
           source={require("@/assets/images/icon.png")}

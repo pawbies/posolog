@@ -1,19 +1,20 @@
 import MedicationFields from "@/components/medication/medication-fields";
+import Text from "@/components/ui/text";
 import { createMedication } from "@/db/queries/medications";
-import { usePalette } from "@/hooks/use-palette";
-import type { MedicationDraft } from "@/lib/medication";
+import { useContentTopInset } from "@/hooks/use-content-top-inset";
+import { FORM_META, ROUTE_META, type MedicationDraft } from "@/lib/medication";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
 import { Save } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { useRef, useState } from "react";
-import { Alert, Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-native";
 
 export default function NewMedicationScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const topInset = useContentTopInset();
   const { colorScheme } = useColorScheme();
-  const { brand } = usePalette();
   const [draft, setDraft] = useState<MedicationDraft>(() => ({
     name: "",
     color: colorScheme === "dark" ? "#49a6b2" : "#1682ad",
@@ -25,6 +26,8 @@ export default function NewMedicationScreen() {
   const savingRef = useRef(false);
   const savedRef = useRef(false);
   const [saving, setSaving] = useState(false);
+  const canSave = !!draft.name.trim() && !saving;
+  const FormIcon = FORM_META[draft.form].icon;
   const dirty = (Object.keys(draft) as (keyof MedicationDraft)[]).some(
     (key) => draft[key] !== initialDraft.current[key],
   );
@@ -68,23 +71,50 @@ export default function NewMedicationScreen() {
       <Stack.Screen
         options={{
           title: "Add medication",
+          // Live preview of the medication being created.
+          // Fixed width so the centered title doesn't shift as the name changes.
+          headerTitle: () => (
+            <View className="w-52 flex-row items-center gap-2.5">
+              <View
+                style={{ backgroundColor: `${draft.color}1f` }}
+                className="h-9 w-9 items-center justify-center rounded-xl"
+              >
+                <FormIcon size={18} color={draft.color} />
+              </View>
+              <View className="shrink">
+                <Text numberOfLines={1} className="text-base font-semibold">
+                  {draft.name.trim() || "New medication"}
+                </Text>
+                <Text muted numberOfLines={1} className="text-xs">
+                  {FORM_META[draft.form].name} · {ROUTE_META[draft.route].name}
+                </Text>
+              </View>
+            </View>
+          ),
           headerRight: () => (
             <Pressable
               onPress={save}
-              disabled={!draft.name.trim() || saving}
+              disabled={!canSave}
               accessibilityRole="button"
               accessibilityLabel="Save medication"
               hitSlop={8}
-              style={{ opacity: !draft.name.trim() || saving ? 0.4 : 1 }}
+              style={{ backgroundColor: `${draft.color}1f`, opacity: canSave ? 1 : 0.4 }}
+              className="flex-row items-center gap-1.5 rounded-full px-3.5 py-1.5"
             >
-              <Save size={22} color={brand} />
+              {saving ? (
+                <ActivityIndicator size="small" color={draft.color} />
+              ) : (
+                <Save size={16} color={draft.color} />
+              )}
+              <Text style={{ color: draft.color }} className="text-sm font-semibold">Save</Text>
             </Pressable>
           ),
         }}
       />
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-4 py-4 grow"
+        contentContainerClassName="px-4 pb-4 grow"
+        contentContainerStyle={{ paddingTop: topInset + 16 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >

@@ -10,7 +10,7 @@ import { Fragment } from "react";
 
 export default function WikiScreen() {
   return (
-    <Screen skipTopInset>
+    <Screen>
       <PageHero
         icon={BookOpenText}
         iconColor="#c026d3"

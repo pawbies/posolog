@@ -1,4 +1,5 @@
 import Pressable from "@/components/ui/pressable";
+import { stackHeaderOptions } from "@/constants/navigation";
 import { MedicationProvider } from "@/contexts/medication";
 import { medicationById } from "@/db/queries/medications";
 import { usePalette } from "@/hooks/use-palette";
@@ -15,7 +16,6 @@ export default function MedicationLayout() {
   const { data, updatedAt } = useLiveQuery(medicationById(Number(id)), [id]);
   const medication = data?.[0];
 
-  // The medication was deleted (or never existed): leave its screens.
   useEffect(() => {
     if (updatedAt && !medication) router.dismissTo("/medications");
   }, [medication, updatedAt]);
@@ -24,7 +24,7 @@ export default function MedicationLayout() {
 
   return (
     <MedicationProvider value={medication}>
-      <Stack>
+      <Stack screenOptions={stackHeaderOptions}>
         <Stack.Screen
           name="index"
           options={{
@@ -53,11 +53,11 @@ export default function MedicationLayout() {
         />
         <Stack.Screen
           name="info"
-          options={{ title: `${medication.name} info`, headerBackTitle: "Overview" }}
+          options={{ title: `${medication.name} info` }}
         />
         <Stack.Screen
           name="edit"
-          options={{ title: `Edit ${medication.name}`, headerBackTitle: "Overview" }}
+          options={{ title: `Edit ${medication.name}` }}
         />
       </Stack>
     </MedicationProvider>

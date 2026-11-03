@@ -280,7 +280,7 @@ export default function MedicationInfoScreen() {
   const active = INGREDIENTS[1];
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <View className="mt-6">
         <Text className="text-3xl font-bold">{medication.name}</Text>
         <Text muted className="mt-1 text-sm">

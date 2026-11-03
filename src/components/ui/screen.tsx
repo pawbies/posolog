@@ -1,3 +1,4 @@
+import { useContentTopInset } from "@/hooks/use-content-top-inset";
 import { type ReactNode } from "react";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -11,8 +12,9 @@ type ScreenProps = {
 
 export default function Screen({ scrollView = true, skipTopInset = false, skipBottomInset = false, children }: ScreenProps) {
   const insets = useSafeAreaInsets();
+  const topInset = useContentTopInset();
   const padding = {
-    paddingTop: skipTopInset ? 0 : insets.top,
+    paddingTop: skipTopInset ? 0 : topInset,
     paddingBottom: skipBottomInset ? 0 : insets.bottom + 32,
   };
 

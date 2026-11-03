@@ -29,7 +29,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <PageHero icon={Settings} iconColor="#3b82f6" tileClassName="bg-blue-100 dark:bg-blue-950" title="Settings" />
 
       <Section title="General">

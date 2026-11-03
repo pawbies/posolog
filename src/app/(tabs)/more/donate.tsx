@@ -6,7 +6,7 @@ import { Heart } from "lucide-react-native";
 
 export default function DonateScreen() {
   return (
-    <Screen skipTopInset>
+    <Screen>
       <PageHero
         icon={Heart}
         iconColor="#ef4444"

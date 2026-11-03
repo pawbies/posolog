@@ -1,8 +1,9 @@
+import { stackHeaderOptions } from "@/constants/navigation";
 import { Stack } from "expo-router";
 
 export default function MoreLayout() {
   return (
-    <Stack screenOptions={{ animation: "default" }}>
+    <Stack screenOptions={{ ...stackHeaderOptions, animation: "default" }}>
       <Stack.Screen name="index" options={{ headerShown: false, title: "More" }} />
       <Stack.Screen name="calculator" options={{ title: "Calculator" }} />
       <Stack.Screen name="statistics" options={{ title: "Statistics" }} />

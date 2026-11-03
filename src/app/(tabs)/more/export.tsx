@@ -25,7 +25,7 @@ export default function ExportScreen() {
   };
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <PageHero icon={Upload} iconColor="#22c55e" tileClassName="bg-green-100 dark:bg-green-950" title="Export" />
 
       <InfoCard>

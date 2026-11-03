@@ -17,7 +17,7 @@ export default function WikiPage({ icon: Icon, heading, path, children }: WikiPa
   const iconColor = colorScheme === "dark" ? "#e879f9" : "#c026d3";
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <View className="pt-6 pb-2 flex-row items-center">
         <View className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-violet-950 items-center justify-center">
           <Icon size={26} color={iconColor} />

@@ -12,6 +12,7 @@ import {
   ShieldOff,
   type LucideIcon,
 } from "lucide-react-native";
+import { useContentTopInset } from "@/hooks/use-content-top-inset";
 import { usePalette } from "@/hooks/use-palette";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -42,12 +43,13 @@ function Section({ icon: Icon, iconColor, title, children }: SectionProps) {
 
 export default function PrivacyPolicyScreen() {
   const insets = useSafeAreaInsets();
+  const topInset = useContentTopInset();
   const { chevron } = usePalette();
 
   return (
     <ScrollView
       className="px-4 flex-1 bg-background"
-      contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom }}
+      contentContainerStyle={{ paddingTop: topInset + 16, paddingBottom: insets.bottom }}
     >
       <Text muted className="text-sm text-center mb-6">
         Last updated {LAST_UPDATED}

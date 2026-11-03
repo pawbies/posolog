@@ -44,7 +44,7 @@ export default function MedicationScreen() {
   const notImplemented = () => Alert.alert("Hehe", "Not implemented yet.");
 
   return (
-    <Screen skipTopInset>
+    <Screen>
       <View
         className="mt-6 overflow-hidden rounded-[32px] p-5"
         style={{ backgroundColor: `${color}14` }}
