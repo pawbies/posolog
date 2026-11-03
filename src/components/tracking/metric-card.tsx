@@ -1,34 +1,35 @@
-import Pressable from "@/components/ui/pressable";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
+import IconBadge from "@/components/ui/icon-badge";
 import Text from "@/components/ui/text";
-import { LucideIcon } from "lucide-react-native";
+import { type Tone } from "@/constants/colors";
+import { usePalette } from "@/hooks/use-palette";
+import { ArrowUpRight, LucideIcon } from "lucide-react-native";
 import { View } from "react-native";
 
 type MetricCardProps = {
   icon: LucideIcon;
-  iconColor: string;
+  tone: Tone;
   title: string;
   subtitle: string;
   onPress?: () => void;
 };
 
-export default function MetricCard({ icon: Icon, iconColor, title, subtitle, onPress }: MetricCardProps) {
-  return (
+export default function MetricCard({ icon, tone, title, subtitle, onPress }: MetricCardProps) {
+  const { tones } = usePalette();
 
-    <View className="w-1/2 px-1.5 mb-3">
-      <Pressable
-        onPress={onPress}
-        className="h-36 bg-surface rounded-2xl p-4 justify-between active:opacity-60"
-      >
-        <View className="w-11 h-11 rounded-full bg-white dark:bg-neutral-800 items-center justify-center">
-          <Icon size={24} color={iconColor} />
+  return (
+    <View className="mb-3 w-1/2 px-1.5">
+      <Card tone={tone} onPress={onPress} accessibilityLabel={`${title}, ${subtitle}`} className="h-44 justify-between">
+        <View className="flex-row items-start justify-between">
+          <IconBadge icon={icon} tone={tone} onTint />
+          <ArrowUpRight size={20} color={tones[tone]} strokeWidth={2.5} />
         </View>
         <View>
-          <Text className="text-lg font-medium">{title}</Text>
-          <Text muted className="text-sm mt-0.5">
-            {subtitle}
-          </Text>
+          <Heading size="sm">{title}</Heading>
+          <Text muted className="mt-0.5 text-sm">{subtitle}</Text>
         </View>
-      </Pressable>
+      </Card>
     </View>
   );
 }

@@ -1,5 +1,7 @@
+import Heading from "@/components/ui/heading";
+import Text from "@/components/ui/text";
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 type ArticleSectionProps = {
   title: string;
@@ -9,10 +11,8 @@ type ArticleSectionProps = {
 function ArticleSection({ title, children }: ArticleSectionProps) {
   return (
     <View className="mb-7">
-      <Text className="text-xl font-semibold text-black dark:text-white mb-2 ml-1">
-        {title}
-      </Text>
-      <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300 ml-1">
+      <Heading size="md" className="mb-2 ml-1">{title}</Heading>
+      <Text className="ml-1 text-base leading-7 opacity-80">
         {children}
       </Text>
     </View>
@@ -29,14 +29,12 @@ function DefinitionList({ title, children }: DefinitionListProps) {
 
   return (
     <View className="mb-7">
-      <Text className="text-xl font-semibold text-black dark:text-white mb-2 ml-1">
-        {title}
-      </Text>
-      <View className="bg-neutral-100 dark:bg-neutral-900 rounded-2xl overflow-hidden">
+      <Heading size="md" className="mb-3 ml-1">{title}</Heading>
+      <View className="overflow-hidden rounded-[28px] border-2 border-border bg-surface">
         {rows.map((child, i) => (
           <View
             key={i}
-            className={`px-4 py-3 ${i === 0 ? "" : "border-t border-neutral-200 dark:border-neutral-800"}`}
+            className={`px-5 py-4 ${i === 0 ? "" : "border-t-2 border-border"}`}
           >
             {child}
           </View>
@@ -54,8 +52,8 @@ type DefinitionProps = {
 function Definition({ term, children }: DefinitionProps) {
   return (
     <View>
-      <Text className="text-base font-medium text-black dark:text-white mb-1">{term}</Text>
-      <Text className="text-base leading-6 text-neutral-600 dark:text-neutral-300">
+      <Text className="mb-1 font-display-bold text-[17px]">{term}</Text>
+      <Text muted className="text-base leading-6">
         {children}
       </Text>
     </View>

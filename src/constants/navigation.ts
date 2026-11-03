@@ -9,4 +9,5 @@ export const stackHeaderOptions = {
   headerBackButtonDisplayMode: "minimal",
   headerTransparent: isIOS,
   headerBlurEffect: isIOS && !isLiquidGlass ? "systemChromeMaterial" : undefined,
+  headerTitleStyle: { fontFamily: "BricolageGrotesque_700Bold", fontSize: 18 },
 } satisfies NativeStackNavigationOptions;

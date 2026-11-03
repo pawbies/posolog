@@ -1,8 +1,10 @@
 import { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
+import Text from "@/components/ui/text";
 import type { BloodPressureReading } from "@/db/schema";
+import { usePalette } from "@/hooks/use-palette";
 import { ChevronDown, HeartPulse, Pencil, Trash2 } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 type Props = {
@@ -41,16 +43,15 @@ function formatReadingAt(date: Date) {
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <View className="flex-1">
-      <Text className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-        {label}
-      </Text>
-      <Text className="mt-0.5 text-sm text-neutral-700 dark:text-neutral-200">{value}</Text>
+      <Text muted className="text-xs font-medium">{label}</Text>
+      <Text className="mt-0.5 font-display-bold text-base">{value}</Text>
     </View>
   );
 }
 
 export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const { chevron, tones, danger } = usePalette();
 
   const zone = classifyZone(reading.systolic, reading.diastolic);
   const zoneLabel = zone.label.replace(/ blood pressure$/i, "");
@@ -70,37 +71,37 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
       accessibilityState={expandable ? { expanded } : undefined}
 
       style={({ pressed }) => ({ transform: [{ scale: pressed ? 0.985 : 1 }] })}
-      className="rounded-2xl bg-neutral-100 dark:bg-neutral-900 px-4 py-3 active:opacity-70"
+      className="rounded-[24px] border-2 border-border bg-surface px-4 py-3.5 active:opacity-80"
     >
       <View className="flex-row items-center">
-        <View className="h-10 w-1.5 rounded-full" style={{ backgroundColor: zone.fill }} />
+        <View className="h-11 w-1.5 rounded-full" style={{ backgroundColor: zone.fill }} />
 
         <View className="flex-1 ml-3">
           <View className="flex-row items-baseline">
-            <Text className="text-xl font-semibold text-black dark:text-white">
+            <Text className="font-display text-2xl">
               {reading.systolic}
-              <Text className="text-neutral-400 dark:text-neutral-500">/</Text>
+              <Text muted>/</Text>
               {reading.diastolic}
             </Text>
-            <Text className="ml-1.5 text-xs text-neutral-500 dark:text-neutral-400">mmHg</Text>
+            <Text muted className="ml-1.5 text-xs font-medium">mmHg</Text>
 
             {reading.pulse != null && (
               <View className="flex-row items-center ml-3">
-                <HeartPulse size={13} color="#a855f7" />
-                <Text className="ml-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <HeartPulse size={13} color={tones.lilac} />
+                <Text muted className="ml-1 text-xs font-medium">
                   {reading.pulse} bpm
                 </Text>
               </View>
             )}
           </View>
 
-          <Text className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+          <Text muted className="mt-0.5 text-xs">
             {formatReadingAt(reading.readingAt)}
           </Text>
         </View>
 
-        <View className="rounded-full px-2 py-1" style={{ backgroundColor: zone.fill }}>
-          <Text className="text-[10px] font-semibold" style={{ color: zone.lc }}>
+        <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: zone.fill }}>
+          <Text className="text-[11px] font-bold" style={{ color: zone.lc }}>
             {zoneLabel}
           </Text>
         </View>
@@ -108,7 +109,7 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
         {expandable ? (
           <ChevronDown
             size={16}
-            color="#a3a3a3"
+            color={chevron}
             style={{
               marginLeft: 8,
               transform: [{ rotate: expanded ? "180deg" : "0deg" }],
@@ -123,7 +124,7 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
               accessibilityLabel="Delete reading"
               className="ml-3 active:opacity-50"
             >
-              <Trash2 size={18} color="#a3a3a3" />
+              <Trash2 size={18} color={chevron} />
             </Pressable>
           )
         )}
@@ -131,10 +132,8 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
 
       {expandable && expanded && (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
-          <View className="mt-3 border-t border-neutral-200 dark:border-neutral-800 pt-3">
-            <Text className="text-xs font-semibold" style={{ color: zone.lc }}>
-              {zone.label}
-            </Text>
+          <View className="mt-3 border-t-2 border-border pt-3">
+            <Text className="text-sm font-semibold">{zone.label}</Text>
 
             <View className="mt-2 flex-row">
               <Metric label="Pulse pressure" value={`${pulsePressure} mmHg`} />
@@ -145,7 +144,7 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
               />
             </View>
 
-            <Text className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
+            <Text muted className="mt-3 text-xs">
               {reading.readingAt.toLocaleString(undefined, {
                 weekday: "long",
                 day: "numeric",
@@ -156,32 +155,32 @@ export default function Reading({ reading, onPress, onDelete, onEdit }: Props) {
               })}
             </Text>
 
-            <View className="flex flex-row gap-2">
-                {onEdit && (
+            <View className="mt-3 flex-row gap-2">
+              {onEdit && (
                 <Pressable
-                    onPress={() => onEdit(reading)}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel="Edit reading"
-                    className="mt-3 flex-row items-center self-start rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-1.5 active:opacity-60"
+                  onPress={() => onEdit(reading)}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Edit reading"
+                  className="flex-row items-center rounded-full bg-tint-sky px-3.5 py-2 active:opacity-60"
                 >
-                    <Pencil size={14} color="#3b82f6" />
-                    <Text className="ml-1.5 text-xs font-semibold text-blue-500">Edit</Text>
+                  <Pencil size={14} color={tones.sky} strokeWidth={2.5} />
+                  <Text className="ml-1.5 font-display-bold text-sm" style={{ color: tones.sky }}>Edit</Text>
                 </Pressable>
-                )}
+              )}
 
-                {onDelete && (
+              {onDelete && (
                 <Pressable
-                    onPress={() => onDelete(reading.id)}
-                    hitSlop={8}
-                    accessibilityRole="button"
-                    accessibilityLabel="Delete reading"
-                    className="mt-3 mr-3 flex-row items-center self-start rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-1.5 active:opacity-60"
+                  onPress={() => onDelete(reading.id)}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Delete reading"
+                  className="flex-row items-center rounded-full bg-error/10 px-3.5 py-2 active:opacity-60"
                 >
-                    <Trash2 size={14} color="#ef4444" />
-                    <Text className="ml-1.5 text-xs font-semibold text-red-500">Delete</Text>
+                  <Trash2 size={14} color={danger} strokeWidth={2.5} />
+                  <Text className="ml-1.5 font-display-bold text-sm text-error">Delete</Text>
                 </Pressable>
-                )}
+              )}
             </View>
           </View>
         </Animated.View>

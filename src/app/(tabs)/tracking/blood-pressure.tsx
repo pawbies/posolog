@@ -1,7 +1,9 @@
 import Graph from "@/components/tracking/blood-pressure/graph";
 import Reading from "@/components/tracking/blood-pressure/reading";
 import ReadingSheet from "@/components/tracking/blood-pressure/reading-sheet";
+import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
+import Text from "@/components/ui/text";
 import { useContentTopInset } from "@/hooks/use-content-top-inset";
 import { allReadings, createReading, deleteReading, updateReading } from "@/db/queries/blood-pressure";
 import type { BloodPressureReading } from "@/db/schema";
@@ -45,7 +47,7 @@ export default function BloodPressureScreen() {
               accessibilityLabel="Add reading"
               className="active:opacity-50"
             >
-              <Plus size={24} color={tintColor} />
+              <Plus size={26} color={tintColor} strokeWidth={2.5} />
             </Pressable>
           ),
         }}
@@ -58,8 +60,14 @@ export default function BloodPressureScreen() {
           <Reading reading={item} onDelete={confirmDelete} onEdit={setEditingReading} />
         )}
         ListHeaderComponent={
-          <View className="pb-12">
+          <View className="pb-4">
             <Graph loading={loading} readings={readings} />
+            {readings.length > 0 ? (
+              <View className="ml-2 mt-8 flex-row items-baseline justify-between">
+                <Heading size="md">Readings</Heading>
+                <Text muted className="mr-2 text-sm">{readings.length} total</Text>
+              </View>
+            ) : null}
           </View>
         }
         ItemSeparatorComponent={() => <View className="h-2" />}

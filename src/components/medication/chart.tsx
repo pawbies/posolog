@@ -1,7 +1,9 @@
 import CartesianChart, { ActiveDot, Crosshair, GuideLine, Line, Scatter } from "@/components/chart/cartesian-chart";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
-import { useColorScheme } from "nativewind";
+import { usePalette } from "@/hooks/use-palette";
 import { useMemo, useState } from "react";
 import { mix } from "@/lib/color";
 import { Activity } from "lucide-react-native";
@@ -37,16 +39,9 @@ type ChartProps = {
 }
 
 export default function Chart({ color }: ChartProps) {
-  const colorScheme = useColorScheme().colorScheme;
-  const dark = colorScheme === "dark";
-  const fg = dark ? "#fafafa" : "#171717";
-
   // Chrome stays neutral (matches bg-surface cards); only the data carries the
   // medication colour.
-  const surface   = dark ? "#1a1a1e" : "#f5f5f7";
-  const grid      = dark ? "#2d2d34" : "#e1e1e6";
-  const muted     = dark ? "#52525b" : "#a1a1aa";
-  const axisLabel = dark ? "#9696a0" : "#71717a";
+  const { text: fg, surface, grid, chevron: muted, muted: axisLabel } = usePalette();
   // Primary series uses the medication colour as-is; the secondary one is the
   // same hue pushed toward the text colour (darker in light mode, lighter in
   // dark mode) and drawn dashed so the two stay distinguishable.
@@ -110,11 +105,11 @@ export default function Chart({ color }: ChartProps) {
     `${value >= 100 ? Math.round(value) : value.toFixed(value >= 10 ? 1 : 2)} ${unit}`;
 
   return (
-    <View className="mt-4 w-full rounded-3xl bg-surface p-4">
+    <Card className="mt-4 w-full">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <Activity size={16} color={color} />
-          <Text muted className="text-xs font-semibold uppercase tracking-wider">Plasma levels</Text>
+          <Activity size={18} color={color} strokeWidth={2.5} />
+          <Heading size="sm">Plasma levels</Heading>
         </View>
         <Text muted className="text-xs">
           {onNow ? "Now · % of Cmax" : formatOffset(readout.x)}
@@ -150,7 +145,7 @@ export default function Chart({ color }: ChartProps) {
                   key={i.key}
                   points={points[i.key]}
                   color={colors[i.key]}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dash={i.dashed ? [6, 4] : undefined}
                 />
               ))}
@@ -187,7 +182,7 @@ export default function Chart({ color }: ChartProps) {
         </CartesianChart>
       </View>
 
-      <View className="mt-4 gap-2 border-t border-border pt-3">
+      <View className="mt-4 gap-2.5 border-t-2 border-border pt-4">
         {INGREDIENTS.map((i) => {
           const on = visible(i.key);
           const percent = readout[i.key];
@@ -215,7 +210,7 @@ export default function Chart({ color }: ChartProps) {
                   style={{ backgroundColor: on ? colors[i.key] : muted }}
                 />
               )}
-              <Text className={`text-xs ${on ? "" : "line-through opacity-50"}`}>{i.label}</Text>
+              <Text className={`text-sm font-medium ${on ? "" : "line-through opacity-50"}`}>{i.label}</Text>
               <View className="flex-1" />
               {!on ? (
                 <Text muted className="text-xs">Hidden</Text>
@@ -223,7 +218,7 @@ export default function Chart({ color }: ChartProps) {
                 <Text muted className="text-xs">Not taken yet</Text>
               ) : (
                 <>
-                  <Text className="text-xs font-medium">
+                  <Text className="text-sm font-semibold">
                     {formatLevel((percent / 100) * i.cmax, i.unit)}
                   </Text>
                   <Text muted className="ml-1.5 text-xs">{Math.round(percent)}%</Text>
@@ -233,6 +228,6 @@ export default function Chart({ color }: ChartProps) {
           );
         })}
       </View>
-    </View>
+    </Card>
   );
 }

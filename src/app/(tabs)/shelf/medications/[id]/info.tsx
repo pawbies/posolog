@@ -1,4 +1,6 @@
 import SingleDoseChart, { type SingleDosePoint } from "@/components/medication/single-dose-chart";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
 import { useMedication } from "@/contexts/medication";
@@ -163,19 +165,19 @@ function Section({ icon: Icon, title, color, children }: {
   icon: LucideIcon; title: string; color: string; children: ReactNode;
 }) {
   return (
-    <View className="mt-4 rounded-3xl bg-surface p-4">
+    <Card className="mt-4">
       <View className="flex-row items-center gap-2">
-        <Icon size={16} color={color} />
-        <Text muted className="text-xs font-semibold uppercase tracking-wider">{title}</Text>
+        <Icon size={18} color={color} strokeWidth={2.5} />
+        <Heading size="sm" className="flex-1" numberOfLines={1}>{title}</Heading>
       </View>
       <View className="mt-3">{children}</View>
-    </View>
+    </Card>
   );
 }
 
 function Row({ label, value, first = false }: { label: string; value: ReactNode; first?: boolean }) {
   return (
-    <View className={`flex-row items-center py-2.5 ${first ? "" : "border-t border-border"}`}>
+    <View className={`flex-row items-center py-3 ${first ? "" : "border-t-2 border-border"}`}>
       <Text muted className="flex-1 text-sm">{label}</Text>
       {typeof value === "string" ? <Text className="text-sm font-medium">{value}</Text> : value}
     </View>
@@ -184,9 +186,9 @@ function Row({ label, value, first = false }: { label: string; value: ReactNode;
 
 function Stat({ label, value, unit, color }: { label: string; value: string; unit?: string; color: string }) {
   return (
-    <View className="flex-1 rounded-2xl p-3" style={{ backgroundColor: `${color}14` }}>
-      <Text muted className="text-[10px] font-semibold uppercase tracking-wider">{label}</Text>
-      <Text className="mt-1 text-lg font-semibold" style={{ color }}>
+    <View className="flex-1 rounded-[20px] p-3.5" style={{ backgroundColor: `${color}14` }}>
+      <Text muted className="text-xs font-medium">{label}</Text>
+      <Text className="mt-1 font-display-bold text-xl" style={{ color }}>
         {value}
         {unit ? <Text muted className="text-xs font-normal"> {unit}</Text> : null}
       </Text>
@@ -196,8 +198,8 @@ function Stat({ label, value, unit, color }: { label: string; value: string; uni
 
 function Chip({ label, color }: { label: string; color: string }) {
   return (
-    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${color}1a` }}>
-      <Text className="text-xs font-medium" style={{ color }}>{label}</Text>
+    <View className="rounded-full px-3 py-1" style={{ backgroundColor: `${color}1a` }}>
+      <Text className="text-xs font-semibold" style={{ color }}>{label}</Text>
     </View>
   );
 }
@@ -255,10 +257,10 @@ function IngredientCard({ ingredient, color }: { ingredient: Ingredient; color: 
       )}
 
       {ingredient.therapeuticRangeMin != null || ingredient.toxicThreshold != null ? (
-        <View className="mt-3 rounded-2xl p-3" style={{ backgroundColor: `${color}0d` }}>
+        <View className="mt-3 rounded-[20px] p-3.5" style={{ backgroundColor: `${color}0d` }}>
           <View className="flex-row items-center gap-1.5">
-            <ShieldAlert size={14} color={color} />
-            <Text muted className="text-[10px] font-semibold uppercase tracking-wider">Concentration targets</Text>
+            <ShieldAlert size={16} color={color} strokeWidth={2.5} />
+            <Text className="font-display-medium text-sm">Concentration targets</Text>
           </View>
           <Row first label="Therapeutic range" value={range} />
           <Row
@@ -281,11 +283,13 @@ export default function MedicationInfoScreen() {
 
   return (
     <Screen>
-      <View className="mt-6">
-        <Text className="text-3xl font-bold">{medication.name}</Text>
-        <Text muted className="mt-1 text-sm">
-          Reference sheet · placeholder data
-        </Text>
+      <View className="mt-2">
+        <Heading size="xl">{medication.name}</Heading>
+        <View className="mt-2 flex-row">
+          <View className="rounded-full bg-tint-cream px-3 py-1">
+            <Text className="text-xs font-semibold">Placeholder data</Text>
+          </View>
+        </View>
       </View>
 
       <Section icon={Layers} title="Overview" color={color}>
@@ -296,7 +300,7 @@ export default function MedicationInfoScreen() {
           label="Color"
           value={
             <View className="flex-row items-center gap-2">
-              <View className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: color }} />
+              <View className="h-4 w-4 rounded-full" style={{ backgroundColor: color }} />
               <Text className="text-sm font-medium">{color.toUpperCase()}</Text>
             </View>
           }
@@ -324,8 +328,8 @@ export default function MedicationInfoScreen() {
         {STRENGTH_INGREDIENTS.map((si, i) => {
           const ingredient = INGREDIENTS.find((x) => x.id === si.ingredientId);
           return (
-            <View key={si.ingredientId} className={i === 0 ? "" : "mt-3 border-t border-border pt-3"}>
-              <Text className="text-base font-semibold">{ingredient?.name}</Text>
+            <View key={si.ingredientId} className={i === 0 ? "" : "mt-3 border-t-2 border-border pt-3"}>
+              <Text className="font-display-bold text-base">{ingredient?.name}</Text>
               <View className="mt-2 flex-row gap-2">
                 <Stat label="Labelled" value={fmt(si.displayAmount)} unit={si.displayUnit} color={color} />
                 <Stat label="Free base" value={fmt(si.amountBase, 2)} unit="mg" color={color} />
@@ -363,9 +367,9 @@ export default function MedicationInfoScreen() {
         ) : null}
       </Section>
 
-      <View className="mt-8 flex-row items-center gap-2 ml-1">
-        <Activity size={16} color={color} />
-        <Text muted className="text-xs font-semibold uppercase tracking-wider">Ingredients & kinetics</Text>
+      <View className="ml-2 mt-10 flex-row items-center gap-2">
+        <Activity size={20} color={color} strokeWidth={2.5} />
+        <Heading size="md">Ingredients & kinetics</Heading>
       </View>
       {INGREDIENTS.map((ingredient) => (
         <IngredientCard key={ingredient.id} ingredient={ingredient} color={color} />

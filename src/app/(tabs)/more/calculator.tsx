@@ -1,10 +1,10 @@
+import EmptyState from "@/components/ui/empty-state";
 import Screen from "@/components/ui/screen";
-import Text from "@/components/ui/text";
 
 export default function CalculatorScreen() {
   return (
     <Screen>
-      <Text className="text-3xl">Calculator</Text>
+      <EmptyState title="Coming soon" body="The calculator is still being built. Check back in a future update." />
     </Screen>
   );
 }

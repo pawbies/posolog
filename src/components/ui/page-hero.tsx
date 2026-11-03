@@ -1,25 +1,28 @@
+import Heading from "@/components/ui/heading";
 import Text from "@/components/ui/text";
+import { toneBg, type Tone } from "@/constants/colors";
+import { usePalette } from "@/hooks/use-palette";
 import { cn } from "@/lib/cn";
 import { type LucideIcon } from "lucide-react-native";
 import { View } from "react-native";
 
 type PageHeroProps = {
   icon: LucideIcon;
-  iconColor: string;
-  /** Background classes for the icon tile, e.g. "bg-blue-100 dark:bg-blue-950". */
-  tileClassName: string;
+  tone: Tone;
   title: string;
   subtitle?: string;
 };
 
-export default function PageHero({ icon: Icon, iconColor, tileClassName, title, subtitle }: PageHeroProps) {
+export default function PageHero({ icon: Icon, tone, title, subtitle }: PageHeroProps) {
+  const { tones } = usePalette();
+
   return (
-    <View className="items-center pt-10 pb-8">
-      <View className={cn("w-28 h-28 rounded-3xl items-center justify-center", tileClassName)}>
-        <Icon size={56} color={iconColor} />
+    <View className="items-center pb-8 pt-6">
+      <View className={cn("h-28 w-28 items-center justify-center rounded-[36px] -rotate-3", toneBg[tone])}>
+        <Icon size={52} color={tones[tone]} strokeWidth={2} />
       </View>
-      <Text className="text-3xl font-semibold mt-4 text-center">{title}</Text>
-      {subtitle ? <Text muted className="text-sm mt-1">{subtitle}</Text> : null}
+      <Heading size="lg" className="mt-5 text-center">{title}</Heading>
+      {subtitle ? <Text muted className="mt-1 text-center text-base">{subtitle}</Text> : null}
     </View>
   );
 }

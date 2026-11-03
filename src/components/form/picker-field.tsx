@@ -1,4 +1,5 @@
-import Text from "@/components/ui/text";
+import FieldLabel, { fieldBox } from "@/components/form/field-label";
+import { cn } from "@/lib/cn";
 import { Host, Picker } from "@expo/ui";
 import { type LucideIcon } from "lucide-react-native";
 import { Platform, View } from "react-native";
@@ -21,12 +22,10 @@ export default function PickerField<T extends string>({ label, options, selected
   const Icon = options.find((o) => o.value === selected)?.icon;
 
   return (
-    <View className="mb-4">
-      <Text muted className="text-xs font-semibold mb-1.5">
-        {label}
-      </Text>
-      <View className="flex-row items-center rounded-xl border border-border bg-surface min-h-12 pl-4 pr-1">
-        {Icon ? <Icon size={18} color={color} /> : null}
+    <View className="mb-5">
+      <FieldLabel>{label}</FieldLabel>
+      <View className={cn(fieldBox, "min-h-14 pl-4 pr-1")}>
+        {Icon ? <Icon size={20} color={color} strokeWidth={2.25} /> : null}
         <Host
           seedColor={color}
           matchContents={Platform.OS === "ios" ? true : { vertical: true }}

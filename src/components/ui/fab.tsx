@@ -22,20 +22,20 @@ export default function Fab({ onPress, icon: Icon, label }: Props) {
       android_ripple={{
         color: isDark ? "#00000033" : "#ffffff40",
         borderless: true,
-        radius: 28,
+        radius: 32,
       }}
       style={{
         bottom: insets.bottom + 24,
         backgroundColor: brand,
         shadowColor: isDark ? "#000000" : brand,
-        shadowOpacity: isDark ? 0.5 : 0.4,
-        shadowRadius: 12,
-        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: isDark ? 0.5 : 0.35,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 8 },
         elevation: 8,
       }}
-      className="absolute right-6 w-16 h-16 rounded-full justify-center items-center active:opacity-90 active:scale-95"
+      className="absolute right-5 h-16 w-16 items-center justify-center rounded-[22px] active:scale-95 active:opacity-90"
     >
-      <Icon size={28} strokeWidth={2.5} color={onBrand} />
+      <Icon size={30} strokeWidth={2.75} color={onBrand} />
     </Pressable>
   );
 }

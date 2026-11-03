@@ -4,30 +4,49 @@
 
 @layer base {
   :root {
-    --color-background: 255 255 255;
-    --color-surface: 245 245 247;
-    --color-border: 225 225 230;
-    --color-text: 24 24 27;
-    --color-text-muted: 113 113 122;
-    --color-primary: 95 166 48;
-    --color-secondary: 122 162 224;
-    --color-accent: 230 179 77;
-    --color-error: 230 77 89;
-    --color-success: 77 230 105;
+    --color-background: 255 252 246;
+    --color-surface: 255 255 255;
+    --color-surface-alt: 246 243 237;
+    --color-border: 237 235 230;
+    --color-text: 38 38 38;
+    --color-text-muted: 120 116 110;
+    --color-primary: 71 179 90;
+    --color-on-primary: 255 255 255;
+    --color-secondary: 60 138 243;
+    --color-accent: 255 195 77;
+    --color-error: 229 72 72;
+    --color-success: 71 179 90;
+
+    /* Soft pastel fills for cards and icon tiles. */
+    --tint-cream: 253 246 231;
+    --tint-sky: 233 240 255;
+    --tint-peach: 255 231 225;
+    --tint-rose: 252 225 234;
+    --tint-mint: 225 244 228;
+    --tint-lilac: 238 233 255;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-background: 12 12 14;
-      --color-surface: 26 26 30;
-      --color-border: 45 45 52;
-      --color-text: 245 245 247;
-      --color-text-muted: 150 150 160;
-      --color-primary: 141 200 102;
-      --color-secondary: 143 176 230;
-      --color-accent: 224 176 89;
-      --color-error: 226 120 129;
-      --color-success: 99 207 171;
+      --color-background: 18 17 16;
+      --color-surface: 30 29 27;
+      --color-surface-alt: 40 38 36;
+      --color-border: 50 48 45;
+      --color-text: 245 243 239;
+      --color-text-muted: 160 156 150;
+      --color-primary: 107 203 122;
+      --color-on-primary: 14 34 18;
+      --color-secondary: 125 176 255;
+      --color-accent: 255 205 110;
+      --color-error: 242 120 120;
+      --color-success: 107 203 122;
+
+      --tint-cream: 46 39 24;
+      --tint-sky: 25 34 54;
+      --tint-peach: 52 31 26;
+      --tint-rose: 52 27 37;
+      --tint-mint: 24 44 29;
+      --tint-lilac: 37 31 58;
     }
   }
 }

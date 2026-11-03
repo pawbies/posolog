@@ -6,10 +6,13 @@ import CartesianChart, {
   Line,
   Scatter,
 } from "@/components/chart/cartesian-chart";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
+import Text from "@/components/ui/text";
 import type { BloodPressureReading } from "@/db/schema";
-import { useColorScheme } from "nativewind";
+import { usePalette } from "@/hooks/use-palette";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
 
 type SeriesKey = "systolic" | "diastolic" | "pulse";
@@ -45,12 +48,9 @@ const DAY_MS = 86_400_000;
 const DENSE_AT = 60;
 
 export default function Graph({ readings, loading=false }: { readings: BloodPressureReading[]; loading?: boolean }) {
-  const { colorScheme } = useColorScheme();
-  const dark = colorScheme === "dark";
+  const { isDark: dark, surface, grid, muted, chevron } = usePalette();
 
-  const theme = dark
-    ? { surface: "#171717", grid: "#262626", axisLabel: "#a3a3a3", muted: "#525252" }
-    : { surface: "#f5f5f5", grid: "#e5e5e5", axisLabel: "#737373", muted: "#a3a3a3" };
+  const theme = { surface, grid, axisLabel: muted, muted: chevron };
 
   const color = useMemo(
     () =>
@@ -139,29 +139,27 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
   const ringRadius = dotRadius + 2;
 
   return (
-    <View className="rounded-2xl bg-neutral-100 p-4 dark:bg-neutral-900">
-      <Text className="text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
-        Trend
-      </Text>
+    <Card>
+      <Heading size="sm">Trend</Heading>
 
       {readout ? (
         <View className="mt-3">
           <View className="flex-row items-baseline">
-            <Text className="text-4xl font-semibold text-black dark:text-white">
+            <Text className="font-display text-[44px] leading-[48px]">
               {readout.systolic}
-              <Text className="text-neutral-400 dark:text-neutral-500">/</Text>
+              <Text muted>/</Text>
               {readout.diastolic}
             </Text>
-            <Text className="ml-1.5 text-sm text-neutral-500 dark:text-neutral-400">
+            <Text muted className="ml-1.5 text-sm font-medium">
               mmHg
             </Text>
             {readout.pulse != null && (
-              <Text className="ml-3 text-sm text-neutral-500 dark:text-neutral-400">
+              <Text muted className="ml-3 text-sm font-medium">
                 {readout.pulse} bpm
               </Text>
             )}
           </View>
-          <Text className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+          <Text muted className="mt-0.5 text-sm">
             {activeIndex == null ? "Latest · " : ""}
             {new Date(readout.t).toLocaleString(undefined, {
               month: "short",
@@ -180,7 +178,7 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
           </View>
         ) : chartData.length === 0 ? (
           <View className="flex-1 items-center justify-center">
-            <Text className="text-sm text-neutral-500 dark:text-neutral-400">
+            <Text muted className="text-sm">
               No readings yet.
             </Text>
           </View>
@@ -268,7 +266,7 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
         )}
       </View>
 
-      <View className="mt-3 flex-row flex-wrap items-center gap-x-4 gap-y-2">
+      <View className="mt-4 flex-row flex-wrap items-center gap-x-4 gap-y-2 border-t-2 border-border pt-4">
         {SERIES.map((s) => {
           const on = visible(s.key);
           return (
@@ -294,23 +292,17 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
                 </View>
               ) : (
                 <View
-                  className="mr-1.5 h-2.5 w-2.5 rounded-full"
+                  className="mr-2 h-3 w-3 rounded-full"
                   style={{ backgroundColor: on ? color[s.key] : theme.muted }}
                 />
               )}
-              <Text
-                className={`text-xs ${
-                  on
-                    ? "text-neutral-600 dark:text-neutral-300"
-                    : "text-neutral-400 line-through dark:text-neutral-600"
-                }`}
-              >
+              <Text className={`text-sm font-medium ${on ? "" : "line-through opacity-50"}`}>
                 {s.label}
               </Text>
             </Pressable>
           );
         })}
       </View>
-    </View>
+    </Card>
   );
 }

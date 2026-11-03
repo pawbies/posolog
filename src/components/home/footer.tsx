@@ -1,28 +1,19 @@
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
+import Mascot from "@/components/ui/mascot";
 import Text from "@/components/ui/text";
-import { Image } from "@/components/ui/image";
-import { Heart } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
 import { View } from "react-native";
 
 export default function Footer() {
-  const { colorScheme } = useColorScheme();
-  const red = colorScheme === "dark" ? "#ff2800" : "#ff1400"
-
   return (
-    <>
-      <View className="mt-16 flex-row items-center justify-center gap-1.5">
-        <Heart size={16} color={red} />
-        <Text>
-          Thank you for using posolog, we hope you like our app!
+    <Card tone="mint" className="mt-10 flex-row items-center gap-4 pr-3">
+      <View className="flex-1">
+        <Heading size="sm">Thanks for using posolog!</Heading>
+        <Text muted className="mt-1 text-sm leading-5">
+          We hope you like our app. Take care of yourself today.
         </Text>
       </View>
-      <View className="w-full flex-row justify-end">
-        <Image
-          source={require("@/assets/images/android-icon-foreground.png")}
-          contentFit="cover"
-          className="w-52 h-52 rounded-3xl"
-        />
-      </View>
-    </>
+      <Mascot className="-mb-8 h-28 w-20" />
+    </Card>
   );
 }

@@ -1,10 +1,10 @@
+import EmptyState from "@/components/ui/empty-state";
 import Screen from "@/components/ui/screen";
-import Text from "@/components/ui/text";
 
 export default function StatisticsScreen() {
   return (
     <Screen>
-      <Text className="text-3xl">Statistics</Text>
+      <EmptyState title="Coming soon" body="The statistics is still being built. Check back in a future update." />
     </Screen>
   );
 }

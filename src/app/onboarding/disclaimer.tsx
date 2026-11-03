@@ -1,11 +1,13 @@
 import Footer from "@/components/onboarding/footer";
 import Header from "@/components/onboarding/header";
+import IconBadge from "@/components/ui/icon-badge";
 import { Link } from "@/components/ui/link";
 import PageHero from "@/components/ui/page-hero";
 import Pressable from "@/components/ui/pressable";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
 import { useSettings } from "@/contexts/settings";
+import { usePalette } from "@/hooks/use-palette";
 import { cn } from "@/lib/cn";
 import { Checkbox, Host } from "@expo/ui";
 import { useRouter } from "expo-router";
@@ -38,6 +40,7 @@ export default function DisclaimerScreen() {
   const router = useRouter();
   const { setSetting } = useSettings();
   const { t } = useTranslation();
+  const { brand } = usePalette();
 
   const finish = async () => {
     setLoading(true);
@@ -53,29 +56,47 @@ export default function DisclaimerScreen() {
   };
 
   return (
-    <Screen>
+    <Screen
+      footer={
+        <Footer
+          disabled={!checked}
+          continueText={t("onboarding.continue_to_app")}
+          onContinue={finish}
+          animated
+          bottomElement={
+            <Text muted className="px-2 text-center text-sm leading-5">
+              <Trans
+                i18nKey="onboarding.consent"
+                components={{
+                  tos: <Link href="/legal/terms-of-service" className="font-bold text-primary" />,
+                  pp: <Link href="/legal/privacy-policy" className="font-bold text-primary" />,
+                }}
+              />
+            </Text>
+          }
+          loading={loading}
+        />
+      }
+    >
       <Header />
 
       <PageHero
         icon={TriangleAlert}
-        iconColor="#db3737"
-        tileClassName="bg-red-100 dark:bg-red-950"
+        tone="peach"
         title="Before you start"
         subtitle="Please read these points carefully"
       />
 
-      <View className="bg-surface rounded-2xl px-4">
-        {POINTS.map(({ icon: Icon, title, body }, i) => (
+      <View className="overflow-hidden rounded-[28px] border-2 border-border bg-surface px-4">
+        {POINTS.map(({ icon, title, body }, i) => (
           <View
             key={title}
-            className={cn("flex-row gap-4 py-4", i > 0 && "border-t border-border")}
+            className={cn("flex-row gap-4 py-4", i > 0 && "border-t-2 border-border")}
           >
-            <View className="w-10 h-10 rounded-xl items-center justify-center bg-red-100 dark:bg-red-950">
-              <Icon size={20} color="#db3737" />
-            </View>
+            <IconBadge icon={icon} tone="peach" size="sm" className="h-10 w-10" />
             <View className="flex-1">
-              <Text className="text-base font-semibold">{title}</Text>
-              <Text muted className="text-sm leading-5 mt-0.5">{body}</Text>
+              <Text className="font-display-bold text-base">{title}</Text>
+              <Text muted className="mt-0.5 text-sm leading-5">{body}</Text>
             </View>
           </View>
         ))}
@@ -86,34 +107,15 @@ export default function DisclaimerScreen() {
         accessibilityState={{ checked }}
         onPress={() => setChecked((c) => !c)}
         className={cn(
-          "flex-row items-center gap-3 mt-4 mb-40 rounded-2xl p-4 border-2",
-          checked ? "border-primary bg-primary/10" : "border-border bg-transparent"
+          "mt-4 flex-row items-center gap-3 rounded-[24px] border-2 p-4",
+          checked ? "border-primary bg-tint-mint" : "border-border bg-transparent"
         )}
       >
-        <Host matchContents>
+        <Host matchContents seedColor={brand}>
           <Checkbox value={checked} onValueChange={setChecked} />
         </Host>
-        <Text className="flex-1 text-base">I understand and accept these points</Text>
+        <Text className="flex-1 text-base font-medium">I understand and accept these points</Text>
       </Pressable>
-
-      <Footer
-        disabled={!checked}
-        continueText={t("onboarding.continue_to_app")}
-        onContinue={finish}
-        animated
-        bottomElement={
-          <Text className="text-center text-sm">
-            <Trans
-              i18nKey="onboarding.consent"
-              components={{
-                tos: <Link href="/legal/terms-of-service" className="text-blue-600 font-semibold" />,
-                pp: <Link href="/legal/privacy-policy" className="text-blue-600 font-semibold" />,
-              }}
-            />
-          </Text>
-        }
-        loading={loading}
-      />
     </Screen>
   );
 }

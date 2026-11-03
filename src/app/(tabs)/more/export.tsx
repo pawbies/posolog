@@ -1,13 +1,15 @@
+import Button from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
 import InfoCard from "@/components/ui/info-card";
 import PageHero from "@/components/ui/page-hero";
-import Pressable from "@/components/ui/pressable";
 import Screen from "@/components/ui/screen";
-import Text from "@/components/ui/text";
-import { cn } from "@/lib/cn";
+import Segmented from "@/components/ui/segmented";
 import { EXPORT_FORMATS, shareExport, type ExportFormat } from "@/lib/export";
 import { Upload } from "lucide-react-native";
 import { useState } from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { Alert } from "react-native";
+
+const FORMAT_OPTIONS = EXPORT_FORMATS.map((f) => ({ key: f.key, label: f.name }));
 
 export default function ExportScreen() {
   const [format, setFormat] = useState<ExportFormat>("json");
@@ -25,47 +27,16 @@ export default function ExportScreen() {
   };
 
   return (
-    <Screen>
-      <PageHero icon={Upload} iconColor="#22c55e" tileClassName="bg-green-100 dark:bg-green-950" title="Export" />
+    <Screen footer={<Button label="Export" icon={Upload} size="lg" onPress={handleExport} loading={loading} />}>
+      <PageHero icon={Upload} tone="mint" title="Export" />
 
-      <InfoCard>
+      <InfoCard tone="mint">
         We encourage you to periodically export your data and store it somewhere safe,
         otherwise all your data could be lost if your device gets stolen or you lose it.
       </InfoCard>
 
-      <Text muted className="text-base ml-5 mb-2">
-        Format
-      </Text>
-      <View className="flex-row rounded-full bg-surface p-1">
-        {EXPORT_FORMATS.map((f) => (
-          <Pressable
-            key={f.key}
-            onPress={() => setFormat(f.key)}
-            accessibilityRole="button"
-            accessibilityState={{ selected: format === f.key }}
-            className={cn("flex-1 items-center rounded-full py-2", format === f.key && "bg-secondary")}
-          >
-            <Text muted={format === f.key} className="text-base">
-              {f.name}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Export"
-        onPress={handleExport}
-        disabled={loading}
-        className="mt-14 min-h-16 flex-row items-center justify-center gap-2 rounded-full bg-primary"
-      >
-        {loading ? <ActivityIndicator size="small" color="#ffffff" /> : (
-          <>
-            <Upload size={20} color="#fff" />
-            <Text className="text-lg font-semibold text-white">Export</Text>
-          </>
-        )}
-      </Pressable>
+      <Heading size="xs" className="mb-2.5 ml-2 text-text-muted">Format</Heading>
+      <Segmented options={FORMAT_OPTIONS} value={format} onChange={setFormat} />
     </Screen>
   );
 }

@@ -1,7 +1,7 @@
 import CartesianChart, { ActiveDot, Crosshair, Line } from "@/components/chart/cartesian-chart";
 import Text from "@/components/ui/text";
 import { mix } from "@/lib/color";
-import { useColorScheme } from "nativewind";
+import { usePalette } from "@/hooks/use-palette";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { Rect } from "react-native-svg";
@@ -18,12 +18,7 @@ type Props = {
 const KEYS = ["prodrug", "active"] as const;
 
 export default function SingleDoseChart({ data, color, labels, band }: Props) {
-  const dark = useColorScheme().colorScheme === "dark";
-  const fg = dark ? "#fafafa" : "#171717";
-  const grid = dark ? "#2d2d34" : "#e1e1e6";
-  const axisLabel = dark ? "#9696a0" : "#71717a";
-  const muted = dark ? "#52525b" : "#a1a1aa";
-  const surface = dark ? "#1a1a1e" : "#f5f5f7";
+  const { text: fg, grid, muted: axisLabel, chevron: muted, surface } = usePalette();
   const colors = { prodrug: mix(color, fg, 0.4), active: color };
 
   const peaks = useMemo(() => {
@@ -47,11 +42,11 @@ export default function SingleDoseChart({ data, color, labels, band }: Props) {
     <View>
       <View className="flex-row gap-2">
         {KEYS.map((key) => (
-          <View key={key} className="flex-1 rounded-2xl p-3" style={{ backgroundColor: `${color}14` }}>
-            <Text muted className="text-[10px] font-semibold uppercase tracking-wider" numberOfLines={1}>
+          <View key={key} className="flex-1 rounded-[20px] p-3.5" style={{ backgroundColor: `${color}14` }}>
+            <Text muted className="text-xs font-medium" numberOfLines={1}>
               {labels[key]}
             </Text>
-            <Text className="mt-1 text-lg font-semibold" style={{ color: colors[key] }}>
+            <Text className="mt-1 font-display-bold text-xl" style={{ color: colors[key] }}>
               {fmtC(readout ? readout[key] : peaks[key][key])}
               <Text muted className="text-xs font-normal"> ng/mL</Text>
             </Text>

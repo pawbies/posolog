@@ -1,7 +1,7 @@
 import Pressable from "@/components/ui/pressable";
-import Text from "@/components/ui/text";
+import { usePalette } from "@/hooks/use-palette";
 import { useRef, useState, type ReactNode } from "react";
-import { ActivityIndicator, Dimensions, View } from "react-native";
+import { ActivityIndicator, Dimensions, Text, View } from "react-native";
 import Animated, {
   Easing,
   interpolate,
@@ -12,7 +12,6 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
 type FooterProps = {
@@ -37,7 +36,7 @@ function measure(view: View | null): Promise<Rect> {
 }
 
 export default function Footer({ disabled = false, continueText, onContinue, animated = false, bottomElement, loading }: FooterProps) {
-  const insets = useSafeAreaInsets();
+  const { onBrand } = usePalette();
   const containerRef = useRef<View>(null);
   const buttonRef = useRef<View>(null);
   const [expanding, setExpanding] = useState(false);
@@ -106,22 +105,19 @@ export default function Footer({ disabled = false, continueText, onContinue, ani
   };
 
   return (
-    <View
-      ref={containerRef}
-      className="absolute left-1/2 -translate-x-1/2 flex flex-col gap-1"
-      style={{ bottom: insets.bottom }}
-    >
+    <View ref={containerRef} className="gap-3">
       <View ref={buttonRef} collapsable={false} style={{ opacity: expanding ? 0 : 1 }}>
         <Pressable
           accessibilityRole="button"
           onPress={handlePress}
           disabled={loading || disabled || expanding}
-          className="min-h-16 min-w-full flex-row items-center justify-center rounded-full bg-primary disabled:bg-primary/50"
+          accessibilityState={{ disabled: loading || disabled || expanding, busy: loading }}
+          className={`min-h-16 flex-row items-center justify-center rounded-full bg-primary active:scale-[0.98] ${disabled ? "opacity-40" : ""}`}
         >
           {loading ? (
-            <ActivityIndicator size="small" color="#ffffff" />
+            <ActivityIndicator size="small" color={onBrand} />
           ) : (
-            <Text className="text-xl font-semibold text-white">{continueText}</Text>
+            <Text className="font-display-bold text-xl text-on-primary">{continueText}</Text>
           )}
         </Pressable>
       </View>
@@ -132,7 +128,7 @@ export default function Footer({ disabled = false, continueText, onContinue, ani
         <Animated.View pointerEvents="none" style={[{ position: "absolute", overflow: "hidden", zIndex: 10 }, overlayStyle]}>
           <View className="flex-1 items-center justify-center bg-primary">
             <Animated.View style={contentStyle}>
-              <Text className="text-xl font-semibold text-white">{continueText}</Text>
+              <Text className="font-display-bold text-xl text-on-primary">{continueText}</Text>
             </Animated.View>
           </View>
         </Animated.View>

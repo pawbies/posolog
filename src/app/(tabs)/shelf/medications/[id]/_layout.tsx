@@ -16,8 +16,9 @@ export default function MedicationLayout() {
   const { data, updatedAt } = useLiveQuery(medicationById(Number(id)), [id]);
   const medication = data?.[0];
 
+  // The medication was deleted (or never existed): leave its screens.
   useEffect(() => {
-    if (updatedAt && !medication) router.dismissTo("/medications");
+    if (updatedAt && !medication) router.dismissTo("/shelf");
   }, [medication, updatedAt]);
 
   if (!medication) return null;
@@ -36,28 +37,28 @@ export default function MedicationLayout() {
                 accessibilityRole="button"
                 accessibilityLabel="Back to medications"
               >
-                <ChevronLeft size={26} color={headerTint} />
+                <ChevronLeft size={28} color={headerTint} strokeWidth={2.5} />
               </Pressable>
             ),
             headerRight: () => (
               <Pressable
-                onPress={() => router.push({ pathname: "/medications/[id]/info", params: { id: medication.id } })}
+                onPress={() => router.push({ pathname: "/shelf/medications/[id]/info", params: { id: medication.id } })}
                 hitSlop={12}
                 accessibilityRole="button"
                 accessibilityLabel="Medication info"
               >
-                <Info size={24} color={headerTint} />
+                <Info size={24} color={headerTint} strokeWidth={2.25} />
               </Pressable>
             ),
           }}
         />
         <Stack.Screen
           name="info"
-          options={{ title: `${medication.name} info` }}
+          options={{ title: "Reference sheet" }}
         />
         <Stack.Screen
           name="edit"
-          options={{ title: `Edit ${medication.name}` }}
+          options={{ title: "Edit medication" }}
         />
       </Stack>
     </MedicationProvider>

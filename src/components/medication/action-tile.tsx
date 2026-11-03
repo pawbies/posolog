@@ -1,3 +1,4 @@
+import IconBadge from "@/components/ui/icon-badge";
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
 import { ChevronRight, Plus, type LucideIcon } from "lucide-react-native";
@@ -12,19 +13,14 @@ type ActionTileProps = {
   onAdd: () => void;
 };
 
-export default function ActionTile({ icon: Icon, label, text, color, onSeeAll, onAdd }: ActionTileProps) {
+export default function ActionTile({ icon, label, text, color, onSeeAll, onAdd }: ActionTileProps) {
   return (
-    <View className="flex-row items-center rounded-3xl bg-surface p-4">
-      <View
-        className="h-12 w-12 items-center justify-center rounded-2xl"
-        style={{ backgroundColor: `${color}1f` }}
-      >
-        <Icon size={22} color={color} />
-      </View>
+    <View className="flex-row items-center rounded-[24px] border-2 border-border bg-surface p-3.5">
+      <IconBadge icon={icon} color={color} />
 
       <View className="ml-3.5 flex-1">
-        <Text muted className="text-xs font-semibold uppercase tracking-wider">{label}</Text>
-        <Text className="mt-0.5 text-lg font-semibold" numberOfLines={1}>{text}</Text>
+        <Text muted className="text-sm font-medium">{label}</Text>
+        <Text className="font-display-bold text-lg leading-6" numberOfLines={1}>{text}</Text>
       </View>
 
       <Pressable
@@ -32,21 +28,21 @@ export default function ActionTile({ icon: Icon, label, text, color, onSeeAll, o
         accessibilityRole="button"
         accessibilityLabel={`See all ${label.toLowerCase()}`}
         hitSlop={6}
-        className="h-10 flex-row items-center gap-0.5 rounded-xl px-6"
-        style={{ backgroundColor: `${color}14` }}
+        className="h-11 flex-row items-center gap-0.5 rounded-full pl-4 pr-3"
+        style={{ backgroundColor: `${color}1a` }}
       >
-        <Text className="text-sm font-semibold" style={{ color }}>All</Text>
-        <ChevronRight size={14} color={color} />
+        <Text className="font-display-bold text-sm" style={{ color }}>All</Text>
+        <ChevronRight size={16} color={color} strokeWidth={2.5} />
       </Pressable>
       <Pressable
         onPress={onAdd}
         accessibilityRole="button"
         accessibilityLabel={`Add ${label.toLowerCase()}`}
         hitSlop={6}
-        className="ml-2 h-10 w-10 items-center justify-center rounded-xl"
-        style={{ backgroundColor: color }}
+        className="ml-2 h-11 w-11 items-center justify-center rounded-full"
+        style={{ backgroundColor: `${color}33` }}
       >
-        <Plus size={18} color="#fff" strokeWidth={2.5} />
+        <Plus size={20} color={color} strokeWidth={2.75} />
       </Pressable>
     </View>
   );

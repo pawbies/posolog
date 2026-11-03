@@ -1,4 +1,7 @@
 import Section from "@/components/list/section";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
+import IconBadge from "@/components/ui/icon-badge";
 import InfoCard from "@/components/ui/info-card";
 import Pressable from "@/components/ui/pressable";
 import Screen from "@/components/ui/screen";
@@ -17,23 +20,21 @@ const DEVELOPERS = [
 
 export default function AboutScreen() {
   const version = Constants.expoConfig?.version;
-  const { isDark, chevron } = usePalette();
+  const { chevron } = usePalette();
 
   return (
     <Screen>
-      <View className="items-center pt-10 pb-8">
+      <View className="items-center pb-8 pt-6">
         <Image
           source={require("@/assets/images/icon.png")}
           contentFit="cover"
-          className="w-28 h-28 rounded-3xl"
+          className="h-28 w-28 -rotate-3 rounded-[32px]"
         />
-        <Text className="text-3xl font-semibold mt-4">
-          posolog
-        </Text>
+        <Heading size="lg" className="mt-5">posolog</Heading>
         {version ? (
-          <Text muted className="text-sm mt-1">
-            Version {version}
-          </Text>
+          <View className="mt-2 rounded-full bg-surface-alt px-3 py-1">
+            <Text muted className="text-sm font-semibold">Version {version}</Text>
+          </View>
         ) : null}
       </View>
 
@@ -42,34 +43,34 @@ export default function AboutScreen() {
         designed to help you analyze your plasma curves quickly and easily, so you can gain insight on your health.
       </InfoCard>
 
-      <View className="bg-surface rounded-2xl p-4 mb-7">
-        <View className="flex-row items-center mb-2">
-          <HatGlasses size={20} color={isDark ? "#943bc4" : "#7918ad"} />
-          <Text className="text-base font-medium ml-2">
-            Privacy
-          </Text>
+      <Card tone="lilac" className="mb-7">
+        <View className="mb-3 flex-row items-center gap-3">
+          <IconBadge icon={HatGlasses} tone="lilac" size="sm" onTint />
+          <Heading size="sm">Privacy</Heading>
         </View>
-        <Text muted className="text-base leading-6">
+        <Text className="text-base leading-6 opacity-80">
           posolog is built to be privacy focused by design. All data stays on your device — nothing
           is uploaded to a server. There are no accounts, no sign-in, and no analytics or tracking.
           You control your data and can export or import it whenever you want.
         </Text>
-      </View>
+      </Card>
 
       <Section title="The developers">
         {DEVELOPERS.map((dev) => (
           <Pressable
             key={dev.name}
             onPress={() => WebBrowser.openBrowserAsync(dev.github)}
-            className="flex-row items-center px-4 py-3"
+            accessibilityRole="link"
+            accessibilityLabel={`${dev.name}, ${dev.role}. Open GitHub profile`}
+            className="flex-row items-center px-3.5 py-3"
           >
             <Image
               source={dev.image}
               contentFit="cover"
-              className="w-12 h-12 rounded-full bg-surface"
+              className="h-12 w-12 rounded-full bg-surface-alt"
             />
-            <View className="flex-1 ml-4">
-              <Text className="text-lg">{dev.name}</Text>
+            <View className="ml-4 flex-1">
+              <Text className="font-display-bold text-[17px]">{dev.name}</Text>
               <Text muted className="text-sm">{dev.role}</Text>
             </View>
             <ExternalLink size={20} color={chevron} />

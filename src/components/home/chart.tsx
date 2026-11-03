@@ -1,14 +1,16 @@
 import CartesianChart, { ActiveDot, Crosshair, GuideLine, Line, Scatter } from "@/components/chart/cartesian-chart";
+import Card from "@/components/ui/card";
+import Heading from "@/components/ui/heading";
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
-import { useColorScheme } from "nativewind";
+import { usePalette } from "@/hooks/use-palette";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
 const INGREDIENTS = [
-  { key: "tadalafil",   label: "Tadalafil",   unit: "ng/mL", cmax: 95,  dosedHoursAgo: 3, ka: 0.55, ke: 0.0396, light: "#f43f5e", dark: "#e11d48" },
-  { key: "minocycline", label: "Minocycline", unit: "ng/mL", cmax: 620, dosedHoursAgo: 8, ka: 1.1,  ke: 0.0433, light: "#fb923c", dark: "#c98500" },
-  { key: "caffeine",    label: "Caffeine",    unit: "µg/mL", cmax: 2.1, dosedHoursAgo: 12, ka: 2.4,  ke: 0.1386, light: "#6366f1", dark: "#6366f1" },
+  { key: "tadalafil",   label: "Tadalafil",   unit: "ng/mL", cmax: 95,  dosedHoursAgo: 3, ka: 0.55, ke: 0.0396, light: "#f0663f", dark: "#ff9677" },
+  { key: "minocycline", label: "Minocycline", unit: "ng/mL", cmax: 620, dosedHoursAgo: 8, ka: 1.1,  ke: 0.0433, light: "#e09b12", dark: "#ffc34d" },
+  { key: "caffeine",    label: "Caffeine",    unit: "µg/mL", cmax: 2.1, dosedHoursAgo: 12, ka: 2.4,  ke: 0.1386, light: "#3c8af3", dark: "#7db0ff" },
 ] as const;
 
 type Key = (typeof INGREDIENTS)[number]["key"];
@@ -31,13 +33,8 @@ function curve(ka: number, ke: number) {
 }
 
 export default function Chart() {
-  const colorScheme = useColorScheme().colorScheme;
-  const dark = colorScheme === "dark";
-
-  const grid = dark ? "#2d2d34" : "#e1e1e6";
-  const axisLabel = dark ? "#9696a0" : "#71717a";
-  const surface = dark ? "#1a1a1e" : "#f5f5f7";
-  const muted = dark ? "#9696a0" : "#71717a";
+  const { isDark: dark, grid, muted, surface } = usePalette();
+  const axisLabel = muted;
 
   const color = useMemo(
     () => Object.fromEntries(INGREDIENTS.map((i) => [i.key, dark ? i.dark : i.light])) as Record<Key, string>,
@@ -97,15 +94,15 @@ export default function Chart() {
     `${value >= 100 ? Math.round(value) : value.toFixed(value >= 10 ? 1 : 2)} ${unit}`;
 
   return (
-    <View className="mt-3 bg-surface w-full rounded-3xl p-4">
+    <Card className="w-full">
       <View className="flex-row items-baseline justify-between">
-        <Text className="text-sm font-medium">Plasma levels</Text>
+        <Heading size="sm">Plasma levels</Heading>
         <Text muted className="text-xs">
           {onNow ? "Now · % of Cmax" : formatOffset(readout.x)}
         </Text>
       </View>
 
-      <View className="mt-2 h-48">
+      <View className="mt-3 h-48">
         <CartesianChart
           data={chartData}
           xKey="x"
@@ -134,7 +131,7 @@ export default function Chart() {
                   key={i.key}
                   points={points[i.key]}
                   color={color[i.key]}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                 />
               ))}
 
@@ -170,7 +167,7 @@ export default function Chart() {
         </CartesianChart>
       </View>
 
-      <View className="mt-3 gap-1.5">
+      <View className="mt-4 gap-2.5 border-t-2 border-border pt-4">
         {INGREDIENTS.map((i) => {
           const on = visible(i.key);
           const percent = readout[i.key];
@@ -184,10 +181,10 @@ export default function Chart() {
               className="flex-row items-center active:opacity-60"
             >
               <View
-                className="mr-2 h-2.5 w-2.5 rounded-full"
+                className="mr-2.5 h-3 w-3 rounded-full"
                 style={{ backgroundColor: on ? color[i.key] : muted }}
               />
-              <Text className={`text-xs ${on ? "" : "line-through opacity-50"}`}>{i.label}</Text>
+              <Text className={`text-sm font-medium ${on ? "" : "line-through opacity-50"}`}>{i.label}</Text>
               <View className="flex-1" />
               {!on ? (
                 <Text muted className="text-xs">Hidden</Text>
@@ -195,7 +192,7 @@ export default function Chart() {
                 <Text muted className="text-xs">Not taken yet</Text>
               ) : (
                 <>
-                  <Text className="text-xs font-medium">
+                  <Text className="text-sm font-semibold">
                     {formatLevel((percent / 100) * i.cmax, i.unit)}
                   </Text>
                   <Text muted className="ml-1.5 text-xs">{Math.round(percent)}%</Text>
@@ -205,6 +202,6 @@ export default function Chart() {
           );
         })}
       </View>
-    </View>
+    </Card>
   );
 }

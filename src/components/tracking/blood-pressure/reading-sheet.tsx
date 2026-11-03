@@ -1,21 +1,24 @@
+import FieldLabel, { fieldBox } from "@/components/form/field-label";
 import NumberField from "@/components/form/number-field";
+import Button from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
 import Text from "@/components/ui/text";
+import { usePalette } from "@/hooks/use-palette";
 import ZoneChart, { classifyZone } from "@/components/tracking/blood-pressure/zone-chart";
 import type { ReadingDraft } from "@/db/queries/blood-pressure";
 import type { BloodPressureReading } from "@/db/schema";
 import { BottomSheet, Host, RNHostView } from "@expo/ui";
 import { ArrowDown, ArrowUp, CalendarClock, HeartPulse } from "lucide-react-native";
-import { useColorScheme } from "nativewind";
 import { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Pressable,
+  Platform,
   useWindowDimensions,
   View
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { initialWindowMetrics } from "react-native-safe-area-context";
 
 type Props = {
   isPresented: boolean;
@@ -46,9 +49,11 @@ function validate(systolic: number | undefined, diastolic: number | undefined, p
 }
 
 export default function ReadingSheet({ isPresented, title, submitLabel, initial, onSubmit, onDismiss }: Props) {
-  const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
-  const { colorScheme } = useColorScheme();
+  const { width, height } = useWindowDimensions();
+  // Inside the sheet, useSafeAreaInsets() reports the presenting screen's insets (tab bar
+  // included), so use the device's own.
+  const deviceInsets = initialWindowMetrics?.insets ?? { top: 0, bottom: 0 };
+  const { muted, tones } = usePalette();
 
   const [systolic, setSystolic] = useState<number | undefined>();
   const [diastolic, setDiastolic] = useState<number | undefined>();
@@ -101,37 +106,43 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
 
   const canSave = systolic !== undefined && diastolic !== undefined && !saving;
 
+  // BottomSheet pads its content by 16 on the top and sides.
   const sheetWidth = width - 32;
+  // On iOS the hosted view reports a height taller than the visible sheet, which leaves the
+  // bottom of the form unreachable. A full-height sheet starts at the top safe area, so size
+  // the content from that instead.
+  const sheetHeight = Platform.OS === "ios" ? { height: height - deviceInsets.top - 16 } : { flex: 1 };
   const chartWidth = Math.min(sheetWidth - 40, 380);
 
   return (
     <Host>
       <BottomSheet isPresented={isPresented} onDismiss={close} snapPoints={["full"]}>
         <RNHostView>
-          <View style={{ width: sheetWidth }}>
+          <View style={{ ...sheetHeight, width: sheetWidth }}>
             <KeyboardAwareScrollView
+              style={{ flex: 1 }}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
               bottomOffset={16}
               contentContainerStyle={{
                 paddingHorizontal: 20,
                 paddingTop: 8,
-                paddingBottom: insets.bottom + 20
+                paddingBottom: deviceInsets.bottom + 20
               }}
             >
-              <Text className="text-2xl font-semibold mb-4">
-                {title}
-              </Text>
+              <Heading size="lg" className="mb-5">{title}</Heading>
 
-              <View className="rounded-2xl border border-border bg-surface py-3 mb-5">
-                <View className="flex-row items-center justify-between px-4 mb-1">
-                  <Text muted className="text-xs font-semibold">
-                    SYSTOLIC / DIASTOLIC
+              <View className="mb-6 rounded-[28px] border-2 border-border bg-surface py-4">
+                <View className="mb-1 flex-row items-center justify-between px-5">
+                  <Text muted className="font-display-medium text-sm">
+                    Systolic / diastolic
                   </Text>
                   {zone && (
-                    <Text className="text-xs font-semibold" style={{ color: zone.lc }}>
-                      {zone.label}
-                    </Text>
+                    <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: zone.fill }}>
+                      <Text className="text-[11px] font-bold" style={{ color: zone.lc }}>
+                        {zone.label}
+                      </Text>
+                    </View>
                   )}
                 </View>
                 <View className="items-center">
@@ -140,14 +151,14 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
                     height={Math.round(chartWidth * 0.78)}
                     systolic={systolic}
                     diastolic={diastolic}
-                    axisColor={colorScheme === "dark" ? "#a3a3a3" : "#737373"}
+                    axisColor={muted}
                   />
                 </View>
               </View>
 
               <NumberField
                 icon={ArrowUp}
-                iconColor="#f43f5e"
+                iconColor={tones.rose}
                 iconSize={18}
                 label="Systolic"
                 placeholder="120"
@@ -158,7 +169,7 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
 
               <NumberField
                 icon={ArrowDown}
-                iconColor="#3b82f6"
+                iconColor={tones.sky}
                 iconSize={18}
                 label="Diastolic"
                 placeholder="80"
@@ -169,7 +180,7 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
 
               <NumberField
                 icon={HeartPulse}
-                iconColor="#a855f7"
+                iconColor={tones.lilac}
                 iconSize={18}
                 label="Pulse (optional)"
                 placeholder="70"
@@ -178,22 +189,21 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
                 onChangeText={(text) => setPulse(text === "" ? undefined : Number(text))}
               />
 
-              <View className="mb-4">
-                <Text muted className="text-xs font-semibold mb-1.5">
-                  Taken at
-                </Text>
+              <View className="mb-5">
+                <FieldLabel>Taken at</FieldLabel>
                 <Pressable
                   onPress={() => setShowingDateTimeModal(true)}
                   accessibilityRole="button"
-                  className="flex-row items-center rounded-xl border border-border bg-surface py-3 active:opacity-60"
+                  accessibilityLabel={`Taken at ${formatTakenAt(readingAt)}. Change`}
+                  className={`${fieldBox} py-4 active:opacity-60`}
                 >
                   <View className="pl-4">
-                    <CalendarClock size={18} color="#a3a3a3" />
+                    <CalendarClock size={20} color={tones.cream} strokeWidth={2.25} />
                   </View>
-                  <Text className="flex-1 px-3 text-base">
+                  <Text className="flex-1 px-3 text-base font-medium">
                     {formatTakenAt(readingAt)}
                   </Text>
-                  <Text className="pr-4 text-sm text-rose-500">
+                  <Text className="pr-5 font-display-bold text-sm" style={{ color: tones.rose }}>
                     Change
                   </Text>
                 </Pressable>
@@ -203,34 +213,26 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
                   mode="datetime"
                   date={readingAt}
                   onConfirm={(d) => { setReadingAt(d); setShowingDateTimeModal(false); }}
-                  accentColor="#f43f5e"
+                  accentColor={tones.rose}
                   onCancel={() => setShowingDateTimeModal(false)}
                 />
               </View>
 
               {error && (
-                <Text className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</Text>
+                <View className="mb-3 rounded-2xl bg-error/10 px-4 py-3">
+                  <Text className="text-sm font-medium text-error">{error}</Text>
+                </View>
               )}
 
-              <View className="flex-row gap-3 mt-2">
-                <Pressable
-                  onPress={close}
-                  className="flex-1 rounded-xl border border-neutral-300 dark:border-neutral-700 py-3 active:opacity-60"
-                >
-                  <Text className="text-center font-semibold text-black dark:text-white">
-                    Cancel
-                  </Text>
-                </Pressable>
-                <Pressable
+              <View className="mt-2 flex-row gap-3">
+                <Button label="Cancel" variant="secondary" onPress={close} className="flex-1" />
+                <Button
+                  label={submitLabel}
                   onPress={save}
-                  disabled={!canSave}
-                  style={{ opacity: canSave ? 1 : 0.4 }}
-                  className="flex-1 rounded-xl bg-rose-500 py-3 active:opacity-60"
-                >
-                  {saving ?
-                    <ActivityIndicator size="small" color="#fff" />
-                  : <Text className="text-center font-semibold text-white">{submitLabel}</Text>}
-                </Pressable>
+                  disabled={!canSave && !saving}
+                  loading={saving}
+                  className="flex-1"
+                />
               </View>
             </KeyboardAwareScrollView>
           </View>

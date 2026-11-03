@@ -1,4 +1,6 @@
+import FieldLabel, { fieldBox } from "@/components/form/field-label";
 import Text from "@/components/ui/text";
+import { usePalette } from "@/hooks/use-palette";
 import { LucideIcon } from "lucide-react-native";
 import { ColorValue, TextInputProps, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
@@ -12,24 +14,28 @@ type FieldProps = TextInputProps & {
 };
 
 export default function NumberField({ icon: Icon, iconColor, iconSize, label, unit, onChangeText, ...props }: FieldProps) {
+  const { placeholder, brand } = usePalette();
+  const accent = typeof iconColor === "string" ? iconColor : brand;
+
   return (
-    <View className="mb-4">
-      <Text muted className="text-xs font-semibold mb-1.5">
-        {label}
-      </Text>
-      <View className="flex-row items-center rounded-xl border border-border bg-surface">
+    <View className="mb-5">
+      <FieldLabel>{label}</FieldLabel>
+      <View className={fieldBox}>
         <View className="pl-4">
-          <Icon size={iconSize || 18} color={iconColor} />
+          <Icon size={iconSize || 20} color={iconColor} strokeWidth={2.25} />
         </View>
         <TextInput
           onChangeText={(text) => onChangeText && onChangeText(text.replace(/[^0-9]/g, ""))}
-          placeholderTextColor="#a3a3a3"
+          placeholderTextColor={placeholder}
+          selectionColor={accent}
+          cursorColor={accent}
           keyboardType="number-pad"
           maxLength={3}
-          className="flex-1 px-3 py-3 text-[14px] text-text"
+          accessibilityLabel={label}
+          className="flex-1 px-3 py-4 font-display-bold text-[18px] text-text"
           {...props}
         />
-        <Text muted className="pr-4 text-sm">{unit}</Text>
+        <Text muted className="pr-5 text-sm font-medium">{unit}</Text>
       </View>
     </View>
   );

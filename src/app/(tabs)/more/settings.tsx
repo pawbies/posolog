@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Alert } from "react-native";
 
 export default function SettingsScreen() {
-  const { completedOnboarding, preventScreenCapture, setSetting } = useSettings();
+  const { preventScreenCapture, setSetting } = useSettings();
   const [busy, setBusy] = useState(false);
 
   const changePreventScreenCapture = async (next: boolean) => {
@@ -28,25 +28,32 @@ export default function SettingsScreen() {
     }
   };
 
+  const restartOnboarding = () =>
+    Alert.alert("Show onboarding again?", "You'll go through the welcome screens again. Your data stays as it is.", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Show", onPress: () => setSetting("completedOnboarding", false) },
+    ]);
+
   return (
     <Screen>
-      <PageHero icon={Settings} iconColor="#3b82f6" tileClassName="bg-blue-100 dark:bg-blue-950" title="Settings" />
+      <PageHero icon={Settings} tone="sky" title="Settings" />
 
       <Section title="General">
         <ButtonRow
           icon={Languages}
-          iconColor="#57e389"
+          tone="mint"
           title="Language"
-          description="Change the app's language via the devices settings"
-          buttonText="Open Settings"
+          description="Change the app's language in your device's settings"
+          buttonText="Open"
           onPress={Linking.openSettings}
         />
-        <ToggleRow
+        <ButtonRow
           icon={DoorOpen}
-          iconColor="#56a5f5"
-          title="Completed onboarding"
-          value={completedOnboarding}
-          onValueChange={() => setSetting("completedOnboarding", false)}
+          tone="sky"
+          title="Onboarding"
+          description="See the welcome screens again"
+          buttonText="Show"
+          onPress={restartOnboarding}
           disabled={busy}
         />
       </Section>
@@ -54,7 +61,7 @@ export default function SettingsScreen() {
       <Section title="Security">
         <ToggleRow
           icon={EyeOff}
-          iconColor="#ef4444"
+          tone="rose"
           title="Prevent Screen Capture"
           description="Blocks screenshots and screen recordings of the app"
           value={preventScreenCapture}

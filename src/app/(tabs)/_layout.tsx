@@ -8,7 +8,7 @@ import { Platform } from "react-native";
 const TABS = [
   { name: "index", label: "tabs.home", icon: "house" },
   { name: "timeline", label: "tabs.timeline", icon: "timeline" },
-  { name: "medications", label: "tabs.medications", icon: "pill-bottle" },
+  { name: "shelf", label: "tabs.medications", icon: "shelving-unit" },
   { name: "tracking", label: "tabs.tracking", icon: "heart-plus" },
   { name: "more", label: "tabs.more", icon: "ellipsis" },
 ] as const;
