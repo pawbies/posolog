@@ -62,5 +62,8 @@
     "ios": "expo run:ios",
     "db:generate": "drizzle-kit generate"
   },
-  "private": true
+  "private": true,
+  "patchedDependencies": {
+    "expo-modules-jsi@57.1.1": "patches/expo-modules-jsi@57.1.1.patch"
+  }
 }

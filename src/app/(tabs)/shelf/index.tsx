@@ -65,7 +65,7 @@ export default function ShelfScreen() {
     keyExtractor: (item: { id: number }) => String(item.id),
     ItemSeparatorComponent: () => <View className="h-3" />,
     // Leave room so the FAB never covers the last item.
-    contentContainerStyle: { paddingTop: 12, paddingBottom: insets.bottom + 112 },
+    contentContainerStyle: { paddingTop: 12, paddingBottom: insets.bottom + 32 },
     keyboardShouldPersistTaps: "handled",
     keyboardDismissMode: "on-drag",
     showsVerticalScrollIndicator: false,
@@ -75,7 +75,6 @@ export default function ShelfScreen() {
     <Screen scrollView={false} skipBottomInset>
       <ScreenTitle subtitle="Everything you take">Shelf</ScreenTitle>
 
-      {/* Pinned above the list so only the cards scroll. */}
       <Segmented options={TABS} value={showing} onChange={setShowing} className="mb-4" />
       <SearchField value={query} onChangeText={setQuery} placeholder={`Search ${showing}`} />
 
