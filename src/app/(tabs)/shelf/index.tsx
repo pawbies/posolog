@@ -43,7 +43,13 @@ export default function ShelfScreen() {
     ? ingredients.filter((i) => matches(i.name, i.notes))
     : ingredients;
 
-  const addMedication = () => router.push("/shelf/medications/new");
+  const handleAdd = () => {
+    if (showing === "medications") {
+      router.push("/shelf/medications/new");
+    } else {
+      router.push("/shelf/ingredients/new");
+    }
+  };
 
   const empty = (loaded: Date | undefined, total: number, noun: string) => {
     if (!loaded) return null;
@@ -53,10 +59,14 @@ export default function ShelfScreen() {
       <EmptyState
         title="Your shelf is empty"
         body="Add your first medication to start logging doses and seeing plasma curves."
-        action={<Button label="Add medication" icon={Plus} onPress={addMedication} />}
+        action={<Button label="Add medication" icon={Plus} onPress={handleAdd} />}
       />
     ) : (
-      <EmptyState title="No ingredients yet" body="Ingredients show up here once your medications have some." />
+      <EmptyState
+        title="No ingredients yet"
+        body="Ingredients show up here once your medications have some."
+        action={<Button label="Add ingredient" icon={Plus} onPress={handleAdd} />}
+      />
     );
   };
 
@@ -107,7 +117,7 @@ export default function ShelfScreen() {
         <TopFade />
       </View>
 
-      <Fab onPress={addMedication} icon={Plus} label="Add medication" />
+      <Fab onPress={handleAdd} icon={Plus} label={showing === "medications" ? "Add medication" : "Add ingredient"} />
     </Screen>
   );
 }

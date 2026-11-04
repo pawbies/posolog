@@ -11,9 +11,15 @@ type FieldProps = TextInputProps & {
   iconSize?: number;
   label: string;
   unit?: string;
+  decimal?: boolean;
 };
 
-export default function NumberField({ icon: Icon, iconColor, iconSize, label, unit, onChangeText, ...props }: FieldProps) {
+const sanitizeDecimal = (text: string) => {
+  const [whole, ...rest] = text.replace(/,/g, ".").replace(/[^0-9.]/g, "").split(".");
+  return rest.length ? `${whole}.${rest.join("")}` : whole;
+};
+
+export default function NumberField({ icon: Icon, iconColor, iconSize, label, unit, decimal, onChangeText, ...props }: FieldProps) {
   const { placeholder, brand } = usePalette();
   const accent = typeof iconColor === "string" ? iconColor : brand;
 
@@ -25,12 +31,14 @@ export default function NumberField({ icon: Icon, iconColor, iconSize, label, un
           <Icon size={iconSize || 20} color={iconColor} strokeWidth={2.25} />
         </View>
         <TextInput
-          onChangeText={(text) => onChangeText && onChangeText(text.replace(/[^0-9]/g, ""))}
+          onChangeText={(text) =>
+            onChangeText?.(decimal ? sanitizeDecimal(text) : text.replace(/[^0-9]/g, ""))
+          }
           placeholderTextColor={placeholder}
           selectionColor={accent}
           cursorColor={accent}
-          keyboardType="number-pad"
-          maxLength={3}
+          keyboardType={decimal ? "decimal-pad" : "number-pad"}
+          maxLength={decimal ? 10 : 3}
           accessibilityLabel={label}
           className="flex-1 px-3 py-4 font-display-bold text-[18px] text-text"
           {...props}
