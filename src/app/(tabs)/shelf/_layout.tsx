@@ -9,7 +9,7 @@ export default function ShelfLayout() {
       <Stack.Screen name="ingredients/new" options={{ title: "New ingredient" }} />
 
       <Stack.Screen name="medications/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="ingredients/[id]/index" options={{ title: "Ingredient" }} />
+      <Stack.Screen name="ingredients/[id]" options={{ headerShown: false }} />
     </Stack>
   );
 }

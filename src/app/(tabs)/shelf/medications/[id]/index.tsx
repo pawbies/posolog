@@ -29,7 +29,6 @@ export default function MedicationScreen() {
     deletingRef.current = true;
     setDeleting(true);
     try {
-      // The layout notices the medication is gone and leaves the screen.
       await deleteMedication(medication.id);
     } catch {
       Alert.alert("Error", "Could not delete the medication.");
