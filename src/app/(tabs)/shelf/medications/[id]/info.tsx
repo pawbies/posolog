@@ -13,6 +13,7 @@ import {
   strengths,
 } from "@/db/schema";
 import { FORM_META, ROUTE_META } from "@/lib/medication";
+import { unitName } from "@/lib/strength";
 import {
   Activity,
   Atom,
@@ -88,7 +89,7 @@ const DISPOSITION: Disposition[] = [
   },
 ];
 
-const STRENGTH: Strength = { id: 1, unitInUse: "capsule" };
+const STRENGTH: Strength = { id: 1, unitInUse: "derived_from_medication" };
 
 const STRENGTH_INGREDIENTS: StrengthIngredient[] = [
   { ingredientId: 1, displayAmount: 30, displayUnit: "mg dimesylate", saltFactor: 0.578, amountBase: 17.34 },
@@ -277,6 +278,7 @@ export default function MedicationInfoScreen() {
   const medication = useMedication();
   const color = medication.color;
   const form = FORM_META[medication.form];
+  const strengthUnit = unitName(STRENGTH.unitInUse, medication.form);
   const route = ROUTE_META[medication.route];
   const curve = useMemo(() => simulateSingleDose(), []);
   const active = INGREDIENTS[1];
@@ -295,7 +297,7 @@ export default function MedicationInfoScreen() {
       <Section icon={Layers} title="Overview" color={color}>
         <Row first label="Form" value={form.name} />
         <Row label="Route" value={route.name} />
-        <Row label="Unit in use" value={STRENGTH.unitInUse} />
+        <Row label="Unit in use" value={strengthUnit} />
         <Row
           label="Color"
           value={
@@ -319,12 +321,12 @@ export default function MedicationInfoScreen() {
           }
         />
         <Text muted className="mt-3 text-[11px] leading-4">
-          One {STRENGTH.unitInUse} ({fmt(STRENGTH_INGREDIENTS[0].displayAmount)} {STRENGTH_INGREDIENTS[0].displayUnit}),
+          One {strengthUnit} ({fmt(STRENGTH_INGREDIENTS[0].displayAmount)} {STRENGTH_INGREDIENTS[0].displayUnit}),
           simulated from the models below. Touch and drag to read values.
         </Text>
       </Section>
 
-      <Section icon={FlaskConical} title={`Strength · per ${STRENGTH.unitInUse}`} color={color}>
+      <Section icon={FlaskConical} title={`Strength · per ${strengthUnit}`} color={color}>
         {STRENGTH_INGREDIENTS.map((si, i) => {
           const ingredient = INGREDIENTS.find((x) => x.id === si.ingredientId);
           return (

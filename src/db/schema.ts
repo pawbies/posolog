@@ -28,7 +28,8 @@ export const medications = sqliteTable("medications", {
 export const strengths = sqliteTable("strengths", {
   id: integer().primaryKey({ autoIncrement: true }),
   medicationId: integer().references(() => medications.id, { onDelete: "cascade" }).notNull(),
-  unitInUse: text({ enum: ["tablet", "capsule", "ml", "patch", "actuation", "unit"] }).notNull().default("tablet"),
+  // "derived_from_medication": one of whatever the medication's form is (a tablet, a patch, a puff…).
+  unitInUse: text({ enum: ["derived_from_medication", "ml", "unit"] }).notNull().default("derived_from_medication"),
   position: integer().notNull().default(0),
   createdAt: createdAt(),
 }, (t) => [index("idx_strengths_med").on(t.medicationId)]);
@@ -185,4 +186,6 @@ export type Medication = typeof medications.$inferSelect;
 export type MedicationForm = Medication["form"];
 export type MedicationRoute = Medication["route"];
 export type Strength = typeof strengths.$inferSelect;
+export type StrengthUnit = Strength["unitInUse"];
+export type StrengthIngredient = typeof strengthIngredients.$inferSelect;
 export type BloodPressureReading = typeof bloodPressureReadings.$inferSelect;

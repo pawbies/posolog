@@ -84,7 +84,7 @@ export default function MedicationScreen() {
       <View className="mt-4 gap-3">
         <ActionTile icon={Cookie} label="Doses" text="Logged 15 times" color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
         <ActionTile icon={Package} label="Packs" text="3 days ago" color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
-        <ActionTile icon={Mountain} label="Strengths" text={`${strengths.length} ${strengths.length === 1 ? "strength" : "strengths"}`} color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
+        <ActionTile icon={Mountain} label="Strengths" text={`${strengths.length} ${strengths.length === 1 ? "strength" : "strengths"}`} color={color} onSeeAll={() => router.push({ pathname: "/shelf/medications/[id]/strengths", params: { id: medication.id } })} />
       </View>
 
       {medication.notes ? (

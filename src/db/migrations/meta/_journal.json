@@ -8,6 +8,13 @@
       "when": 1789905302208,
       "tag": "0000_tired_dragon_lord",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1793898881312,
+      "tag": "0001_strength_unit_options",
+      "breakpoints": true
     }
   ]
 }

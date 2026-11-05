@@ -52,6 +52,8 @@
     "babel-plugin-inline-import": "^3.0.0",
     "babel-preset-expo": "^57.0.4",
     "drizzle-kit": "^0.31.10",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.17",
     "typescript": "~6.0.3"
@@ -60,7 +62,8 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "lint": "expo lint"
   },
   "private": true,
   "patchedDependencies": {

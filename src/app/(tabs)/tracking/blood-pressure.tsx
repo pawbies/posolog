@@ -4,7 +4,7 @@ import ReadingSheet from "@/components/tracking/blood-pressure/reading-sheet";
 import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
-import { useContentTopInset } from "@/hooks/use-content-top-inset";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
 import { allReadings, createReading, deleteReading, updateReading } from "@/db/queries/blood-pressure";
 import type { BloodPressureReading } from "@/db/schema";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
@@ -12,11 +12,9 @@ import { Stack } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Pressable, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function BloodPressureScreen() {
-  const insets = useSafeAreaInsets();
-  const topInset = useContentTopInset();
+  const scroll = useScrollInsets(16, 24);
   const [showAddReading, setShowAddReading] = useState(false);
   const [editingReading, setEditingReading] = useState<BloodPressureReading | null>(null);
   const { data: readings, error, updatedAt } = useLiveQuery(allReadings());
@@ -71,9 +69,10 @@ export default function BloodPressureScreen() {
           </View>
         }
         ItemSeparatorComponent={() => <View className="h-2" />}
+        contentInsetAdjustmentBehavior={scroll.contentInsetAdjustmentBehavior}
         contentContainerStyle={{
-          paddingTop: topInset + 16,
-          paddingBottom: insets.bottom + 24,
+          paddingTop: scroll.paddingTop,
+          paddingBottom: scroll.paddingBottom,
         }}
         showsVerticalScrollIndicator={false}
       />

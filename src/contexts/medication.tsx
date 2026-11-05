@@ -1,9 +1,10 @@
-import type { Medication, Strength } from "@/db/schema";
+import type { Medication } from "@/db/schema";
+import type { StrengthWithIngredients } from "@/lib/strength";
 import { createContext, useContext, type ReactNode } from "react";
 
 type MedicationContextValue = {
   medication: Medication;
-  strengths: Strength[];
+  strengths: StrengthWithIngredients[];
 };
 
 const MedicationContext = createContext<MedicationContextValue | null>(null);

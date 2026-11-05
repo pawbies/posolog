@@ -1,7 +1,7 @@
 import MedicationFields from "@/components/medication/medication-fields";
 import Text from "@/components/ui/text";
 import { createMedication } from "@/db/queries/medications";
-import { useContentTopInset } from "@/hooks/use-content-top-inset";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
 import { FORM_META, ROUTE_META, type MedicationDraft } from "@/lib/medication";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
@@ -13,7 +13,7 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-nat
 export default function NewMedicationScreen() {
   const router = useRouter();
   const navigation = useNavigation();
-  const topInset = useContentTopInset();
+  const scroll = useScrollInsets(16, 40);
   const { tones } = usePalette();
   const [draft, setDraft] = useState<MedicationDraft>(() => ({
     name: "",
@@ -112,8 +112,9 @@ export default function NewMedicationScreen() {
       />
       <ScrollView
         className="flex-1"
-        contentContainerClassName="px-5 pb-10 grow"
-        contentContainerStyle={{ paddingTop: topInset + 16 }}
+        contentContainerClassName="px-5 grow"
+        contentInsetAdjustmentBehavior={scroll.contentInsetAdjustmentBehavior}
+        contentContainerStyle={{ paddingTop: scroll.paddingTop, paddingBottom: scroll.paddingBottom }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >

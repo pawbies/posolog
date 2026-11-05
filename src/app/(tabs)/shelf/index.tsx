@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { useState } from "react";
 import { FlatList, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
 
 type Showing = "medications" | "ingredients";
 
@@ -26,7 +26,8 @@ const TABS = [
 
 export default function ShelfScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  // The lists sit below the title, so only the bottom (tab bar) inset applies.
+  const scroll = useScrollInsets(0, 32);
   const [query, setQuery] = useState("");
   const [showing, setShowing] = useState<Showing>("medications");
 
@@ -71,11 +72,11 @@ export default function ShelfScreen() {
   };
 
   const listProps = {
-    contentInsetAdjustmentBehavior: "automatic",
+    contentInsetAdjustmentBehavior: scroll.contentInsetAdjustmentBehavior,
     keyExtractor: (item: { id: number }) => String(item.id),
     ItemSeparatorComponent: () => <View className="h-3" />,
     // Leave room so the FAB never covers the last item.
-    contentContainerStyle: { paddingTop: 12, paddingBottom: insets.bottom + 32 },
+    contentContainerStyle: { paddingTop: 12, paddingBottom: scroll.paddingBottom },
     keyboardShouldPersistTaps: "handled",
     keyboardDismissMode: "on-drag",
     showsVerticalScrollIndicator: false,

@@ -10,7 +10,7 @@ type ActionTileProps = {
   text: string;
   color: string;
   onSeeAll: () => void;
-  onAdd: () => void;
+  onAdd?: () => void;
 };
 
 export default function ActionTile({ icon, label, text, color, onSeeAll, onAdd }: ActionTileProps) {
@@ -34,7 +34,7 @@ export default function ActionTile({ icon, label, text, color, onSeeAll, onAdd }
         <Text className="font-display-bold text-sm" style={{ color }}>All</Text>
         <ChevronRight size={16} color={color} strokeWidth={2.5} />
       </Pressable>
-      <Pressable
+      {onAdd && (<Pressable
         onPress={onAdd}
         accessibilityRole="button"
         accessibilityLabel={`Add ${label.toLowerCase()}`}
@@ -43,7 +43,7 @@ export default function ActionTile({ icon, label, text, color, onSeeAll, onAdd }
         style={{ backgroundColor: `${color}33` }}
       >
         <Plus size={20} color={color} strokeWidth={2.75} />
-      </Pressable>
+      </Pressable>)}
     </View>
   );
 }
