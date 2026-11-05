@@ -2,6 +2,7 @@ import Pressable from "@/components/ui/pressable";
 import { stackHeaderOptions } from "@/constants/navigation";
 import { MedicationProvider } from "@/contexts/medication";
 import { medicationById } from "@/db/queries/medications";
+import { allStrengthsByMedicationId } from "@/db/queries/strengths";
 import { usePalette } from "@/hooks/use-palette";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -15,8 +16,8 @@ export default function MedicationLayout() {
 
   const { data, updatedAt } = useLiveQuery(medicationById(Number(id)), [id]);
   const medication = data?.[0];
+  const { data: strengths } = useLiveQuery(allStrengthsByMedicationId(Number(id)), [id]);
 
-  // The medication was deleted (or never existed): leave its screens.
   useEffect(() => {
     if (updatedAt && !medication) router.dismissTo("/shelf");
   }, [medication, updatedAt]);
@@ -24,7 +25,7 @@ export default function MedicationLayout() {
   if (!medication) return null;
 
   return (
-    <MedicationProvider value={medication}>
+    <MedicationProvider medication={medication} strengths={strengths}>
       <Stack screenOptions={stackHeaderOptions}>
         <Stack.Screen
           name="index"

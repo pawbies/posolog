@@ -184,4 +184,5 @@ export type Ingredient = typeof ingredients.$inferSelect;
 export type Medication = typeof medications.$inferSelect;
 export type MedicationForm = Medication["form"];
 export type MedicationRoute = Medication["route"];
+export type Strength = typeof strengths.$inferSelect;
 export type BloodPressureReading = typeof bloodPressureReadings.$inferSelect;

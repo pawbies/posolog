@@ -1,11 +1,30 @@
-import type { Medication } from "@/db/schema";
-import { createContext, useContext } from "react";
+import type { Medication, Strength } from "@/db/schema";
+import { createContext, useContext, type ReactNode } from "react";
 
-const MedicationContext = createContext<Medication | null>(null);
-export const MedicationProvider = MedicationContext.Provider;
+type MedicationContextValue = {
+  medication: Medication;
+  strengths: Strength[];
+};
 
-export function useMedication() {
-  const medication = useContext(MedicationContext);
-  if (!medication) throw new Error("useMedication must be used inside MedicationProvider");
-  return medication;
+const MedicationContext = createContext<MedicationContextValue | null>(null);
+
+export function MedicationProvider({
+  medication,
+  strengths,
+  children,
+}: MedicationContextValue & { children: ReactNode }) {
+  return (
+    <MedicationContext.Provider value={{ medication, strengths }}>
+      {children}
+    </MedicationContext.Provider>
+  );
 }
+
+function useMedicationContext() {
+  const value = useContext(MedicationContext);
+  if (!value) throw new Error("Medication hooks must be used inside MedicationProvider");
+  return value;
+}
+
+export const useMedication = () => useMedicationContext().medication;
+export const useStrengths = () => useMedicationContext().strengths;

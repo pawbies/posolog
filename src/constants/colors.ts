@@ -1,7 +1,6 @@
 export const TONES = ["cream", "sky", "peach", "rose", "mint", "lilac"] as const;
 export type Tone = (typeof TONES)[number];
 
-// Pastel fill per tone. Spelled out so NativeWind picks the classes up.
 export const toneBg: Record<Tone, string> = {
   cream: "bg-tint-cream",
   sky: "bg-tint-sky",
@@ -11,8 +10,6 @@ export const toneBg: Record<Tone, string> = {
   lilac: "bg-tint-lilac",
 };
 
-// Colors that can't be expressed as Tailwind classes (icon props, native
-// navigation options, chart strokes, ...). Keep in sync with global.css.
 export const palette = {
   light: {
     brand: "#47b35a",

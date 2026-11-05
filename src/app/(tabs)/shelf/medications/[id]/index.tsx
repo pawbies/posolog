@@ -5,7 +5,7 @@ import Card from "@/components/ui/card";
 import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
-import { useMedication } from "@/contexts/medication";
+import { useMedication, useStrengths } from "@/contexts/medication";
 import { deleteMedication } from "@/db/queries/medications";
 import { FORM_META, ROUTE_META } from "@/lib/medication";
 import { useRouter } from "expo-router";
@@ -15,7 +15,10 @@ import { Alert, View } from "react-native";
 
 export default function MedicationScreen() {
   const router = useRouter();
+  
   const medication = useMedication();
+  const strengths = useStrengths();
+
   const [deleting, setDeleting] = useState(false);
   const deletingRef = useRef(false);
 
@@ -76,12 +79,12 @@ export default function MedicationScreen() {
         </View>
       </View>
 
-      <Chart color={color} />
+      {false && <Chart color={color} />}
 
       <View className="mt-4 gap-3">
         <ActionTile icon={Cookie} label="Doses" text="Logged 15 times" color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
         <ActionTile icon={Package} label="Packs" text="3 days ago" color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
-        <ActionTile icon={Mountain} label="Strengths" text="3 strengths" color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
+        <ActionTile icon={Mountain} label="Strengths" text={`${strengths.length} ${strengths.length === 1 ? "strength" : "strengths"}`} color={color} onSeeAll={notImplemented} onAdd={notImplemented} />
       </View>
 
       {medication.notes ? (

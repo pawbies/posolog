@@ -4,12 +4,11 @@ import Heading from "@/components/ui/heading";
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
 import { usePalette } from "@/hooks/use-palette";
-import { useMemo, useState } from "react";
 import { mix } from "@/lib/color";
 import { Activity } from "lucide-react-native";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-// Sample data: a prodrug and its active metabolite, both from one dose 3h ago.
 const INGREDIENTS = [
   { key: "lisdexamfetamine",  label: "Lisdexamfetamine",  unit: "ng/mL", cmax: 45, dosedHoursAgo: 3, ka: 2.0, ke: 0.8,   dashed: false },
   { key: "dextroamphetamine", label: "Dextroamphetamine", unit: "ng/mL", cmax: 80, dosedHoursAgo: 3, ka: 0.6, ke: 0.069, dashed: true },
