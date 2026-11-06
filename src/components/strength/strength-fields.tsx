@@ -7,8 +7,7 @@ import IconBadge from "@/components/ui/icon-badge";
 import Pressable from "@/components/ui/pressable";
 import Segmented from "@/components/ui/segmented";
 import Text from "@/components/ui/text";
-import { useMedication } from "@/contexts/medication";
-import type { Ingredient } from "@/db/schema";
+import type { Ingredient, Medication } from "@/db/schema";
 import { usePalette } from "@/hooks/use-palette";
 import {
   emptyStrengthIngredientDraft, formatMg, MASS_UNIT_OPTIONS, strengthUnitOptions, toAmountBase, unitName,
@@ -20,14 +19,14 @@ import type { Dispatch, SetStateAction } from "react";
 import { View } from "react-native";
 
 type StrengthFieldsProps = {
+  medication: Medication;
   value: StrengthDraft;
   onChange: Dispatch<SetStateAction<StrengthDraft>>;
   ingredients: Ingredient[];
 };
 
-export default function StrengthFields({ value, onChange, ingredients }: StrengthFieldsProps) {
+export default function StrengthFields({ medication, value, onChange, ingredients }: StrengthFieldsProps) {
   const router = useRouter();
-  const medication = useMedication();
   const color = medication.color;
   const unitLabel = unitName(value.unitInUse, medication.form);
   const byId = new Map(ingredients.map((i) => [i.id, i]));

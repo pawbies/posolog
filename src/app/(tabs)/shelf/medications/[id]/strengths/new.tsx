@@ -1,70 +1,52 @@
 import StrengthFields from "@/components/strength/strength-fields";
 import StrengthHeader from "@/components/strength/strength-header";
-import { useMedication, useStrengths } from "@/contexts/medication";
 import { allIngredients } from "@/db/queries/ingredients";
 import { createStrength } from "@/db/queries/strengths";
+import type { Medication } from "@/db/schema";
+import { useMedication } from "@/hooks/use-medication";
 import { useScrollInsets } from "@/hooks/use-scroll-insets";
-import { canSaveStrengthDraft, validateStrengthDraft, type StrengthDraft } from "@/lib/strength";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
+import {
+  canSaveStrengthDraft, validateStrengthDraft, type StrengthDraft, type StrengthWithIngredients,
+} from "@/lib/strength";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { useNavigation, useRouter } from "expo-router";
-import { usePreventRemove } from "expo-router/react-navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 
-export default function NewStrengthScreen() {
-  const router = useRouter();
-  const navigation = useNavigation();
-  const scroll = useScrollInsets(16, 40);
-  const medication = useMedication();
-  const strengths = useStrengths();
+const EMPTY_DRAFT: StrengthDraft = { unitInUse: "derived_from_medication", ingredients: [] };
 
+export default function NewStrengthScreen() {
+  const { medication, strengths } = useMedication();
+  if (!medication) return null;
+  return <NewStrengthForm medication={medication} strengths={strengths} />;
+}
+
+function NewStrengthForm({ medication, strengths }: { medication: Medication; strengths: StrengthWithIngredients[] }) {
+  const scroll = useScrollInsets(16, 40);
   const { data: ingredients } = useLiveQuery(allIngredients());
 
-  const [draft, setDraft] = useState<StrengthDraft>(() => ({
-    unitInUse: "derived_from_medication",
-    ingredients: [],
-  }));
-  const initialUnit = useRef(draft.unitInUse);
-  const savingRef = useRef(false);
-  const savedRef = useRef(false);
+  const [draft, setDraft] = useState<StrengthDraft>(EMPTY_DRAFT);
   const [saving, setSaving] = useState(false);
   const canSave = canSaveStrengthDraft(draft) && !saving;
-  const dirty = draft.unitInUse !== initialUnit.current || draft.ingredients.length > 0;
+  const dirty = draft.unitInUse !== EMPTY_DRAFT.unitInUse || draft.ingredients.length > 0;
 
-  usePreventRemove(dirty && !savedRef.current, ({ data }) => {
-    if (savedRef.current) {
-      navigation.dispatch(data.action);
-      return;
-    }
-
-    Alert.alert("Discard strength?", "Your progress will be lost.", [
-      { text: "Keep editing", style: "cancel" },
-      {
-        text: "Discard",
-        style: "destructive",
-        onPress: () => navigation.dispatch(data.action),
-      },
-    ]);
-  });
+  const leave = useUnsavedChanges(dirty, { title: "Discard strength?", message: "Your progress will be lost." });
 
   const save = () => {
-    if (savingRef.current) return;
+    if (saving) return;
     const problem = validateStrengthDraft(draft, new Map(ingredients.map((i) => [i.id, i.name])));
     if (problem) {
       Alert.alert("Can't save yet", problem);
       return;
     }
-    savingRef.current = true;
     setSaving(true);
 
     try {
       const position = strengths.reduce((max, s) => Math.max(max, s.position + 1), 0);
       createStrength(medication.id, position, draft);
-      savedRef.current = true;
-      router.back();
+      leave();
     } catch {
       Alert.alert("Error", "Could not save the strength.");
-      savingRef.current = false;
       setSaving(false);
     }
   };
@@ -72,6 +54,7 @@ export default function NewStrengthScreen() {
   return (
     <View className="flex-1 bg-background">
       <StrengthHeader
+        medication={medication}
         draft={draft}
         ingredients={ingredients}
         fallbackTitle="New strength"
@@ -87,7 +70,7 @@ export default function NewStrengthScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <StrengthFields value={draft} onChange={setDraft} ingredients={ingredients} />
+        <StrengthFields medication={medication} value={draft} onChange={setDraft} ingredients={ingredients} />
       </ScrollView>
     </View>
   );

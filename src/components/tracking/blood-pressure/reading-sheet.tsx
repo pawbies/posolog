@@ -9,7 +9,7 @@ import type { ReadingDraft } from "@/db/queries/blood-pressure";
 import type { BloodPressureReading } from "@/db/schema";
 import { BottomSheet, Host, RNHostView } from "@expo/ui";
 import { ArrowDown, ArrowUp, CalendarClock, HeartPulse } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Pressable,
   Platform,
@@ -64,15 +64,21 @@ export default function ReadingSheet({ isPresented, title, submitLabel, initial,
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (!isPresented) return;
-    setDiastolic(initial ? initial.diastolic : undefined);
-    setSystolic(initial ? initial.systolic : undefined);
-    setPulse(initial && initial.pulse ? initial.pulse : undefined);
-    setReadingAt(initial?.readingAt ?? new Date());
-    setShowingDateTimeModal(false);
-    setError(null);
-  }, [isPresented, initial?.id]);
+  // Reset the form whenever the sheet opens (or opens for a different reading). Adjusting state
+  // during render avoids the extra pass an effect would cost: https://react.dev/learn/you-might-not-need-an-effect
+  const openFor = isPresented ? (initial?.id ?? "new") : null;
+  const [lastOpenFor, setLastOpenFor] = useState(openFor);
+  if (openFor !== lastOpenFor) {
+    setLastOpenFor(openFor);
+    if (openFor !== null) {
+      setDiastolic(initial ? initial.diastolic : undefined);
+      setSystolic(initial ? initial.systolic : undefined);
+      setPulse(initial && initial.pulse ? initial.pulse : undefined);
+      setReadingAt(initial?.readingAt ?? new Date());
+      setShowingDateTimeModal(false);
+      setError(null);
+    }
+  }
 
   const zone = systolic !== undefined && diastolic !== undefined ? classifyZone(systolic ?? 0, diastolic ?? 0) : null;
 

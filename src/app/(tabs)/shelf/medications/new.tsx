@@ -1,18 +1,16 @@
 import MedicationFields from "@/components/medication/medication-fields";
 import Text from "@/components/ui/text";
 import { createMedication } from "@/db/queries/medications";
-import { useScrollInsets } from "@/hooks/use-scroll-insets";
-import { FORM_META, ROUTE_META, type MedicationDraft } from "@/lib/medication";
-import { Stack, useNavigation, useRouter } from "expo-router";
-import { usePreventRemove } from "expo-router/react-navigation";
-import { Save } from "lucide-react-native";
 import { usePalette } from "@/hooks/use-palette";
-import { useRef, useState } from "react";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
+import { FORM_META, ROUTE_META, type MedicationDraft } from "@/lib/medication";
+import { Stack } from "expo-router";
+import { Save } from "lucide-react-native";
+import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-native";
 
 export default function NewMedicationScreen() {
-  const router = useRouter();
-  const navigation = useNavigation();
   const scroll = useScrollInsets(16, 40);
   const { tones } = usePalette();
   const [draft, setDraft] = useState<MedicationDraft>(() => ({
@@ -22,46 +20,25 @@ export default function NewMedicationScreen() {
     route: "oral",
     notes: "",
   }));
-  const initialDraft = useRef(draft);
-  const savingRef = useRef(false);
-  const savedRef = useRef(false);
+  const [initialDraft] = useState(draft);
   const [saving, setSaving] = useState(false);
   const canSave = !!draft.name.trim() && !saving;
   const FormIcon = FORM_META[draft.form].icon;
-  const dirty = (Object.keys(draft) as (keyof MedicationDraft)[]).some(
-    (key) => draft[key] !== initialDraft.current[key],
-  );
+  const dirty = (Object.keys(draft) as (keyof MedicationDraft)[]).some((key) => draft[key] !== initialDraft[key]);
 
-  usePreventRemove(dirty && !savedRef.current, ({ data }) => {
-    if (savedRef.current) {
-      navigation.dispatch(data.action);
-      return;
-    }
-
-    Alert.alert("Discard medication?", "Your progress will be lost.", [
-      { text: "Keep editing", style: "cancel" },
-      {
-        text: "Discard",
-        style: "destructive",
-        onPress: () => navigation.dispatch(data.action),
-      },
-    ]);
-  });
+  const leave = useUnsavedChanges(dirty, { title: "Discard medication?", message: "Your progress will be lost." });
 
   const update = (patch: Partial<MedicationDraft>) => setDraft((current) => ({ ...current, ...patch }));
 
   const save = async () => {
-    if (savingRef.current || !draft.name.trim()) return;
-    savingRef.current = true;
+    if (saving || !draft.name.trim()) return;
     setSaving(true);
 
     try {
       await createMedication(draft);
-      savedRef.current = true;
-      router.back();
+      leave();
     } catch {
       Alert.alert("Error", "Could not save the medication.");
-      savingRef.current = false;
       setSaving(false);
     }
   };

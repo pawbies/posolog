@@ -3,7 +3,6 @@ import Card from "@/components/ui/card";
 import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
-import { useMedication } from "@/contexts/medication";
 import {
   absorptionModels,
   absorptionPhases,
@@ -12,6 +11,7 @@ import {
   strengthIngredients,
   strengths,
 } from "@/db/schema";
+import { useMedication } from "@/hooks/use-medication";
 import { FORM_META, ROUTE_META } from "@/lib/medication";
 import { unitName } from "@/lib/strength";
 import {
@@ -275,12 +275,14 @@ function IngredientCard({ ingredient, color }: { ingredient: Ingredient; color: 
 }
 
 export default function MedicationInfoScreen() {
-  const medication = useMedication();
+  const { medication } = useMedication();
+  const curve = useMemo(() => simulateSingleDose(), []);
+  if (!medication) return null;
+
   const color = medication.color;
   const form = FORM_META[medication.form];
   const strengthUnit = unitName(STRENGTH.unitInUse, medication.form);
   const route = ROUTE_META[medication.route];
-  const curve = useMemo(() => simulateSingleDose(), []);
   const active = INGREDIENTS[1];
 
   return (

@@ -1,13 +1,13 @@
 import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
-import { useMedication } from "@/contexts/medication";
-import type { Ingredient } from "@/db/schema";
+import type { Ingredient, Medication } from "@/db/schema";
 import { unitIcon, unitName, type StrengthDraft } from "@/lib/strength";
 import { Stack } from "expo-router";
 import { Save } from "lucide-react-native";
 import { ActivityIndicator, View } from "react-native";
 
 type StrengthHeaderProps = {
+  medication: Medication;
   draft: StrengthDraft;
   ingredients: Ingredient[];
   fallbackTitle: string;
@@ -16,8 +16,7 @@ type StrengthHeaderProps = {
   saving: boolean;
 };
 
-export default function StrengthHeader({ draft, ingredients, fallbackTitle, onSave, canSave, saving }: StrengthHeaderProps) {
-  const medication = useMedication();
+export default function StrengthHeader({ medication, draft, ingredients, fallbackTitle, onSave, canSave, saving }: StrengthHeaderProps) {
   const color = medication.color;
   const unitLabel = unitName(draft.unitInUse, medication.form);
   const UnitIcon = unitIcon(draft.unitInUse, medication.form);

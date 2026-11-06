@@ -1,70 +1,47 @@
 import IngredientFields from "@/components/ingredient/ingredient-fields";
 import Text from "@/components/ui/text";
 import { createIngredient } from "@/db/queries/ingredients";
-import { useScrollInsets } from "@/hooks/use-scroll-insets";
 import { usePalette } from "@/hooks/use-palette";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { emptyIngredientDraft, validateIngredientDraft, type IngredientDraft } from "@/lib/ingredient";
-import { Stack, useNavigation, useRouter } from "expo-router";
-import { usePreventRemove } from "expo-router/react-navigation";
+import { Stack } from "expo-router";
 import { Atom, Save } from "lucide-react-native";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-native";
 
 export default function NewIngredientScreen() {
-  const router = useRouter();
-  const navigation = useNavigation();
   const scroll = useScrollInsets(16, 40);
   const { tones } = usePalette();
   const accent = tones.lilac;
   const [draft, setDraft] = useState<IngredientDraft>(emptyIngredientDraft);
-  const initialDraft = useRef(draft);
-  const savingRef = useRef(false);
-  const savedRef = useRef(false);
+  const [initialDraft] = useState(draft);
   const [saving, setSaving] = useState(false);
   const canSave = !!draft.name.trim() && !saving;
-  const dirty = (Object.keys(draft) as (keyof IngredientDraft)[]).some(
-    (key) => draft[key] !== initialDraft.current[key],
-  );
+  const dirty = (Object.keys(draft) as (keyof IngredientDraft)[]).some((key) => draft[key] !== initialDraft[key]);
 
-  usePreventRemove(dirty && !savedRef.current, ({ data }) => {
-    if (savedRef.current) {
-      navigation.dispatch(data.action);
-      return;
-    }
-
-    Alert.alert("Discard ingredient?", "Your progress will be lost.", [
-      { text: "Keep editing", style: "cancel" },
-      {
-        text: "Discard",
-        style: "destructive",
-        onPress: () => navigation.dispatch(data.action),
-      },
-    ]);
-  });
+  const leave = useUnsavedChanges(dirty, { title: "Discard ingredient?", message: "Your progress will be lost." });
 
   const update = (patch: Partial<IngredientDraft>) => setDraft((current) => ({ ...current, ...patch }));
 
   const save = async () => {
-    if (savingRef.current) return;
+    if (saving) return;
     const problem = validateIngredientDraft(draft);
     if (problem) {
       Alert.alert("Can't save yet", problem);
       return;
     }
-    savingRef.current = true;
     setSaving(true);
 
     try {
       await createIngredient(draft);
-      savedRef.current = true;
-      router.back();
+      leave();
     } catch (error) {
       const duplicate = String(error).includes("UNIQUE");
       Alert.alert(
         "Error",
         duplicate ? "An ingredient with this name already exists." : "Could not save the ingredient.",
       );
-      savingRef.current = false;
       setSaving(false);
     }
   };

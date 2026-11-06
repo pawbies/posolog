@@ -5,9 +5,9 @@ import IconBadge from "@/components/ui/icon-badge";
 import Pressable from "@/components/ui/pressable";
 import Screen from "@/components/ui/screen";
 import Text from "@/components/ui/text";
-import { useMedication, useStrengths } from "@/contexts/medication";
 import { deleteStrength } from "@/db/queries/strengths";
 import type { Medication } from "@/db/schema";
+import { useMedication } from "@/hooks/use-medication";
 import { usePalette } from "@/hooks/use-palette";
 import { formatMg, strengthLabel, unitIcon, unitName, type StrengthWithIngredients } from "@/lib/strength";
 import { useRouter } from "expo-router";
@@ -16,8 +16,8 @@ import { Alert, View } from "react-native";
 
 export default function StrengthsScreen() {
   const router = useRouter();
-  const medication = useMedication();
-  const strengths = useStrengths();
+  const { medication, strengths } = useMedication();
+  if (!medication) return null;
   const color = medication.color;
 
   const add = () =>

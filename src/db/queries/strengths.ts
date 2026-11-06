@@ -16,7 +16,6 @@ export const allStrengthIngredientsByMedicationId = (id: number) =>
     .orderBy(asc(ingredients.name));
 
 export const createStrength = (medicationId: number, position: number, draft: StrengthDraft) =>
-  // The expo-sqlite driver is synchronous, so the transaction body uses run/get.
   db.transaction((tx) => {
     const strength = tx
       .insert(strengths)
@@ -26,7 +25,6 @@ export const createStrength = (medicationId: number, position: number, draft: St
 
     tx.insert(strengthIngredients)
       .values(
-        // Drafts are validated before saving, so every number parses.
         draft.ingredients.map((item) => ({
           strengthId: strength.id,
           ingredientId: item.ingredientId,
@@ -41,10 +39,6 @@ export const createStrength = (medicationId: number, position: number, draft: St
     return strength.id;
   });
 
-/**
- * Syncs a strength with its draft. Ingredient rows that stay are updated in place rather than
- * replaced, so absorption models attached to them survive the edit.
- */
 export const updateStrength = (id: number, draft: StrengthDraft) =>
   db.transaction((tx) => {
     tx.update(strengths).set({ unitInUse: draft.unitInUse }).where(eq(strengths.id, id)).run();
@@ -72,5 +66,5 @@ export const updateStrength = (id: number, draft: StrengthDraft) =>
     }
   });
 
-export const deleteStrength =(id: number) =>
+export const deleteStrength = (id: number) =>
   db.delete(strengths).where(eq(strengths.id, id));

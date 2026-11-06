@@ -83,7 +83,7 @@ export default function Chart({ color }: ChartProps) {
   const chartData = useMemo(
     () => data.map((d) => {
       const point = { x: d.x } as Point;
-      for (const key of KEYS) point[key] = visible(key) ? d[key] : null;
+      for (const key of KEYS) point[key] = hidden.has(key) ? null : d[key];
       return point;
     }),
     [data, hidden],

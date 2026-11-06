@@ -43,7 +43,7 @@ type LegalPageProps = {
 export default function LegalPage({ lastUpdated, intro, contactTitle, children }: LegalPageProps) {
   const insets = useSafeAreaInsets();
   const topInset = useContentTopInset();
-  const { chevron, tones } = usePalette();
+  const { chevron } = usePalette();
 
   return (
     <ScrollView

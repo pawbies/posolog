@@ -93,9 +93,9 @@ export default function Graph({ readings, loading=false }: { readings: BloodPres
     () =>
       data.map((d) => ({
         t: d.t,
-        systolic: visible("systolic") ? d.systolic : null,
-        diastolic: visible("diastolic") ? d.diastolic : null,
-        pulse: visible("pulse") ? d.pulse : null,
+        systolic: hidden.has("systolic") ? null : d.systolic,
+        diastolic: hidden.has("diastolic") ? null : d.diastolic,
+        pulse: hidden.has("pulse") ? null : d.pulse,
       })),
     [data, hidden],
   );

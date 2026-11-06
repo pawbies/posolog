@@ -4,23 +4,24 @@ import Button from "@/components/ui/button";
 import Card from "@/components/ui/card";
 import Heading from "@/components/ui/heading";
 import Screen from "@/components/ui/screen";
+import Pressable from "@/components/ui/pressable";
 import Text from "@/components/ui/text";
-import { useMedication, useStrengths } from "@/contexts/medication";
 import { deleteMedication } from "@/db/queries/medications";
+import { useMedication } from "@/hooks/use-medication";
+import { usePalette } from "@/hooks/use-palette";
 import { FORM_META, ROUTE_META } from "@/lib/medication";
-import { useRouter } from "expo-router";
-import { Cookie, Mountain, NotebookPen, Package, Pencil, Trash2 } from "lucide-react-native";
-import { useRef, useState } from "react";
+import { Stack, useRouter } from "expo-router";
+import { Cookie, Info, Mountain, NotebookPen, Package, Pencil, Trash2 } from "lucide-react-native";
+import { useState } from "react";
 import { Alert, View } from "react-native";
 
 export default function MedicationScreen() {
   const router = useRouter();
-  
-  const medication = useMedication();
-  const strengths = useStrengths();
-
+  const { headerTint } = usePalette();
+  const { medication, strengths } = useMedication();
   const [deleting, setDeleting] = useState(false);
-  const deletingRef = useRef(false);
+
+  if (!medication) return null;
 
   const form = FORM_META[medication.form];
   const route = ROUTE_META[medication.route];
@@ -28,14 +29,13 @@ export default function MedicationScreen() {
   const color = medication.color;
 
   const remove = async () => {
-    if (deletingRef.current) return;
-    deletingRef.current = true;
+    if (deleting) return;
     setDeleting(true);
     try {
       await deleteMedication(medication.id);
+      router.back();
     } catch {
       Alert.alert("Error", "Could not delete the medication.");
-      deletingRef.current = false;
       setDeleting(false);
     }
   };
@@ -50,6 +50,21 @@ export default function MedicationScreen() {
 
   return (
     <Screen>
+      <Stack.Screen
+        options={{
+          title: medication.name,
+          headerRight: () => (
+            <Pressable
+              onPress={() => router.push({ pathname: "/shelf/medications/[id]/info", params: { id: medication.id } })}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Medication info"
+            >
+              <Info size={24} color={headerTint} strokeWidth={2.25} />
+            </Pressable>
+          ),
+        }}
+      />
       <View
         className="mt-2 overflow-hidden rounded-[36px] px-5 pb-6 pt-5"
         style={{ backgroundColor: `${color}1f` }}
