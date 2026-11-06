@@ -29,6 +29,7 @@ export default function StrengthsLayout() {
         }}
       />
       <Stack.Screen name="new" options={{ title: "Add strength" }} />
+      <Stack.Screen name="edit" options={{ title: "Edit strength" }} />
     </Stack>
   );
 }

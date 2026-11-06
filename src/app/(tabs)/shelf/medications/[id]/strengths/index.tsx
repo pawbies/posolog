@@ -46,6 +46,7 @@ export default function StrengthsScreen() {
 }
 
 function StrengthCard({ strength, medication }: { strength: StrengthWithIngredients; medication: Medication }) {
+  const router = useRouter();
   const { danger } = usePalette();
   const color = medication.color;
   const UnitIcon = unitIcon(strength.unitInUse, medication.form);
@@ -66,7 +67,17 @@ function StrengthCard({ strength, medication }: { strength: StrengthWithIngredie
     ]);
 
   return (
-    <View className="flex-row items-center rounded-[24px] border-2 border-border bg-surface p-3.5">
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/shelf/medications/[id]/strengths/edit",
+          params: { id: medication.id, strengthId: strength.id },
+        })
+      }
+      accessibilityRole="button"
+      accessibilityLabel={`Edit ${label}`}
+      className="flex-row items-center rounded-[24px] border-2 border-border bg-surface p-3.5"
+    >
       <IconBadge icon={UnitIcon} color={color} className="h-14 w-14 rounded-[18px]" />
 
       <View className="ml-3.5 flex-1">
@@ -90,6 +101,6 @@ function StrengthCard({ strength, medication }: { strength: StrengthWithIngredie
       >
         <Trash2 size={18} color={danger} strokeWidth={2.25} />
       </Pressable>
-    </View>
+    </Pressable>
   );
 }

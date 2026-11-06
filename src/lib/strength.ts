@@ -72,7 +72,25 @@ export const toAmountBase = (draft: StrengthIngredientDraft) => {
   return amount * MASS_UNITS[draft.displayUnit] * factor;
 };
 
-export const validateStrengthDraft = (draft: StrengthDraft, names: Map<number, string>): string | null => {
+/** Cheap check for enabling the save button; validateStrengthDraft explains what's wrong. */
+export const canSaveStrengthDraft = (draft: StrengthDraft) =>
+  draft.ingredients.length > 0 &&
+  draft.ingredients.every((item) => (parseOptionalNumber(item.displayAmount) ?? 0) > 0);
+
+const isMassUnit = (unit: string): unit is MassUnit => unit in MASS_UNITS;
+
+/** Editable draft of a saved strength. */
+export const toStrengthDraft = (strength: StrengthWithIngredients): StrengthDraft => ({
+  unitInUse: strength.unitInUse,
+  ingredients: strength.ingredients.map((si) => ({
+    ingredientId: si.ingredientId,
+    displayAmount: String(si.displayAmount),
+    displayUnit: isMassUnit(si.displayUnit) ? si.displayUnit : "mg",
+    saltFactor: String(si.saltFactor),
+  })),
+});
+
+export const validateStrengthDraft =(draft: StrengthDraft, names: Map<number, string>): string | null => {
   if (draft.ingredients.length === 0) return "Add at least one ingredient.";
   for (const item of draft.ingredients) {
     const name = names.get(item.ingredientId) ?? "an ingredient";
