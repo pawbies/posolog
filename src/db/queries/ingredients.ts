@@ -1,3 +1,5 @@
+// Queries for the ingredients table
+
 import { db } from "@/db/client";
 import { ingredients } from "@/db/schema";
 import { parseOptionalNumber, type IngredientDraft } from "@/lib/ingredient";

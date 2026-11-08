@@ -1,13 +1,15 @@
+// Exporting data to different file types
+
 import { db } from "@/db/client";
 import { bloodPressureReadings, medications } from "@/db/schema";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
+// Exportable formats and the key for the form
 export const EXPORT_FORMATS = [
   { name: "JSON", key: "json" },
   { name: "Database", key: "db" },
 ] as const;
-
 export type ExportFormat = (typeof EXPORT_FORMATS)[number]["key"];
 
 function writeJson(name: string): File {

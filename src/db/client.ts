@@ -6,6 +6,7 @@ export const expoDb = openDatabaseSync("posolog.db", {
   enableChangeListener: true
 });
 
+// Enable WAL and foreign keys
 expoDb.execSync("PRAGMA journal_mode = WAL;");
 expoDb.execSync("PRAGMA foreign_keys = ON;");
 

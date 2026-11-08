@@ -1,3 +1,5 @@
+// Queries for the blood pressure readings table
+
 import { db } from "@/db/client";
 import { bloodPressureReadings } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";

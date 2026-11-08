@@ -1,3 +1,5 @@
+// Everything related to the wiki
+
 import CoreConcepts from "@/components/wiki/core-concepts";
 import {
   AreaChart,
@@ -24,24 +26,24 @@ import {
 } from "lucide-react-native";
 import { type ComponentType } from "react";
 
+// A single article
 export type WikiArticle = {
   slug: string;
   title: string;
-  /** Shorter title for the navigation header, when `title` is too long. */
   headerTitle?: string;
   icon: LucideIcon;
   body?: ComponentType;
 };
 
+// A wiki section
 export type WikiSection = {
-  /** Heading shown above a group of sections on the wiki index. */
   group?: string;
   title: string;
-  /** Breadcrumb shown above an article's heading. */
   path: string;
   articles: WikiArticle[];
 };
 
+// The sections and articles, optional body with the content if its available
 export const WIKI_SECTIONS: WikiSection[] = [
   {
     title: "Basic pharmacology",

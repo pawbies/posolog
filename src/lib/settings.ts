@@ -1,3 +1,7 @@
+// Functions related to app settings
+// Everything here is pretty self explanatory
+// Settings are saved with async storage as opposed to the database
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type Settings = {

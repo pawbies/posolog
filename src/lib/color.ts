@@ -1,4 +1,5 @@
-/** Linearly blend two #RRGGBB colours; t = 0 → a, t = 1 → b. Returns an opaque hex. */
+// Mixes two colors together
+
 export function mix(a: string, b: string, t: number) {
   const pa = parseInt(a.slice(1, 7), 16);
   const pb = parseInt(b.slice(1, 7), 16);

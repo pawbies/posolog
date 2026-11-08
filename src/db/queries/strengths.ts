@@ -1,3 +1,5 @@
+// Queries for the strengths table
+
 import { db } from "@/db/client";
 import { ingredients, strengthIngredients, strengths } from "@/db/schema";
 import { toAmountBase, type StrengthDraft } from "@/lib/strength";

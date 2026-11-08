@@ -1,3 +1,5 @@
+// Queries for the medications table
+
 import { db } from "@/db/client";
 import { medications } from "@/db/schema";
 import type { MedicationDraft } from "@/lib/medication";

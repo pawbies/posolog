@@ -1,3 +1,5 @@
+// Required to use the lucide icons in the tabbar
+
 import { createIconSet } from "@expo/vector-icons";
 import codepoints from "lucide-static/font/codepoints.json";
 

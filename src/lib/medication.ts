@@ -1,3 +1,5 @@
+// Functions related to medications
+
 import type { Medication, MedicationForm, MedicationRoute } from "@/db/schema";
 import {
   ArrowDownToLine, Bandage, Cigarette, CircleSmall, Droplets, Layers2, MoreHorizontal, Pill, Smile,
@@ -6,6 +8,7 @@ import {
 
 type Meta = { icon: LucideIcon; name: string };
 
+// Each medication form with the corresponding icon and name
 export const FORM_META: Record<MedicationForm, Meta> = {
   capsule:     { icon: Pill, name: "Capsule" },
   tablet:      { icon: Tablets, name: "Tablet" },
@@ -19,6 +22,7 @@ export const FORM_META: Record<MedicationForm, Meta> = {
   other:       { icon: MoreHorizontal, name: "Other" },
 };
 
+// Each medication route with the corresponding icon and name
 export const ROUTE_META: Record<MedicationRoute, Meta> = {
   oral:        { icon: Pill, name: "Oral" },
   sublingual:  { icon: ArrowDownToLine, name: "Sublingual" },
@@ -33,13 +37,14 @@ export const ROUTE_META: Record<MedicationRoute, Meta> = {
   other:       { icon: MoreHorizontal, name: "Other" },
 };
 
+// Converts the meta obects to an array to use in forms
 const toOptions = <T extends string>(meta: Record<T, Meta>) =>
   (Object.entries(meta) as [T, Meta][]).map(([value, m]) => ({ value, ...m }));
 
 export const FORMS = toOptions(FORM_META);
 export const ROUTES = toOptions(ROUTE_META);
 
-
+// Draft when creating or editing a medication
 export type MedicationDraft = {
   name: string;
   color: string;
@@ -48,6 +53,7 @@ export type MedicationDraft = {
   notes: string;
 };
 
+// Converts a medication to a draft for editing
 export const toDraft = (m: Medication): MedicationDraft => ({
   name: m.name,
   color: m.color,

@@ -9,7 +9,7 @@ type SettingsValue = Settings & {
 
 const SettingsContext = createContext<SettingsValue | null>(null);
 
-/** Loads persisted settings and applies their side effects. Renders nothing until they're ready. */
+// Loads and applies settings
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings | null>(null);
 
