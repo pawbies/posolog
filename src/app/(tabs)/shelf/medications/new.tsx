@@ -48,8 +48,6 @@ export default function NewMedicationScreen() {
       <Stack.Screen
         options={{
           title: "Add medication",
-          // Live preview of the medication being created.
-          // Fixed width so the centered title doesn't shift as the name changes.
           headerTitle: () => (
             <View className="w-52 flex-row items-center gap-2.5">
               <View

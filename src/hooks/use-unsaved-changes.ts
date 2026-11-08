@@ -1,18 +1,17 @@
 import { useNavigation, useRouter } from "expo-router";
 import { usePreventRemove } from "expo-router/react-navigation";
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import { Alert } from "react-native";
 
 type Prompt = { title: string; message: string };
 
-
 export function useUnsavedChanges(dirty: boolean, { title, message }: Prompt) {
   const router = useRouter();
   const navigation = useNavigation();
-  const [leaving, setLeaving] = useState(false);
+  const leaving = useRef(false);
 
-  usePreventRemove(dirty && !leaving, ({ data }) => {
-    if (leaving) {
+  usePreventRemove(dirty, ({ data }) => {
+    if (leaving.current) {
       navigation.dispatch(data.action);
       return;
     }
@@ -22,9 +21,8 @@ export function useUnsavedChanges(dirty: boolean, { title, message }: Prompt) {
     ]);
   });
 
-  useEffect(() => {
-    if (leaving) router.back();
-  }, [leaving, router]);
-
-  return () => setLeaving(true);
+  return () => {
+    leaving.current = true;
+    router.back();
+  };
 }

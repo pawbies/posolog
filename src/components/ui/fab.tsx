@@ -21,7 +21,7 @@ export default function Fab({ onPress, icon: Icon, label }: Props) {
       hitSlop={8}
       android_ripple={{
         color: isDark ? "#00000033" : "#ffffff40",
-        borderless: true,
+        foreground: true,
         radius: 32,
       }}
       style={{
