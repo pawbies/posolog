@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // NOTE: Update this to include the paths to all files that contain Nativewind classes.
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
@@ -28,8 +27,6 @@ module.exports = {
         },
       },
       fontFamily: {
-        // Loaded at runtime in the root layout. Custom fonts carry their own
-        // weight, so don't combine these with font-bold & co.
         display: ["BricolageGrotesque_800ExtraBold"],
         "display-bold": ["BricolageGrotesque_700Bold"],
         "display-medium": ["BricolageGrotesque_600SemiBold"],
