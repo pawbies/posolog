@@ -1,15 +1,13 @@
 import IngredientFields from "@/components/ingredient/ingredient-fields";
-import Button from "@/components/ui/button";
-import Screen from "@/components/ui/screen";
+import IngredientHeader from "@/components/ingredient/ingredient-header";
 import { updateIngredient } from "@/db/queries/ingredients";
 import type { Ingredient } from "@/db/schema";
 import { useIngredient } from "@/hooks/use-ingredient";
-import { usePalette } from "@/hooks/use-palette";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { toIngredientDraft, validateIngredientDraft, type IngredientDraft } from "@/lib/ingredient";
-import { Save } from "lucide-react-native";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 
 export default function EditIngredientScreen() {
   const ingredient = useIngredient();
@@ -18,12 +16,12 @@ export default function EditIngredientScreen() {
 }
 
 function EditIngredientForm({ ingredient }: { ingredient: Ingredient }) {
-  const { tones } = usePalette();
+  const scroll = useScrollInsets(16, 40);
   const [draft, setDraft] = useState(() => toIngredientDraft(ingredient));
   const [initialDraft] = useState(draft);
   const [saving, setSaving] = useState(false);
-  const canSave = !!draft.name.trim() && !saving;
   const dirty = (Object.keys(draft) as (keyof IngredientDraft)[]).some((key) => draft[key] !== initialDraft[key]);
+  const canSave = dirty && !!draft.name.trim() && !saving;
 
   const leave = useUnsavedChanges(dirty, {
     title: "Discard changes?",
@@ -55,20 +53,26 @@ function EditIngredientForm({ ingredient }: { ingredient: Ingredient }) {
   };
 
   return (
-    <Screen
-      footer={
-        <Button
-          label="Save changes"
-          icon={Save}
-          color={tones.lilac}
-          onPress={save}
-          loading={saving}
-          disabled={!canSave}
-          accessibilityLabel={`Save changes to ${ingredient.name}`}
-        />
-      }
-    >
-      <IngredientFields value={draft} onChange={update} />
-    </Screen>
+    <View className="flex-1 bg-background">
+      <IngredientHeader
+        draft={draft}
+        fallbackTitle="Edit ingredient"
+        onSave={save}
+        canSave={canSave}
+        saving={saving}
+      />
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-5 grow"
+        contentInsetAdjustmentBehavior={scroll.contentInsetAdjustmentBehavior}
+        contentContainerStyle={{ paddingTop: scroll.paddingTop, paddingBottom: scroll.paddingBottom }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="flex-1">
+          <IngredientFields value={draft} onChange={update} />
+        </View>
+      </ScrollView>
+    </View>
   );
 }

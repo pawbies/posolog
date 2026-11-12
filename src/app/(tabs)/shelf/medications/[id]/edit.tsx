@@ -1,14 +1,13 @@
 import MedicationFields from "@/components/medication/medication-fields";
-import Button from "@/components/ui/button";
-import Screen from "@/components/ui/screen";
+import MedicationHeader from "@/components/medication/medication-header";
 import { updateMedication } from "@/db/queries/medications";
 import type { Medication } from "@/db/schema";
 import { useMedication } from "@/hooks/use-medication";
+import { useScrollInsets } from "@/hooks/use-scroll-insets";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { toDraft, type MedicationDraft } from "@/lib/medication";
-import { useRouter } from "expo-router";
-import { Save } from "lucide-react-native";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 
 export default function EditMedicationScreen() {
   const { medication } = useMedication();
@@ -17,41 +16,54 @@ export default function EditMedicationScreen() {
 }
 
 function EditMedicationForm({ medication }: { medication: Medication }) {
-  const router = useRouter();
+  const scroll = useScrollInsets(16, 40);
   const [draft, setDraft] = useState(() => toDraft(medication));
-  const [updating, setUpdating] = useState(false);
-  const canSave = !!draft.name.trim();
+  const [initialDraft] = useState(draft);
+  const [saving, setSaving] = useState(false);
+  const dirty = (Object.keys(draft) as (keyof MedicationDraft)[]).some((key) => draft[key] !== initialDraft[key]);
+  const canSave = dirty && !!draft.name.trim() && !saving;
 
-  const update = (patch: Partial<MedicationDraft>) => setDraft((d) => ({ ...d, ...patch }));
+  const leave = useUnsavedChanges(dirty, {
+    title: "Discard changes?",
+    message: "Your edits to this medication will be lost.",
+  });
+
+  const update = (patch: Partial<MedicationDraft>) => setDraft((current) => ({ ...current, ...patch }));
 
   const save = async () => {
-    if (!canSave) return;
-    setUpdating(true);
+    if (saving || !draft.name.trim()) return;
+    setSaving(true);
+
     try {
       await updateMedication(medication.id, draft);
-      router.back();
+      leave();
     } catch {
-      Alert.alert("Error", "Something went wrong.");
-    } finally {
-      setUpdating(false);
+      Alert.alert("Error", "Could not save the medication.");
+      setSaving(false);
     }
   };
 
   return (
-    <Screen
-      footer={
-        <Button
-          label="Save changes"
-          icon={Save}
-          color={draft.color}
-          onPress={save}
-          loading={updating}
-          disabled={!canSave}
-          accessibilityLabel={`Save changes to ${medication.name}`}
-        />
-      }
-    >
-      <MedicationFields value={draft} onChange={update} />
-    </Screen>
+    <View className="flex-1 bg-background">
+      <MedicationHeader
+        draft={draft}
+        fallbackTitle="Edit medication"
+        onSave={save}
+        canSave={canSave}
+        saving={saving}
+      />
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-5 grow"
+        contentInsetAdjustmentBehavior={scroll.contentInsetAdjustmentBehavior}
+        contentContainerStyle={{ paddingTop: scroll.paddingTop, paddingBottom: scroll.paddingBottom }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="flex-1">
+          <MedicationFields value={draft} onChange={update} />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
